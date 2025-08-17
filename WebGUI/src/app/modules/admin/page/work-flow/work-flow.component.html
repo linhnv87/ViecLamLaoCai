@@ -1,0 +1,97 @@
+<div class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Danh sách luồng xử lý</h1>
+        </div>
+        <!-- /.col -->
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item" (click)="gotoHome()">Trang chủ</li>
+            <li class="breadcrumb-item active">
+              <span>Luồng xử lý</span>
+            </li>
+          </ol>
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+  </div>
+  
+  <div class="page-content p-3">
+    <div class="header-content d-flex w-100">
+      <button
+        class="btn btn-primary ml-auto"
+        (click)="addWorkFlow()"
+        data-bs-toggle="modal"
+        data-bs-target="#addWorkFlowModal"
+      >
+        <i class="fas fa-plus"></i> Thêm luồng
+      </button>
+    </div>
+    
+    <div class="table-responsive content-setion mt-3">
+      <div class="form-group mt-2">
+        <input type="text" class="form-control" placeholder="Tìm kiếm..." [(ngModel)]="searchText" />
+      </div>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col" [width]="80">STT</th>
+            <th scope="col">Tên</th>
+            <th scope="col">Thao tác</th>
+            <th scope="col">Trạng thái xử lý</th>
+            <th scope="col">Cán bộ được cấu hình</th>
+            <th scope="col" [width]="150">Hành động</th>
+          </tr>
+        </thead>
+        <tbody class="align-middle">
+          <tr
+            *ngFor="
+              let item of filteredWorkflowData
+                | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage };
+              let i = index
+            "
+          >
+            <td>{{ (currentPage - 1) * itemsPerPage + i + 1 }}</td>
+            <td>{{ item.name }}</td>
+            <td>
+              {{ getStateLabel(item.state ?? '') }}  
+            </td>
+            <td>{{ getStatusName(item.statusId ?? 0) }}</td>
+            <td>
+              {{ userMap[item.userId ?? ''] || item.userId }}
+            </td>
+            <td>
+              <button
+                class="btn btn-primary mr-2"
+                (click)="editWorkFlow(item)"
+                data-bs-toggle="modal"
+                data-bs-target="#editWorkFlowModal"
+              >
+                <i class="fas fa-edit"></i>
+              </button>
+              <button
+                class="btn btn-danger"
+                (click)="deleteWorkFlow(item)"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteWorkFlowModal"
+              >
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+  
+      <pagination-controls
+        [nextLabel]="'Sau'"
+        [previousLabel]="'Trước'"
+        [autoHide]="false"
+        (pageChange)="currentPage = $event"
+      ></pagination-controls>
+    </div>
+  </div>
+  

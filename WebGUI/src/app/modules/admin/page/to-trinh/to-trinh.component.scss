@@ -1,0 +1,102 @@
+.vertical-divider {
+  border-left: 1px solid #ccc;
+  height: 100%;
+  margin: 0 15px;
+}
+input[type="file"] {
+  background-color: orange;
+}
+input[type="file"] {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  position: absolute;
+  z-index: -1;
+}
+.file-names-container {
+  flex-wrap: wrap;
+  gap: 10px;
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+.selected-file-names {
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+input[type="file"] + label {
+  background-color: orange;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 50%;
+  text-align: center;
+}
+.btn-white {
+  border: 1px solid #c2c2c2;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul a {
+  color: black;
+}
+
+ul a:hover {
+  color: #27ae60;
+  font-weight: bold;
+  // transform: scale(1.1);
+  transition-duration: 0.3s;
+}
+
+ul .p-1:hover {
+  color: #27ae60;
+  font-weight: bold;
+  // transform: scale(1.1);
+  transition-duration: 0.3s;
+}
+
+ul div {
+  cursor: pointer;
+}
+
+.dropdown-item {
+  cursor: pointer;
+}
+
+::ng-deep {
+  .mat-button-toggle {
+    width: 150px;
+  }
+  .mat-button-toggle-checked {
+    background-color: var(--success);
+    color: white !important;
+    font-weight: 700;
+  }
+
+  .page-content {
+    .filter-section,
+    .content-setion {
+      background: white;
+      padding: 16px;
+      border-radius: 8px;
+    }
+  }
+}
+.green-bold {
+  color: green;
+  font-weight: bold;
+}
+.normal {
+  color: inherit;
+  font-weight: normal;
+}

@@ -1,0 +1,16 @@
+﻿body {
+  font-family: Arial, Helvetica, sans-serif, "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
+}
+
+[class*="sidebar-dark-"] {
+  background-color: #0f3258 !important;
+}
+
+[class*="sidebar-dark-"] .brand-link {
+  background-color: #0f3258 !important;
+}
+
+.layout-fixed .main-sidebar,
+.layout-navbar-fixed .wrapper .brand-link {
+  top: calc(3.5rem + 1px) !important;
+}

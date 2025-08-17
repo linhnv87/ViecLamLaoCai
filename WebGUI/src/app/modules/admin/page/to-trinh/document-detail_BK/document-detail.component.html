@@ -1,0 +1,378 @@
+<script src="/src/assets/Scripts/vgcaplugin.js"></script>
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Xử lý tờ trình</h1>
+      </div><!-- /.col -->
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item active">Trang chủ</li>
+          <li class="breadcrumb-item">Xử lý tờ trình</li>
+        </ol>
+      </div><!-- /.col -->
+    </div><!-- /.row -->
+  </div><!-- /.container-fluid -->
+</div>
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card card-info">
+          <div class="card-header">
+            <h3 class="card-title">Thông tin</h3>
+            <div class="card-tools">
+              <div style="cursor: pointer;" (click)="navigateToComponentBWithParam()"><i class="fas fa-chevron-left"></i> Quay lại
+              </div>
+            </div>
+          </div>
+          <div *ngIf="document" class="row">
+            <div class="col-12 col-md-8 pe-md-3">
+              <div *ngIf="userRoles.approver">
+                <div class="p-3 mb-2 fw-bold" style="border: none; outline: none; background-color: rgb(223, 223, 223);">
+                  <div class="d-flex justify-content-between" style="align-items: center;" *ngIf="myApprovalStatus == ''; else approvalStatusText">
+                    <label for="">Quyết định xử lý</label>
+                    <div>
+                      <button matTooltip="Không có ý kiến chỉnh sửa" class="btn btn-primary m-1" (click)="handleAction(4)"><i class="fas fa-check"></i> Duyệt tờ trình</button>
+                      <button matTooltip="Bổ sung ý kiến chỉnh sửa" class="btn btn-info m-1" (click)="handleAction(5)"><i class="fas fa-clipboard-check"></i> Duyệt và bổ sung ý kiến</button>
+                      <button class="btn btn-warning m-1" (click)="handleAction(6)"><i class="fas fa-times"></i> Không duyệt tờ trình</button>
+                    </div>
+                  </div>
+                </div>
+                <ng-template #approvalStatusText>
+                  <div class="text-bg-success p-3 fw-bold d-flex justify-content-between" style="align-items: center;">
+                    <div style="align-items: center;">
+                      <i class="fas fa-info-circle"></i> {{myApprovalStatus}}
+                    </div>
+                    <div *ngIf="document.statusCode == 3 || document.statusCode == 7">
+                      <button (click)="toggleChangeAction()" class="btn btn-info">Thay đổi ý kiến</button>
+                    </div>
+                  </div>
+                </ng-template>
+                <div *ngIf="showChangeAction" class="p-3 mb-2 fw-bold" style="border: none; outline: none; background-color: rgb(223, 223, 223);">
+                  <div class="d-flex justify-content-between" style="align-items: center;">
+                    <label for="">Thay đổi quyết định xử lý</label>
+                    <div>
+                      <button matTooltip="Không có ý kiến chỉnh sửa" class="btn btn-primary m-1" (click)="changeAction(4)"><i
+                          class="fas fa-check"></i> Duyệt tờ trình</button>
+                      <button matTooltip="Bổ sung ý kiến chỉnh sửa" class="btn btn-info m-1" (click)="changeAction(5)"><i
+                          class="fas fa-clipboard-check"></i> Duyệt và bổ sung ý kiến</button>
+                      <button class="btn btn-warning m-1" (click)="changeAction(6)"><i class="fas fa-times"></i> Không duyệt tờ
+                        trình</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="userRoles.generalApprover">
+                <div *ngIf="document.statusCode == 4">
+                  <button class="btn btn-primary m-1" (click)="handleAction_General(8)"><i class="fas fa-share-square"></i> Thông qua</button>
+                  <button class="btn btn-danger m-1" (click)="handleAction_General(6)"><i class="fas fa-undo"></i> Không thông qua</button>
+                  <!-- <button class="btn btn-danger m-1" (click)="handleAction_General(10)"><i class="fas fa-undo"></i> Trả lại</button> -->
+                  <button class="btn btn-warning m-1" (click)="returnDoc()"><i class="fas fa-undo"></i> Trả lại chuyên viên</button>
+                </div>
+                <div *ngIf="document.statusCode == 11">
+                  <button class="btn btn-primary m-1" (click)="handleAction_General(12)"><i class="fas fa-share-square"></i>Ký số</button>
+                </div>
+                <div *ngIf="document.statusCode == 12">
+                  <button class="btn btn-primary m-1" (click)="handleAction_General(9)"><i class="fas fa-share-square"></i>Phát hành</button>
+                </div>
+                <div class="p-3 mb-2 fw-bold" style="border: none; outline: none; background-color: rgb(223, 223, 223);">
+                  <div class="d-flex justify-content-between" style="align-items: center;"
+                    *ngIf="myApprovalStatus == ''; else approvalStatusText2">
+                    <label for="">Quyết định xử lý</label>
+                    <div>
+                      <button matTooltip="Không có ý kiến chỉnh sửa" class="btn btn-primary m-1" (click)="handleAction(4)"><i class="fas fa-check"></i> Duyệt tờ trình</button>
+                      <button matTooltip="Bổ sung ý kiến chỉnh sửa" class="btn btn-info m-1" (click)="handleAction(5)"><i class="fas fa-clipboard-check"></i> Duyệt và bổ sung ý kiến</button>
+                      <button class="btn btn-warning m-1" (click)="handleAction(6)"><i class="fas fa-times"></i> Không duyệt tờ trình</button>
+                      <!-- <button class="btn btn-secondary m-1" (click)="handleAction_General(5)"><i class="fas fa-undo"></i> Trả lại</button>                       -->
+                    </div>
+                  </div>
+                </div>
+                <ng-template #approvalStatusText2>
+                  <div class="text-bg-success p-4 fw-bold"><i class="fas fa-info-circle"></i> {{myApprovalStatus}}</div>
+                </ng-template>
+              </div>
+              <!-- <div *ngIf="userRoles.generalSpecialist && !userRoles.generalApprover">
+                <div class="p-3 mb-2 fw-bold" style="border: none; outline: none; background-color: rgb(223, 223, 223);">
+                  <div class="d-flex justify-content-between" style="align-items: center;"
+                    *ngIf="myApprovalStatus == ''; else approvalStatusText2">
+                    <label for="">Quyết định xử lý</label>
+                    <div>                      
+                      <button class="btn btn-secondary m-1" (click)="handleAction_General(5)"><i class="fas fa-undo"></i> Trả lại</button>
+                    </div>
+                  </div>
+                </div>
+                <ng-template #approvalStatusText2>
+                  <div class="text-bg-success p-4 fw-bold"><i class="fas fa-info-circle"></i> {{myApprovalStatus}}</div>
+                </ng-template>
+              </div>               -->
+              <hr *ngIf="userRoles.approver">
+              <div *ngIf="urlToView" style="border: 1px solid black;" class="mb-5">
+                <!-- <iframe [src]="urlToView" frameborder="0" width="100%" style="height: 80vh;"></iframe> -->
+                  <button class="btn btn-primary m-1" (click)="handleAction_General(13)"><i class="fas fa-share-square"></i>Lưu tài
+                    liệu</button>
+                  <ngx-extended-pdf-viewer [height]="'80vh'" [src]="urlToViewV2"></ngx-extended-pdf-viewer>
+                  </div>
+            </div>
+            <div class="col-12 col-md-4 ps-md-3">
+              <mat-tab-group>
+                <mat-tab label="Thông tin">
+                  <div class="mt-4 fs-6">
+                    <div class="row my-2">
+                      <div class="col-3 fw-bold">Trạng thái:</div>
+                      <div class="col fw-normal">
+                        <span *ngIf="document.statusCode == 2" class="badge badge-secondary">Lưu tạm</span>
+                        <span *ngIf="document.statusCode == 3" class="badge badge-info">Chờ duyệt</span>
+                        <span *ngIf="document.statusCode == 4" class="badge badge-success">Chờ thông qua</span>
+                        <span *ngIf="document.statusCode == 5" class="badge badge-warning">Ý kiến chỉnh sửa</span>
+                        <span *ngIf="document.statusCode == 6" class="badge badge-danger">Không duyệt</span>
+                        <span *ngIf="document.statusCode == 7" class="badge badge-secondary">Quá hạn</span>
+                        <span *ngIf="document.statusCode == 8" class="badge badge-info">Đã thông qua - chờ ra nghị quyết</span>
+                        <span *ngIf="document.statusCode == 9" class="badge badge-success">Đã phát hành</span>
+                        <span *ngIf="document.statusCode == 10" class="badge badge-danger">Trả lại</span>
+                        <span *ngIf="document.statusCode == 11" class="badge badge-danger">Đã ra nghị quyết</span>
+                        <span *ngIf="document.statusCode == 12" class="badge badge-danger">Đã ký số</span>
+                      </div>
+                    </div>
+                    <div *ngIf="document.statusCode==9 || document.statusCode==11 || document.statusCode==12" class="row my-2">
+                      <div class="col-3 fw-bold">Nghị quyết:</div>
+                      <div class="col">
+                        <table class="table table-bordered">
+                          <!-- <thead>
+                            <tr>
+                              <th>Nghị quyết</th>
+                              <th></th>
+                            </tr>
+                          </thead> -->
+                          <tbody>
+                            <tr *ngFor="let file of document!.documentFiles; let i = index">
+                              <td *ngIf="file.isFinal" (click)="viewFile_V2(file)" matTooltip="Xem file" style="cursor: pointer;">
+                                {{file.fileName}}
+                              </td>
+                              <td *ngIf="file.isFinal" class="d-flex" style="align-items: center;">
+                                <i (click)="viewFile_V2(file)" matTooltip="Xem file" style="cursor: pointer;" class="fas fa-eye"></i>
+                                <a href="{{file.filePath}}" download matTooltip="Tải file"><i style="cursor: pointer;"
+                                    class="ml-2 fas fa-file-download"></i></a>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <div class="row my-2">
+                      <div class="col-3 fw-bold">Tiêu đề:</div>
+                      <div class="col fw-normal" style="max-height: 300px; overflow-y: scroll;">{{document.title}}</div>
+                    </div>
+                    <div class="row my-2">
+                      <div class="col-3 fw-bold">Lĩnh vực:</div>
+                      <div class="col fw-normal">{{document.fieldName}}</div>
+                    </div>
+                    <div class="row my-2">
+                      <div class="col-3 fw-bold">Nội dung:</div>
+                      <div class="col fw-normal" style="max-height: 300px; overflow-y: scroll;">{{document.note}}</div>
+                    </div>
+                    <div class="row my-2">
+                      <div class="col-3 fw-bold">Tạo từ:</div>
+                      <div class="col fw-normal">{{document.modified | date:'HH:mm dd/MM/yyyy'}}</div>
+                    </div>
+                    <div class="row my-2">
+                      <div class="col-3 fw-bold">Gửi duyệt bởi:</div>
+                      <div class="col fw-normal">{{document.authorName}}</div>
+                    </div>
+                    <div class="row my-2">
+                      <div class="col-3 fw-bold">Hạn duyệt:</div>
+                      <div class="col fw-normal">{{document.dateEndApproval | date:'dd/MM/yyyy'}}</div>
+                    </div>
+                    <hr>                                       
+                    <div class="row my-2" *ngIf="document.statusCode != 9">                      
+                      <div class="col">   
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th>STT</th>
+                              <th>Tài liệu đính kèm</th>
+                              <th></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <!-- <tr *ngFor="let file of document!.documentFiles; let i = index">
+                              <td *ngIf="!file.isFinal">{{file.version}}</td>
+                              <td *ngIf="!file.isFinal" (click)="viewFile_V2(file)" matTooltip="Xem file" style="cursor: pointer;">
+                                <span *ngIf="file.fileType == 1" class="badge badge-primary">Văn bản trình</span>
+                                <span *ngIf="file.fileType == 0" class="badge badge-secondary">Văn bản liên quan</span>
+                                {{file.fileName}}</td>
+                              <td *ngIf="!file.isFinal" class="d-flex" style="align-items: center;">
+                                <i (click)="viewFile_V2(file)" matTooltip="Xem file" style="cursor: pointer;" class="fas fa-eye"></i>
+                                <a href="{{file.filePath}}" download matTooltip="Tải file"><i style="cursor: pointer;" class="ml-2 fas fa-file-download"></i></a>
+                              </td>
+                            </tr> -->
+                            <ng-container *ngFor="let attempt of groupedFiles; let i = index">
+                              <tr>
+                                <td (click)="toggleFiles(i)" colspan="3">
+                                  <div *ngIf="attempt.version <= document.submitCount!" class="d-flex"><i class="fas fa-chevron-down mr-2"></i>Lần trình {{attempt.version}}
+                                  </div>
+                                  <div *ngIf="attempt.version > document.submitCount!" class="d-flex"><i class="fas fa-chevron-down mr-2"></i>Chưa trình
+                                  </div>
+                                </td>
+                              </tr>
+                              <ng-container *ngIf="attempt.show">
+                                <tr *ngIf="attempt.data.length == 0">
+                                  <td colspan="2">Không đính kèm tập tin</td>
+                                </tr>
+                                <ng-container *ngIf="attempt.data.length > 0">
+                                  <tr *ngFor="let file of attempt.data; let ii = index">
+                                    <td *ngIf="!file.isFinal">{{ii+1}}</td>
+                                    <td *ngIf="!file.isFinal" (click)="viewFile_V2(file)" matTooltip="Xem file" style="cursor: pointer;">
+                                      <span *ngIf="file.fileType == 1" class="badge badge-primary">Văn bản trình</span>
+                                      <span *ngIf="file.fileType == 0" class="badge badge-secondary">Văn bản liên quan</span>
+                                      {{file.fileName}}
+                                    </td>
+                                    <td *ngIf="!file.isFinal" class="d-flex" style="align-items: center;">
+                                      <i (click)="viewFile_V2(file)" matTooltip="Xem file" style="cursor: pointer;" class="fas fa-eye"></i>
+                                      <a href="{{file.filePath}}" download matTooltip="Tải file"><i style="cursor: pointer;"
+                                          class="ml-2 fas fa-file-download"></i></a>
+                                    </td>
+                                  </tr>
+                                </ng-container>
+                              </ng-container>
+                            </ng-container>
+                          </tbody>
+                        </table>                                             
+                      </div>
+                    </div>
+                  </div>
+                </mat-tab>
+                <!-- *ngIf="!userRoles.approver || userRoles.generalApprover" -->
+                <mat-tab label="Lịch sử">
+                  <div>
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>STT</th>
+                          <th>Tài liệu đính kèm</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <!-- <tr *ngFor="let file of document!.documentFiles; let i = index">
+                          <td *ngIf="!file.isFinal">{{file.version}}</td>
+                          <td *ngIf="!file.isFinal" (click)="viewFile_V2(file)" matTooltip="Xem file" style="cursor: pointer;">
+                            {{file.fileName}}</td>
+                          <td *ngIf="!file.isFinal" class="d-flex" style="align-items: center;">
+                            <i (click)="viewFile_V2(file)" matTooltip="Xem file" style="cursor: pointer;" class="fas fa-eye"></i>
+                            <a href="{{file.filePath}}" download matTooltip="Tải file"><i style="cursor: pointer;"
+                                class="ml-2 fas fa-file-download"></i></a>
+                          </td>
+                        </tr> -->
+                        <ng-container *ngFor="let attempt of groupedFiles; let i = index">
+                          <tr>
+                            <td (click)="toggleFiles(i)" colspan="3">                              
+                              <div *ngIf="attempt.version <= document.submitCount!" class="d-flex"><i class="fas fa-chevron-down mr-2"></i> Lần trình {{attempt.version}} <b *ngIf="attempt.data.length > 0" class="ml-1">(Lúc {{attempt.data[0].created | date: 'HH:mm dd/MM/yyyy'}})</b>
+                              </div>
+                              <div *ngIf="attempt.version > document.submitCount!" class="d-flex"><i class="fas fa-chevron-down mr-2"></i> Chưa trình
+                              </div>
+                            </td>                            
+                          </tr>
+                          <ng-container *ngIf="attempt.show">
+                            <tr *ngIf="attempt.data.length == 0">
+                              <td colspan="2">Lần trình này không đính kèm tập tin nào</td>
+                            </tr>
+                            <ng-container *ngIf="attempt.data.length > 0">
+                              <tr *ngFor="let file of attempt.data; let ii = index">
+                                <td *ngIf="!file.isFinal">{{ii+1}}</td>
+                                <td *ngIf="!file.isFinal" (click)="viewFile_V2(file)" matTooltip="Xem file" style="cursor: pointer;">
+                                  <span *ngIf="file.fileType == 1" class="badge badge-primary">Văn bản trình</span>
+                                  <span *ngIf="file.fileType == 0" class="badge badge-secondary">Văn bản liên quan</span>
+                                  {{file.fileName}}</td>
+                                <td *ngIf="!file.isFinal" class="d-flex" style="align-items: center;">
+                                  <i (click)="viewFile_V2(file)" matTooltip="Xem file" style="cursor: pointer;" class="fas fa-eye"></i>
+                                  <a href="{{file.filePath}}" download matTooltip="Tải file"><i style="cursor: pointer;"
+                                      class="ml-2 fas fa-file-download"></i></a>
+                                </td>
+                              </tr>
+                            </ng-container>
+                          </ng-container>
+                        </ng-container>
+                      </tbody>
+                    </table>
+                  </div>
+                </mat-tab>
+                <mat-tab label="Trao đổi">
+                  <div class="mt-4">
+                    <div>
+                      <!-- *ngIf="userRoles.approver || userRoles.generalApprover || userRoles.generalSpecialist" -->
+                      <div class="row">
+                        <div class="col fw-bold">Nội dung</div>
+                        <div class="col-9">
+                          <textarea [(ngModel)]="newComment" class="form-control" rows="5"></textarea>
+                        </div>
+                      </div>
+                      <div class="d-flex justify-content-end mt-2">
+                        <button class="btn btn-outline-secondary" (click)="addComment()">Gửi</button>
+                      </div>
+                      <hr>
+                    </div>
+                    <div class="fw-bold fs-6 mb-2">Danh sách ý kiến</div>
+                    <div *ngIf="comments" style="max-height: 600px; overflow: auto; overflow-x: hidden;">
+                      <div matTooltip="{{item.created | date:'HH:mm dd/MM/yyyy'}}" class="row my-2 py-2"
+                        style="border-bottom: 1px solid rgb(211, 211, 211);" *ngFor="let item of comments">
+                        <div class="col-3 fw-bold">{{item.userName}}</div>
+                        <div class="col fw-normal text-wrap" style="max-height: 120px; overflow-y: scroll;">
+                          <div style="width: 100%;" [innerText]="item.comment"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </mat-tab>                
+                 <!--*ngIf="userRoles.generalApprover || userRoles.generalSpecialist"  -->
+                <mat-tab label="KQ xử lý">                  
+                  <div>
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>STT</th>
+                          <th>Cán bộ</th>
+                          <th>Quyết định</th>
+                          <!-- <th>Lần trình</th> -->
+                          <th>Lúc</th>
+                          <th>Ý kiến</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <ng-container *ngFor="let attempt of groupedApprovals; let i = index">
+                          <tr>
+                            <td (click)="toggleApprovals(i)" colspan="5"><div  class="d-flex"><i class="fas fa-chevron-down mr-2"></i> Lần trình {{attempt.submitCount}}</div></td>                           
+                          </tr>
+                          <ng-container *ngIf="attempt.show">
+                            <tr *ngIf="attempt.data.length == 0">
+                              <td colspan="5">Lần trình này không có ý kiến nào</td>
+                            </tr>
+                            <ng-container *ngIf="attempt.data.length > 0">
+                              <tr *ngFor="let item of attempt.data; let i = index">
+                                <td>{{i+1}}</td>
+                                <td>{{item.userName}}</td>
+                                <td>{{item.title}}</td>
+                                <!-- <td>{{item.submitCount}}</td> -->
+                                <td matTooltip="{{item.modified | date: 'HH:mm'}}">{{item.modified | date:'dd/MM/yyyy'}}</td>
+                                <td><i style="cursor: pointer;" (click)="showCommentDialog(item)" matTooltip="Xem ý kiến bổ sung" *ngIf="item.statusCode != 4 && item.comment && item.comment != ''" class="fas fa-eye"></i></td>
+                              </tr>
+                            </ng-container>
+                          </ng-container>
+                        </ng-container>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div>
+                    <button class="btn btn-primary" (click)="exportApprovalExcel()">
+                      <i class="fas fa-file-excel"></i> Xuất ý kiến ban cán sự
+                    </button>
+                  </div>
+                </mat-tab>
+              </mat-tab-group>              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,96 @@
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>QUẢN LÝ LOẠI VĂN BẢN</h1>
+      </div>
+      <!-- /.col -->
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item active">Trang chủ</li>
+          <li class="breadcrumb-item">QUẢN LÝ LOẠI VĂN BẢN</li>
+        </ol>
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </div>
+  <!-- /.container-fluid -->
+</div>
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <button class="btn btn-primary" [routerLink]="['add']">
+                <i class="fas fa-plus-circle"></i> Thêm mới loại VB
+              </button>
+            </h3>
+            <div class="form-group mb-0">
+              <input type="text" class="form-control" placeholder="Tìm kiếm..." [(ngModel)]="searchText" />
+            </div>
+          </div>
+
+          <!-- /.card-header -->
+          <div class="card-body overflow-auto" style="min-height: 200px; padding-bottom: 150px">
+            <table (click)="clearHighlight()" class="table table-bordered">
+              <thead>
+                <tr>
+                  <th scope="col">STT</th>
+                  <th scope="col">Tên loại văn bản</th>
+                  <th scope="col">Mô tả</th>
+                  <th scope="col">Hành động</th>
+                </tr>
+              </thead>
+              <tbody
+              >
+                <tr
+                  *ngFor="let document of filteredTypeData | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }; let i = index"    
+                  [ngClass]="{'bg-success text-white': document.id === updatedItemId}">
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ document.name }}</td>
+                  <td>{{ document.description }}</td>
+                  <td>
+                    <div class="btn btn-group">
+                      <a class="btn btn-info" role="button" (click)="toggleActions(document.id)">
+                        <i class="fas fa-bars"></i>
+                      </a>
+                      <ul *ngIf="actionOnItem == document.id" class="dropdown-menu" style="display: block; left: -160%">
+                        <div>
+                          <a [routerLink]="['edit', document.id]" class="dropdown-item">
+                            <i class="fas fa-highlighter"></i> Chỉnh sửa
+                          </a>
+                          <a (click)="deletefield(document.id)" class="dropdown-item">
+                            <i class="fas fa-trash-alt"></i> Xóa
+                          </a>
+                          <a (click)="moveUp(document.id)" class="dropdown-item">
+                            <i class="fas fa-arrow-up"></i> Di chuyển lên
+                          </a>
+                          <a (click)="moveDown(document.id)" class="dropdown-item">
+                            <i class="fas fa-arrow-down"></i> Di chuyển xuống
+                          </a>
+                        </div>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- /.card-body -->
+          <!-- /.card-body -->
+          <div class="card-footer clearfix">
+            <pagination-controls [nextLabel]="'Sau'" [previousLabel]="'Trước'" [autoHide]="true"
+              (pageChange)="currentPage = $event"></pagination-controls>
+          </div>
+        </div>
+        <!-- /.card -->
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </div>
+  <!-- /.container-fluid -->
+</section>

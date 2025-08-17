@@ -1,0 +1,63 @@
+<div class="modal-header">
+    <h4 class="modal-title">Thêm văn bản liên quan</h4>
+    <button type="button" class="close" aria-label="Close" (click)="dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th colspan="2" scope="col">Văn bản liên quan</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let file of sideFiles; let i = index">
+            <td>{{ file.name }}</td>
+            <td class="group-button">
+              <button
+                class="btn btn-info btn-sm me-1"
+                (click)="moveSideFileUp(i)"
+                [disabled]="i === 0"
+              >
+                <i class="fa-solid fa-up-long" style="color: #ffffff"></i>
+              </button>
+              <button
+                class="btn btn-secondary btn-sm mx-1"
+                (click)="moveSideFileDown(i)"
+                [disabled]="i === sideFiles.length - 1"
+              >
+                <i class="fa-solid fa-down-long" style="color: #ffffff"></i>
+              </button>
+              <button
+                class="btn btn-danger btn-sm me-1"
+                (click)="deleteSideFile(i)"
+              >
+                <i class="fa-sharp fa-solid fa-trash" style="color: #ededed"></i>
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <div class="d-flex align-items-center justify-content-center">
+                <input
+                  style="display: none"
+                  type="file"
+                  id="fileInput2"
+                  (change)="onSideFileSelected($event)"
+                  multiple
+                />
+                <label class="btn btn-outline-primary" for="fileInput2"
+                  ><i class="fas fa-upload"></i> Chọn file</label
+                >
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="dismiss()">Đóng</button>
+    <button type="button" class="btn btn-primary" (click)="save()" [disabled]="sideFiles.length === 0">Lưu</button>
+  </div>
+  

@@ -1,0 +1,51 @@
+import { CommentModel } from './comment.model';
+import { FieldModel } from './field.model';
+import { DocumentFileModel } from './documentFile.model';
+import { DocumentApprovalModel } from './documentApproval.model';
+import { GetAllInfoUserModel } from './user.model';
+
+export interface DocumentModel {
+  id: number;
+  title?: string;
+  note?: string;
+  fieldId?: number;
+  submitCount?: number;
+  priorityNumber?: number;
+  finalizer?: number;
+  finalizerName?: string;
+  dateEndApproval?: Date;
+  remindDatetime?: Date;
+  statusCode?: string;
+  previousStatusCode?: number;
+  isRetrieved?: boolean;
+  hasComment?: boolean;
+  modified?: Date;
+  deleted?: boolean;
+  modifiedBy?: string;
+  createdBy?: string;
+  created?: Date;
+  field?: FieldModel;
+  reviewStatus?: string;
+  fieldName?: string;
+  authorName?: string;
+  comments?: CommentModel[];
+  approvals?: DocumentApprovalModel[];
+  documentFiles?: DocumentFileModel[];
+  isTransferredSign?: boolean;
+  isReturned?: boolean;
+  isRevokeEnabled?: boolean;
+  // approverAction?: string;
+  // actionClass?: string;
+
+  approverAction?: number;
+  //   new field;
+  typeId?: number;
+  typeName?: string;
+  assignedRoles?: string[];
+  assigneeId?: string;
+  users?: string[];
+  assignedUsers?: GetAllInfoUserModel[];
+  usersSMS?: string[];
+  isHistoryTabActive?: boolean;
+  smsUsers?: GetAllInfoUserModel[];
+}

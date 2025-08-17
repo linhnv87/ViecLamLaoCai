@@ -1,0 +1,19 @@
+{
+  "ExtendedData": {
+    "inputs": [
+      "http://ams.tinnhanthuonghieu.vn:8009/bulkapi?wsdl"
+    ],
+    "collectionTypes": [
+      "System.Array",
+      "System.Collections.Generic.Dictionary`2"
+    ],
+    "namespaceMappings": [
+      "*, ViettelSMSServiceReference"
+    ],
+    "references": [
+      "C:\\ThingsToDo\\Projects\\2 Side Projects\\QLLT\\QuanLyToTrinh\\obj\\Release\\net7.0\\PubTmp\\Out\\Services.dll"
+    ],
+    "targetFramework": "net7.0",
+    "typeReuseMode": "Specified"
+  }
+}

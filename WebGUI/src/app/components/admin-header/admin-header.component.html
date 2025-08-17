@@ -1,0 +1,51 @@
+<ul class="navbar-nav ml-auto d-flex" style="align-items: center">
+  <li
+    style="font-size: 1rem; padding-right: 15px; align-items: center; cursor: pointer"
+    class="d-flex justify-content-start me-md-4"
+    (click)="goToUrl()"
+  >
+    <!-- src="../../../assets/Images/dashboard-icon.png" -->
+    <i class="icon-container fas fa-users text-white mr-3" style="font-size: 14px"></i>
+    <div class="text-white" style="font-size: 14px">Phòng họp số</div>
+  </li>
+  <li class="d-flex justify-content-start me-md-4" style="font-size: 1rem; padding-right: 15px">
+    <i
+      (click)="openNotification()"
+      id="noti-icon"
+      matTooltip="{{ haveNewAlert ? 'Bạn có thông báo mới' : 'Thông báo' }}"
+      class="icon-container fas fa-bell text-white"
+      style="font-size: 14px"
+    ></i>
+    <sup *ngIf="haveNewAlert" style="margin-left: -10px" class="text-danger"
+      ><i class="fas fa-circle"></i
+    ></sup>
+  </li>
+
+  <!-- <li class="d-md-block" style="font-size: 1rem;padding-right:15px ;">
+    <span class="fs-6 mb-2 fw-bold">{{userInfo.displayName}}</span>
+  </li> -->
+  <li>
+    <div class="btn-group">
+      <button type="button" style="color: white" class="btn btn-link" (click)="showAction()">
+        <i class="fas fa-user mr-1" style="font-size: 14px"></i
+        ><span class="mb-2 fw-bold" style="font-size: 14px">{{ userInfo.displayName }}</span>
+      </button>
+      <div *ngIf="showMenu" class="dropdown-menu" style="display: block !important" role="menu">
+        <div>
+          <a class="dropdown-item" [routerLink]="['/admin/changePassword']"
+            ><i class="fas fa-key"></i> Thay đổi mật khẩu</a
+          >
+          <div class="dropdown-item" style="cursor: pointer" (click)="logOut()">
+            <i
+              matTooltip="Đăng xuất"
+              class="fas fa-sign-out-alt ms-4 text-danger"
+              style="font-size: 1rem; padding-right: 5px"
+            ></i>
+            Thoát
+          </div>
+        </div>
+      </div>
+    </div>
+  </li>
+  <li class="d-md-block"></li>
+</ul>

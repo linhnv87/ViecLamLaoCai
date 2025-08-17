@@ -1,0 +1,142 @@
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Kết quả duyệt tờ trình</h1>
+      </div><!-- /.col -->
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item active">Trang chủ</li>
+          <li class="breadcrumb-item">Kết quả duyệt tờ trình</li>
+        </ol>
+      </div><!-- /.col -->
+    </div><!-- /.row -->
+  </div><!-- /.container-fluid -->
+</div>
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <!-- <div class="d-flex mt-3">
+            <input [(ngModel)]="filterByDate" type="checkbox" class="m-1"> <label for="" class="form-check-label">Lọc theo thời gian gửi</label>
+          </div> -->
+          <!-- <div *ngIf="filterByDate" class="d-flex justify-content-evenly flex-wrap flex-md-nowrap">   -->
+          <div class="d-flex justify-content-evenly flex-wrap flex-md-nowrap">
+            <input matTooltip="Gửi từ ngày" 
+             [type]="inputTypeA"
+            (focus)="onInputFocus(1)"
+            (blur)="onInputBlur(1)"
+            type="date" placeholder="Từ ngày" class="form-control m-1" [(ngModel)]="filter.submitFrom">
+            <input matTooltip="Đến ngày"
+             [type]="inputTypeB"
+            (focus)="onInputFocus(2)"
+            (blur)="onInputBlur(2)"
+            type="date" placeholder="Đến ngày" class="form-control m-1" [(ngModel)]="filter.submitTo">            
+          </div>
+          <div class="d-flex justify-content-evenly flex-wrap flex-md-nowrap">
+            <input type="text" matTooltip="Tiêu đề" placeholder="Tiêu đề" class="form-control m-1" [(ngModel)]="filter.title">
+            <select matTooltip="Chuyên viên" class="form-control m-1" [(ngModel)]="filter.authorId">
+              <option *ngFor="let item of userSelections" value="{{item.key}}">{{item.label}}</option>
+            </select>
+          </div>
+          <div class="d-flex justify-content-evenly flex-wrap flex-md-nowrap">
+            <select matTooltip="Danh mục" class="form-control m-1" [(ngModel)]="filter.fieldId">
+              <option *ngFor="let item of fieldSelections" value="{{item.key}}">{{item.label}}</option>              
+            </select>                        
+            <select matTooltip="Trạng thái" class="form-control m-1" [(ngModel)]="filter.status">
+              <option *ngFor="let item of statusSelections" value="{{item.key}}">{{item.label}}</option>
+            </select>
+          </div>
+          <div class="d-flex justify-content-evenly flex-wrap flex-md-nowrap mb-3">
+            <button class="btn btn-outline-info form-control m-1" (click)="onFilter()">Lọc kết quả</button>
+            <button class="btn btn-outline-success form-control m-1" (click)="exportExcel()">Xuất ra excel</button>
+          </div>
+          <div style="overflow-x: scroll;">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr class="bg-ligth">
+                  <th [rowSpan]="2">STT</th>
+                  <th [rowSpan]="2">Tiêu đề tờ trình</th>
+                  <th [rowSpan]="2">Người gửi</th>
+                  <th [rowSpan]="2">Lĩnh vực</th>
+                  <th [rowSpan]="2">Ngày trình</th>
+                  <th [rowSpan]="2">Hạn phê duyệt</th>
+                  <th [rowSpan]="2">Thời gian kết thúc</th>
+                  <!-- <th [rowSpan]="2">Trạng thái</th> -->
+                  <!-- <th [colSpan]="3">Kết quả phê duyệt của ban cán sự đảng</th> -->
+                  <th [colSpan]="2">Kết quả</th>
+                  <th [rowSpan]="2">Số lần trình</th>
+                </tr>
+                <tr class="bg-light">
+                  <!-- <th>Phê duyệt</th>
+                  <th>Không phê duyệt</th>
+                  <th>Chưa phê duyệt</th> -->
+                  <th>Thông qua</th>
+                  <th>Không thông qua</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of summaryData; let i = index;">
+                  <td>
+                    {{i + 1}}
+                  </td>
+                  <!-- [routerLink]="['/admin/to-trinh/0/document-detail', item.id]" -->
+                  <td>
+                    <a style="color: black;" href="{{'/admin/to-trinh/0/document-detail/' + item.id}}" target="_blank">
+                      <span *ngIf="item.status == 2" class="badge badge-secondary">Lưu tạm</span>
+                      <span *ngIf="item.status == 3" class="badge badge-info">Chờ duyệt</span>
+                      <span *ngIf="item.status == 4" class="badge badge-success">Chờ thông qua</span>
+                      <span *ngIf="item.status == 5" class="badge badge-warning">Ý kiến chỉnh sửa</span>
+                      <span *ngIf="item.status == 6" class="badge badge-danger">Không duyệt</span>
+                      <span *ngIf="item.status == 7" class="badge badge-secondary">Quá hạn</span>
+                      <span *ngIf="item.status == 8" class="badge badge-info">Đã thông qua - chờ ra nghị quyết</span>
+                      <span *ngIf="item.status == 9" class="badge badge-success">Đã ra nghị quyết</span>
+                      {{item.title}}
+                    </a>
+                  </td>
+                  <td>
+                    {{item.author}}
+                  </td>
+                  <td>
+                    {{item.field}}
+                  </td>
+                  <td>
+                    {{item.submittedAt | date: 'hh:mm aaa dd/MM/YYYY'}}
+                  </td>
+                  <td>
+                    {{item.deadlineAt | date: 'dd/MM/YYYY'}}
+                  </td>
+                  <td>
+                    {{item.endAt| date: 'hh:mm dd/MM/YYYY'}}
+                  </td>
+                  <!-- <td>
+                    {{item.status}}
+                  </td> -->
+                  <!-- <td>
+                    <tr *ngFor="let t of item.approvals">
+                      <td style="min-width: 120px;">{{t}}</td>
+                    </tr>
+                  </td>
+                  <td>
+                    <tr *ngFor="let t of item.declines">
+                      <td style="min-width: 120px;">{{t}}</td>
+                    </tr>
+                  </td>
+                  <td>
+                    <tr *ngFor="let t of item.noResponses">
+                      <td style="min-width: 120px;">{{t}}</td>
+                    </tr>
+                  </td>                     -->
+                  <td><i *ngIf="item.isPassed" class='far fa-check-circle text-success'></i></td>
+                  <td><i *ngIf="!item.isPassed" class='far fa-times-circle text-danger'></i></td>
+                  <td>{{item.submitCount}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

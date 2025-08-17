@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="QLTTrUAT" Class="BCSDDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=VN-PF2MEV3B\MSSQLSERVER01;Initial Catalog=QLTTrUAT;Integrated Security=True;Trust Server Certificate=True" SettingsObjectName="LgspXRoadSdk.Properties.Settings" SettingsPropertyName="QLTTrUATConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.TblDocuments" Member="TblDocuments">
+    <Type Name="TblDocument">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Title" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="Note" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="SubmitCount" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="FieldID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DateEndApproval" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="StatusCode" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Modified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Deleted" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="ModifiedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="Created" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Finalizer" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PreviousStatusCode" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IsRetrieved" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="PriorityNumber" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.TblDocumentFiles" Member="TblDocumentFiles">
+    <Type Name="TblDocumentFile">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="FileName" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="FilePath" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="DocID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Version" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="Modified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Deleted" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="ModifiedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="Created" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="FilePathToView" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="IsFinal" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="FileType" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+</Database>

@@ -1,0 +1,219 @@
+<div class="sidebar" style="padding-bottom: 60px">
+  <!-- Sidebar Menu -->
+  <nav class="mt-2">
+    <ul class="nav nav-pills nav-sidebar nav-child-indent flex-column" data-widget="treeview" role="menu"
+      data-accordion="false">
+      <span *ngFor="let item of menuItems; let i = index">
+        <ng-container *ngIf="item.permissions | permission">
+          <li *ngIf="item.path == '#hr'">
+            <hr style="border-top: 0.1px solid rgb(208, 208, 208)" />
+          </li>
+          <ng-container *ngIf="item.path != '#hr'">
+            <li *ngIf="item.children?.length == 0" class="nav-item">
+              <a [routerLink]="[item.path]" class="nav-link text-white d-flex justify-content-between"
+                [routerLinkActive]="'active'" aria-current="page">
+                <div>
+                  <i matTooltip="{{ item.text }}" class="{{ item.icon }}  me-3 nav-icon"></i>
+                  <p>
+                    {{ item.text }}
+                  </p>
+                </div>
+                <div>
+                  <!-- {{item.text}} -->
+                  <span *ngIf="item.path == '/admin/to-trinh/tong-to-trinh'" class="badge badge-danger ml-2">{{
+                    dashboardInfo.totalCount }}</span>
+                  <span *ngIf="item.path == '/admin/to-trinh/du-thao'" class="badge badge-danger ml-2">{{
+                    dashboardInfo.duThaoCount }}</span>
+                  <span *ngIf="item.path == '/admin/to-trinh/xin-y-kien'" class="badge badge-danger ml-2">{{
+                    dashboardInfo.xinYKienCount }}</span>
+                  <span *ngIf="item.path == '/admin/to-trinh/xin-y-kien-lai'" class="badge badge-danger ml-2">{{
+                    dashboardInfo.xinYKienLaiCount }}</span>
+
+                  <span *ngIf="item.path == '/admin/to-trinh/phe-duyet'" class="badge badge-danger ml-2">{{
+                    dashboardInfo.pheDuyetCount }}</span>
+                  <span *ngIf="item.path == '/admin/to-trinh/ky-so'" class="badge badge-danger ml-2">{{
+                    dashboardInfo.choKySoCount }}</span>
+                  <span *ngIf="item.path == '/admin/to-trinh/cho-ban-hanh'" class="badge badge-danger ml-2">{{
+                    dashboardInfo.choBanHanhCount }}</span>
+                  <span *ngIf="item.path == '/admin/to-trinh/ban-hanh'" class="badge badge-danger ml-2">{{
+                    dashboardInfo.banHanhcount }}</span>
+                  <span *ngIf="item.path == '/admin/to-trinh/khong-ban-hanh'" class="badge badge-danger ml-2">{{
+                    dashboardInfo.khongBanHanhCount }}</span>
+                  <span *ngIf="item.path == '/admin/to-trinh/tra-lai'" class="badge badge-danger ml-2">{{
+                    dashboardInfo.traLaiCount }}</span>
+                </div>
+              </a>
+            </li>
+            <li *ngIf="item.children!.length > 0" class="nav-item">
+              <a class="nav-link text-white d-flex justify-content-between" aria-current="page" style="cursor: pointer">
+                <div>
+                  <i matTooltip="{{ item.text }}" class="{{ item.icon }} me-3 nav-icon"></i>
+                  <p>{{ item.text }}</p>
+                </div>
+                <i class="right fas fa-angle-left"></i>
+              </a>
+              <ul class="nav nav-treeview">
+                <li *ngFor="let child of item.children" class="nav-item">
+                  <a [routerLink]="child?.path" [routerLinkActive]="'active'"
+                    class="nav-link text-white d-flex justify-content-between" aria-current="page">
+                    <div>
+                      <i matTooltip="{{ child.text }}" class="{{ child.icon }} me-3 nav-icon"></i>
+                      <p>{{ child.text }}</p>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ng-container>
+        </ng-container>
+      </span>
+      <!-- <span *ngIf="showToggleRole">
+        <li class="nav-item">
+          <a
+            class="nav-link text-white d-flex justify-content-between"
+            aria-current="page"
+            style="cursor: pointer"
+          >
+            <div>
+              <i class="fas fa-users me-3 nav-icon" style="color: yellow"></i>
+              <strong style="color: yellow">Chuyển vai trò</strong>
+            </div>
+            <i class="right fas fa-angle-left"></i>
+          </a>
+          <ul class="nav nav-treeview">
+            <span *ngFor="let item of rolesData">
+              <li class="nav-item">
+                <p
+                  *ngIf="item.role == userInfo.selectedRole"
+                  class="nav-link text-white d-flex justify-content-between"
+                >
+                  {{ item.text }}<i class="fas fa-check ml-1"></i>
+                </p>
+                <p
+                  *ngIf="item.role != userInfo.selectedRole"
+                  (click)="toggleRole(item.role)"
+                  style="cursor: pointer"
+                  class="nav-link text-white d-flex justify-content-between"
+                >
+                  {{ item.text }}
+                </p>
+              </li>
+            </span>
+          </ul>
+        </li>
+      </span> -->
+      <!-- <span>
+        <li class="nav-item">
+          <a
+            class="nav-link text-white d-flex justify-content-between"
+            aria-current="page"
+            style="cursor: pointer"
+          >
+            <div>
+              <i class="fas fa-users me-3 nav-icon"></i>
+              <p>Hệ thống</p>
+            </div>
+            <i class="right fas fa-angle-left"></i>
+          </a>
+          <ul class="nav nav-treeview">
+            <span *ngFor="let item of systemItems">
+              <li class="nav-item">
+                <a
+                  [routerLink]="[item.path]"
+                  class="nav-link text-white d-flex justify-content-between"
+                  [routerLinkActive]="'active'"
+                  aria-current="page"
+                >
+                  <div>
+                    <i matTooltip="{{ item.text }}" class="{{ item.icon }} me-3 nav-icon"></i>
+                    <p>{{ item.text }}</p>
+                  </div>
+                </a>
+              </li>
+            </span>
+          </ul>
+        </li>
+      </span> -->
+      <span>
+        <li class="nav-item"
+          *ngIf="this.userRoles.chanhVanPhong || this.userRoles.phoChanhVanPhong || this.userRoles.biThu || this.userRoles.phoBiThu">
+          <a class="nav-link text-white d-flex justify-content-between" aria-current="page" style="cursor: pointer">
+            <div>
+              <i class="fas fa-flag me-3 nav-icon"></i>
+              <p>Thống kê</p>
+            </div>
+            <i class="right fas fa-angle-left"></i>
+          </a>
+          <ul class="nav nav-treeview">
+            <span *ngFor="let item of reportItems">
+              <span *ngIf="item.permissions | permission">
+                <li class="nav-item">
+                  <a
+                    [routerLink]="[item.path]"
+                    class="nav-link text-white d-flex justify-content-between"
+                    [routerLinkActive]="'active'"
+                    aria-current="page"
+                  >
+                    <div>
+                      <i matTooltip="{{ item.text }}" class="{{ item.icon }} me-3 nav-icon"></i>
+                      <p>{{ item.text }}</p>
+                    </div>
+                  </a>
+                </li>
+              </span>
+            </span>
+          </ul>          
+        </li>
+      </span>
+
+      <ng-container>
+        <span>
+          <li class="nav-item">
+            <a class="nav-link text-white d-flex justify-content-between" href="/assets/Images/HDSD phần mềm Biểu quyết TU.pdf" aria-current="page" style="cursor: pointer">
+              <div>
+                <i matTooltip="Hướng dẫn sử dụng" class="fas fa-book me-3 nav-icon"></i>
+                <p>Hướng dẫn sử dụng</p>
+              </div>
+            </a>
+            <!-- <ul class="nav nav-treeview">
+              <span *ngFor="let item of guiItems">
+                <li class="nav-item">
+                  <a [href]="item.href" target="_blank" class="nav-link text-white d-flex justify-content-between">
+                    <div>
+                      <i [class]="item.icon" [matTooltip]="item.tooltip" class="me-3 nav-icon"></i>
+                      <p>{{ item.text }}</p>
+                    </div>
+                  </a>
+                </li>
+              </span>
+            </ul> -->
+          </li>
+        </span>
+
+        <span>
+          <li class="nav-item">
+            <a class="nav-link text-white d-flex justify-content-between" aria-current="page" style="cursor: pointer">
+              <div>
+                <i class="fas fa-phone me-3 nav-icon"></i>
+                <p>Liên Hệ</p>
+              </div>
+              <i class="right fas fa-angle-left"></i>
+            </a>
+            <ul class="nav nav-treeview">
+              <span *ngFor="let item of contactItems">
+                <li class="nav-item">
+                  <a [href]="item.href" target="_blank" class="nav-link text-white d-flex justify-content-between">
+                    <div>
+                      <i [class]="item.icon" [matTooltip]="item.tooltip" class="me-3 nav-icon"></i>
+                      <p>{{ item.text }}</p>
+                    </div>
+                  </a>
+                </li>
+              </span>
+            </ul>
+          </li>
+        </span>
+      </ng-container>
+    </ul>
+  </nav>
+</div>

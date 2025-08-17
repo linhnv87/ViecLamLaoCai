@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="BCSD">
+  <DataContextMoniker Name="/BCSDDataContext" />
+  <nestedChildShapes>
+    <classShape Id="8871d6ab-f674-4f49-8231-acd36b69fe9f" absoluteBounds="4.125, 3.625, 2, 3.8862125651041666">
+      <DataClassMoniker Name="/BCSDDataContext/TblDocument" />
+      <nestedChildShapes>
+        <elementListCompartment Id="49888896-6d3a-4f25-b295-d35c9c90c99b" absoluteBounds="4.14, 4.085, 1.9700000000000002, 3.3262125651041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="0ccf89d3-80bb-47e6-9a80-3f6d9abaa089" absoluteBounds="7.5, 3.75, 2, 3.5016097005208326">
+      <DataClassMoniker Name="/BCSDDataContext/TblDocumentFile" />
+      <nestedChildShapes>
+        <elementListCompartment Id="bdbf5222-a944-406a-95fa-70c45ecb8f46" absoluteBounds="7.5150000000000006, 4.21, 1.9700000000000002, 2.941609700520833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

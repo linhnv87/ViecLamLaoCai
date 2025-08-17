@@ -1,0 +1,541 @@
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Chi tiết tờ trình</h1>
+      </div>
+      <!-- /.col -->
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item active">Trang chủ</li>
+          <li class="breadcrumb-item">Chi tiết tờ trình</li>
+        </ol>
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </div>
+  <!-- /.container-fluid -->
+</div>
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card card-info">
+          <div class="card-header">
+            <h3 class="card-title">Chi tiết tờ trình</h3>
+            <div class="card-tools">
+              <div style="cursor: pointer" (click)="navigateToComponentBWithParam()">
+                <i class="fas fa-chevron-left"></i> Quay lại
+              </div>
+            </div>
+          </div>
+          <div
+            *ngIf="isShow && document"
+            class="container-fluid border rounded-3 p-3 fw-bold flex position-relative"
+          >
+            <h3 style="font-weight: bold" for="lastName">Tiêu đề tờ trình: {{ documentTitle }}</h3>
+            <!-- <h3 style="font-weight: bold" *ngIf="document">
+              Trạng thái tờ trình:
+              <span *ngIf="document.statusCode == 2" class="badge badge-secondary">Lưu tạm</span>
+              <span *ngIf="document.statusCode == 3" class="badge badge-info">Chờ duyệt</span>
+              <span *ngIf="document.statusCode == 4" class="badge badge-success"
+                >Chờ thông qua</span
+              >
+              <span *ngIf="document.statusCode == 5" class="badge badge-warning"
+                >Ý kiến chỉnh sửa</span
+              >
+              <span *ngIf="document.statusCode == 6" class="badge badge-danger">Không duyệt</span>
+              <span *ngIf="document.statusCode == 7" class="badge badge-secondary">Quá hạn</span>
+              <span *ngIf="document.statusCode == 8" class="badge badge-info"
+                >Đã thông qua - chờ ra nghị quyết</span
+              >
+              <span *ngIf="document.statusCode == 9" class="badge badge-success"
+                >Đã ra nghị quyết</span
+              >
+              <span *ngIf="document.statusCode == 10" class="badge badge-danger">Trả lại</span>
+            </h3> -->
+            <h4 style="font-weight: bold" *ngIf="approvalAction">
+              Đánh giá của tôi:
+              <span
+                matTooltip="Tờ trình sẽ được duyệt nếu có hơn 50% cán bộ đánh giá duyệt / duyệt có ý kiến"
+                style="padding: 4px 8px; border-radius: 3px"
+                [ngClass]="
+                  documentApproval.statusCode == 2
+                    ? 'text-bg-secondary'
+                    : documentApproval.statusCode == 4
+                      ? 'text-bg-success'
+                      : documentApproval.statusCode == 5
+                        ? 'text-bg-primary'
+                        : documentApproval.statusCode == 6
+                          ? 'text-bg-danger'
+                          : ''
+                "
+              >
+                {{
+                  documentApproval.statusCode == 2
+                    ? 'Nháp'
+                    : documentApproval.statusCode == 4
+                      ? 'Đồng ý duyệt'
+                      : documentApproval.statusCode == 5
+                        ? 'Đánh giá và ý kiến'
+                        : documentApproval.statusCode == 6
+                          ? 'Không duyệt'
+                          : 'Chưa đánh giá'
+                }}</span
+              >
+            </h4>
+
+            <mat-tab-group>
+              <mat-tab label="Thông tin tờ trình">
+                <div class="tab-pane show active">
+                  <form (submit)="submit(false)">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group row my-4">
+                          <label class="col-sm-2 col-form-label" for="title">Tiêu đề: </label>
+                          <div class="col-sm-10">
+                            <input
+                              type="text"
+                              [readOnly]="!isAuthor"
+                              class="form-control"
+                              id="title"
+                              name="title"
+                              required="required"
+                              [(ngModel)]="document!.title"
+                            />
+                          </div>
+                        </div>
+                        <div class="form-group row my-4">
+                          <label class="col-sm-2 col-form-label" for="lastName"
+                            >Nội dung chính:
+                          </label>
+                          <div class="col-sm-10">
+                            <textarea
+                              style="height: 200px"
+                              [readOnly]="!isAuthor"
+                              class="form-control"
+                              id="lastName"
+                              name="lastName"
+                              required="required"
+                              [(ngModel)]="document!.note"
+                            >
+                            </textarea>
+                          </div>
+                        </div>
+                        <div class="form-group row my-4">
+                          <label class="col-sm-2 col-form-label" for="fieldId">Lĩnh vực: </label>
+                          <div class="col-sm-10">
+                            <!-- <input [readOnly]="!isAuthor" class="form-control" id="fieldId" name="fieldId" required="required"
+                                                    [(ngModel)]="document!.fieldName"> -->
+                            <select
+                              [disabled]="!isAuthor"
+                              class="form-control"
+                              id="fieldId"
+                              name="fieldId"
+                              required="required"
+                              [(ngModel)]="document!.fieldId"
+                            >
+                              <option
+                                class="form-control"
+                                *ngFor="let field of fieldData"
+                                value="{{ field.id }}"
+                              >
+                                {{ field.title }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="form-group row my-4" *ngIf="!isAuthor">
+                          <label class="col-sm-2 col-form-label" for="createdBy"
+                            >Người trình:
+                          </label>
+                          <div class="col-sm-10">
+                            <input
+                              type="text"
+                              [readOnly]="!isAuthor"
+                              class="form-control"
+                              id="createdBy"
+                              name="createdBy"
+                              required="required"
+                              [(ngModel)]="document!.authorName"
+                            />
+                          </div>
+                        </div>
+                        <div class="form-group row my-4">
+                          <label class="col-sm-2 col-form-label" for="created">Ngày trình: </label>
+                          <div class="col-sm-10">
+                            <input
+                              type="text"
+                              [readOnly]="true"
+                              class="form-control"
+                              id="created"
+                              name="created"
+                              required="required"
+                              [(ngModel)]="document!.created"
+                            />
+                          </div>
+                        </div>
+                        <div class="form-group row my-4">
+                          <label class="col-sm-2 col-form-label" for="dateEndApproval"
+                            >Hạn phê duyệt:
+                          </label>
+                          <div class="col-sm-10">
+                            <input
+                              type="date"
+                              [min]="todayDate"
+                              [readOnly]="!isAuthor"
+                              class="form-control"
+                              id="dateEndApproval"
+                              name="dateEndApproval"
+                              required="required"
+                              [(ngModel)]="DateEndApproval"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group row my-4">
+                          <label class="col-sm-2 col-form-label" for="fileDinhKem"
+                            >File đính kèm:
+                          </label>
+                          <div
+                            style="overflow-x: scroll"
+                            *ngIf="
+                              document!.documentFiles != null && document!.documentFiles!.length > 0
+                            "
+                            class="col-sm-10"
+                          >
+                            <table class="table table-bordered w-100">
+                              <thead>
+                                <tr>
+                                  <th>Lần trình</th>
+                                  <th>Tên file</th>
+                                  <th>Ngày tạo</th>
+                                  <th></th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <ng-container *ngFor="let attempt of groupedFiles; let i = index">
+                                  <tr>
+                                    <td (click)="toggleFiles(i)" colspan="3">
+                                      <div class="d-flex">
+                                        <i class="fas fa-chevron-down mr-2"></i
+                                        >{{
+                                          attempt.version > document.submitCount!
+                                            ? 'Chưa trình'
+                                            : 'Lần trình ' + attempt.version
+                                        }}
+                                      </div>
+                                    </td>
+                                  </tr>
+                                  <ng-container *ngIf="attempt.show">
+                                    <tr *ngFor="let i of attempt.data; let ii = index">
+                                      <!-- <td>{{i.version && i.version != 0 ? i.version : 'Chưa trình'}}</td> -->
+                                      <td>
+                                        {{
+                                          i.version > document.submitCount!
+                                            ? 'Chưa trình'
+                                            : i.version
+                                        }}
+                                      </td>
+                                      <td style="width: 60%">
+                                        <a class="me-3" href="{{ i.filePath }}">
+                                          <span *ngIf="i.fileType == 1" class="badge badge-primary"
+                                            >Văn bản trình</span
+                                          >
+                                          <span
+                                            *ngIf="i.fileType == 0"
+                                            class="badge badge-secondary"
+                                            >Văn bản liên quan</span
+                                          >
+                                          {{ i.fileName }}</a
+                                        >
+                                      </td>
+                                      <td style="width: 15%">
+                                        {{ i.created | date: 'HH:mm dd/MM/yyyy' }}
+                                      </td>
+                                      <td>
+                                        <div class="d-flex justify-content-around">
+                                          <a class="mr-3" href="{{ i.filePath }}"
+                                            ><i matTooltip="Tải xuống" class="fas fa-download"></i
+                                          ></a>
+                                          <a
+                                            class="mr-3"
+                                            href="{{ i.filePathToView }}"
+                                            target="_blank"
+                                            ><i matTooltip="Xem file" class="fas fa-file-alt"></i
+                                          ></a>
+                                          <!-- <a *ngIf="document.statusCode == 2 || (!document.submitCount || document.statusCode == 5 && i.version > document.submitCount)" (click)="deleteFile(i)"><i matTooltip="Xóa file" class="far fa-trash-alt"></i></a> -->
+                                          <a
+                                            *ngIf="
+                                              (document.isRetrieved &&
+                                                i.version > document.submitCount!) ||
+                                              i.version > document.submitCount!
+                                            "
+                                            (click)="deleteFile(i)"
+                                            ><i matTooltip="Xóa file" class="far fa-trash-alt"></i
+                                          ></a>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  </ng-container>
+                                </ng-container>
+                                <!-- <tr *ngFor="let i of document!.documentFiles">
+                                  <td>{{i.version && i.version != 0 ? i.version : 'Chưa trình'}}</td>
+                                  <td style="width: 60%;">
+                                    <a class="me-3" href="{{i.filePath}}">
+                                      <span *ngIf="i.fileType == 1" class="badge badge-primary">Văn bản trình</span>
+                                      <span *ngIf="i.fileType == 0" class="badge badge-secondary">Văn bản liên quan</span>
+                                      {{i.fileName}}</a>
+                                  </td>
+                                  <td style="width: 15%;">
+                                    {{i.created | date: 'dd/MM/yyyy'}}
+                                  </td>
+                                  <td>
+                                    <div class="d-flex justify-content-around">
+                                      <a class="mr-3" href="{{i.filePath}}"><i matTooltip="Tải xuống" class="fas fa-download"></i></a>
+                                      <a class="mr-3" href="{{i.filePathToView}}" target="_blank"><i matTooltip="Xem file"
+                                          class="fas fa-file-alt"></i></a>                                      
+                                    </div>
+                                  </td>
+                                </tr> -->
+                                <tr *ngIf="files.length > 0">
+                                  <td colspan="3">
+                                    <div class="d-flex">
+                                      <i class="fas fa-chevron-down mr-2"></i>Chưa trình
+                                    </div>
+                                  </td>
+                                </tr>
+                                <tr *ngFor="let file of files; let ii = index">
+                                  <td>Chưa trình</td>
+                                  <!-- {{document.submitCount && document.submitCount != 0 ? document.submitCount : 'Chưa trình'}} -->
+                                  <td>{{ file.name }}</td>
+                                  <td>{{ todayDate | date: 'dd/MM/yyyy' }}</td>
+                                  <td>
+                                    <button
+                                      matTooltip="Di chuyển lên"
+                                      class="btn btn-info btn-xs mr-1"
+                                      (click)="moveFileUp(ii)"
+                                      [disabled]="ii === 0"
+                                    >
+                                      <i class="fa-solid fa-up-long" style="color: #ffffff"></i>
+                                    </button>
+                                    <button
+                                      matTooltip="Di chuyển xuống"
+                                      class="btn btn-secondary btn-xs mr-1"
+                                      (click)="moveFileDown(ii)"
+                                      [disabled]="ii === files.length - 1"
+                                    >
+                                      <i class="fa-solid fa-down-long" style="color: #ffffff"></i>
+                                    </button>
+                                    <button
+                                      matTooltip="Xóa file"
+                                      class="btn btn-danger btn-xs mr-1"
+                                      (click)="deleteUploadFile(ii)"
+                                    >
+                                      <i
+                                        class="fa-sharp fa-solid fa-trash"
+                                        style="color: #ededed"
+                                      ></i>
+                                    </button>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                        <div *ngIf="roleInfo.chuyenVien" class="form-group row my-4">
+                          <label class="col-sm-2 col-form-label" for="fileDinhKem"
+                            >Tải thêm file:
+                          </label>
+                          <div class="col">
+                            <div class="form-group">
+                              <label>File đính kèm</label>
+                              <table class="table table-bordered">
+                                <thead>
+                                  <tr>
+                                    <th colspan="2" scope="col">Văn bản trình</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr *ngFor="let file of files; let i = index">
+                                    <td>{{ file.name }}</td>
+                                    <td>
+                                      <button
+                                        class="btn btn-info btn-sm me-1"
+                                        (click)="moveFileUp(i)"
+                                        [disabled]="i === 0"
+                                      >
+                                        <i class="fa-solid fa-up-long" style="color: #ffffff"></i>
+                                      </button>
+                                      <button
+                                        class="btn btn-secondary btn-sm me-1"
+                                        (click)="moveFileDown(i)"
+                                        [disabled]="i === files.length - 1"
+                                      >
+                                        <i class="fa-solid fa-down-long" style="color: #ffffff"></i>
+                                      </button>
+                                      <button
+                                        class="btn btn-danger btn-sm me-1"
+                                        (click)="deleteUploadFile(i)"
+                                      >
+                                        <i
+                                          class="fa-sharp fa-solid fa-trash"
+                                          style="color: #ededed"
+                                        ></i>
+                                      </button>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td colspan="2">
+                                      <div class="d-flex align-items-center justify-content-center">
+                                        <input
+                                          style="display: none"
+                                          type="file"
+                                          id="fileInput"
+                                          (change)="onFileSelected($event)"
+                                          multiple
+                                        />
+                                        <label class="btn btn-outline-primary" for="fileInput"
+                                          ><i class="fas fa-upload"></i> Chọn file</label
+                                        >
+                                      </div>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                              <hr />
+                              <table class="table table-bordered">
+                                <thead>
+                                  <tr>
+                                    <th colspan="2" scope="col">Văn bản liên quan</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr *ngFor="let file of sideFiles; let i = index">
+                                    <td>{{ file.name }}</td>
+                                    <td>
+                                      <button
+                                        class="btn btn-info btn-sm me-1"
+                                        (click)="moveSideFileUp(i)"
+                                        [disabled]="i === 0"
+                                      >
+                                        <i class="fa-solid fa-up-long" style="color: #ffffff"></i>
+                                      </button>
+                                      <button
+                                        class="btn btn-secondary btn-sm me-1"
+                                        (click)="moveSideFileDown(i)"
+                                        [disabled]="i === sideFiles.length - 1"
+                                      >
+                                        <i class="fa-solid fa-down-long" style="color: #ffffff"></i>
+                                      </button>
+                                      <button
+                                        class="btn btn-danger btn-sm me-1"
+                                        (click)="deleteUploadSideFile(i)"
+                                      >
+                                        <i
+                                          class="fa-sharp fa-solid fa-trash"
+                                          style="color: #ededed"
+                                        ></i>
+                                      </button>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td colspan="2">
+                                      <div class="d-flex align-items-center justify-content-center">
+                                        <input
+                                          style="display: none"
+                                          type="file"
+                                          id="fileInput2"
+                                          (change)="onSideFileSelected($event)"
+                                          multiple
+                                        />
+                                        <label class="btn btn-outline-primary" for="fileInput2"
+                                          ><i class="fas fa-upload"></i> Chọn file</label
+                                        >
+                                      </div>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                              <!-- <div class="d-flex align-items-center justify-content-center ">
+                                <img src="/assets/Images/img.png" class="w-50 mw-50" style="max-width: 150px" alt="Hình ảnh" />
+                              </div>
+                
+                              <div
+                                *ngIf="specialistAction && (document.statusCode == 2 || document.statusCode == 6 || document.statusCode == 5)"
+                                class="d-flex align-items-center justify-content-center mb-3">
+                                <input type="file" id="fileInput" (change)="onFileSelected($event)" multiple />
+                                <label for="fileInput">Chọn file</label>
+                              </div> -->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-3">
+                      <button
+                        *ngIf="roleInfo.chuyenVien"
+                        type="submit"
+                        class="btn btn-outline-primary"
+                        matTooltip="Nội dung vẫn giữ trạng thái"
+                      >
+                        Lưu
+                      </button>
+                      <button
+                        *ngIf="roleInfo.chuyenVien"
+                        matTooltip="Nội dung sẽ được gửi đi"
+                        type="button"
+                        (click)="submit(true)"
+                        class="btn btn-outline-success ml-3"
+                      >
+                        Lưu và gửi duyệt
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </mat-tab>
+              <mat-tab label="Ý kiến ban cán sự">
+                <div>
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>STT</th>
+                        <th>Cán bộ</th>
+                        <th>Quyết định</th>
+                        <th>Lần trình</th>
+                        <th>Lúc</th>
+                        <th>Ý kiến</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of document.approvals; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ item.userName }}</td>
+                        <td>{{ item.title }}</td>
+                        <td>{{ item.submitCount }}</td>
+                        <td matTooltip="{{ item.modified | date: 'HH:mm' }}">
+                          {{ item.modified | date: 'dd/MM/yyyy' }}
+                        </td>
+                        <td>
+                          <i
+                            style="cursor: pointer"
+                            (click)="showCommentDialog(item)"
+                            *ngIf="item.statusCode != 4 && item.comment && item.comment != ''"
+                            matTooltip="Xem ý kiến bổ sung"
+                            class="fas fa-eye"
+                          ></i>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </mat-tab>
+            </mat-tab-group>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

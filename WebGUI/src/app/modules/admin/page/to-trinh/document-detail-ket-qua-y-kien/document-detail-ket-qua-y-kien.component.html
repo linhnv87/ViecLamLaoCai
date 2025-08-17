@@ -1,0 +1,90 @@
+<div class="ket-qua-y-kien-section">
+  <div class="quick-filter-section">
+    <div class="d-flex mt-3 mb-3">
+      <mat-button-toggle-group name="quick-filter" aria-label="quick filter" [(ngModel)]="quickFilterStatus"
+        class="ml-auto" (change)="onChangeQuickFilter()">
+        <mat-button-toggle value="">Tất cả</mat-button-toggle>
+        <mat-button-toggle value="Đồng ý">Đồng ý</mat-button-toggle>
+        <mat-button-toggle value="Không đồng ý">Không đồng ý</mat-button-toggle>
+        <mat-button-toggle value="Ý kiến khác">Ý kiến khác</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+  </div>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>STT</th>
+        <th>Cán bộ</th>
+        <th>Quyết định</th>
+        <th>Lúc</th>
+        <th>Ý kiến</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let group of listApproved; let i = index">
+        <ng-container>
+          <tr>
+            <td colspan="5">
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex" (click)="toggleApprovals(i)" style="cursor: pointer">
+                  <i class=" me-3 fas fa-chevron-down mr-2"></i>
+                  <span class="me-3">Lần trình {{ group.submitCount }} </span>
+                  <span>(</span>
+                  <span class="text-danger">{{ group.reviewedCount }}<span class="text-black">/</span>{{
+                    group.totalApprovers }}</span>
+                  <span>)</span>
+                </div>
+                <div class="ml-2 d-flex">
+                  <button class="btn btn-success mr-2" (click)="exportApprovalExcelByGroup(group)"
+                    matTooltip="Xuất Excel ý kiến">
+                    <i class="fas fa-file-excel"></i>
+                  </button>
+
+                  <button class="btn btn-primary" (click)="exportSignedFiles(group.submitCount)"
+                    matTooltip="Xuất file ý kiến">
+                    <i class="fas fa-file-signature"></i>
+                  </button>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="group.show">
+          <ng-container>
+            <tr *ngFor="let approver of group.approvers; let j = index">
+              <td>{{ j + 1 }}</td>
+              <td>{{ approver.userName }}</td>
+              <td>{{ approver.decision }}</td>
+              <td matTooltip="{{ approver.createdAt | date: 'HH:mm' }}">
+                {{ approver.createdAt | date: 'dd/MM/yyyy' }}
+              </td>
+              <td>
+                <i style="cursor: pointer" (click)="showCommentDialog(approver)" matTooltip="Xem ý kiến bổ sung"
+                  *ngIf="approver.comment && approver.comment !== ''" class="fas fa-eye ">
+                </i>
+                <i matTooltip="Xem file" *ngIf="approver.files.length > 0"
+                  class="fa-solid fa-file icon-margin-left"(click)="showFilesModal(approver.files, approver)" 
+                  style="cursor: pointer"></i>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </tbody>
+  </table>
+  <!-- <pagination-controls
+    [nextLabel]="'Sau'"
+    [previousLabel]="'Trước'"
+    [autoHide]="false"
+    (pageChange)="currentPage = $event"
+  ></pagination-controls> -->
+  <div class="mt-2 mb-2 d-flex">
+    <!-- <button class="btn btn-primary mr-2" (click)="exportApprovalExcel()">
+      <i class="fas fa-file-excel"></i> Xuất Excel ý kiến
+    </button>
+
+    <button class="btn btn-success" (click)="exportSignedFiles()">
+      <i class="fas fa-file-signature"></i> Xuất file ký số
+    </button> -->
+  </div>
+</div>

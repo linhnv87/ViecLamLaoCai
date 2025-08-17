@@ -1,0 +1,133 @@
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Xử lý tờ trình</h1>
+      </div>
+      <!-- /.col -->
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item">Trang chủ</li>
+          <li class="breadcrumb-item active">Xử lý tờ trình</li>
+        </ol>
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </div>
+  <!-- /.container-fluid -->
+</div>
+
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card card-info">
+          <div class="card-header d-flex align-items-center">
+            <div style="cursor: pointer" (click)="navigateToComponentBWithParam()">
+              <i class="fas fa-chevron-left"></i>
+            </div>
+            <h3 class="card-title mb-0 ml-3">Thông tin</h3>
+          </div>
+          <div *ngIf="document" class="row">
+            <div class="col-12 col-md-7 pe-md-3">
+              <div *ngIf="urlToView" style="border: 1px solid black" class="mb-5">
+                <div class="header-view-document">
+                  <button
+                    class="btn btn-secondary m-1"
+                    (click)="saveDocument()"
+                    matTooltip="Lưu tài liệu"
+                  >
+                    <i class="fas fa-save"></i>
+                  </button>
+                  <select
+                    class="form-control"
+                    [(ngModel)]="selectedDocumentId"
+                    name="subjectGroupId"
+                    id="subjectGroupId"
+                    (change)="changeDocument()"
+                  >
+                    <option
+                      class="form-control"
+                      selected
+                      *ngFor="let item of listAttachmentFilter"
+                      [value]="item.id"
+                    >
+                      {{ item.fileName }}
+                    </option>
+                  </select>
+                  <button
+                    class="btn btn-secondary m-1"
+                    (click)="dowloadFile()"
+                    matTooltip="Tải file"
+                  >
+                    <i class="fas fa-download"></i>
+                  </button>
+                  <button
+                    *ngIf="
+                      (document?.statusCode === documentStatus.KY_SO &&
+                        (userRoles.chanhVanPhong || userRoles.phoBiThu || userRoles.biThu || userRoles.phoChanhVanPhong)) ||
+                      (userRoles.biThu &&
+                        [
+                          documentStatus.XIN_Y_KIEN,
+                          documentStatus.XIN_Y_KIEN_LAI,
+                          documentStatus.PHE_DUYET,
+                        ].includes(document?.statusCode || ''))
+                    "
+                    class="btn btn-secondary m-1"
+                    (click)="onKySoGD()"
+                    matTooltip="Ký số"
+                  >
+                    <i class="fas fa-file-signature"></i> Ký số
+                  </button>
+                </div>
+                <ngx-extended-pdf-viewer
+                  [height]="'80vh'"
+                  [src]="urlToViewV2"
+                ></ngx-extended-pdf-viewer>
+              </div>
+            </div>
+            <div class="col-12 col-md-5 ps-md-3">
+              <mat-tab-group>
+                <mat-tab
+                  label="Xử lý"
+                  *ngIf="
+                    document?.statusCode !== documentStatus.BAN_HANH &&
+                    document?.statusCode !== documentStatus.KHONG_BAN_HANH && document?.isRevokeEnabled
+                  "
+                >
+                  <app-document-detail-xu-ly
+                    [document]="document"
+                    [assigneeId]="assigneeId"
+                  ></app-document-detail-xu-ly>
+                </mat-tab>
+                <mat-tab label="Thông tin">
+                  <app-document-detail-information
+                    [document]="document"
+                    [listAttachment]="listAttachment"
+                    (listUpdated)="getListAttachment()"
+                    (viewFile)="viewFile_V2($event)"
+                  ></app-document-detail-information>
+                </mat-tab>
+                <mat-tab label="Lịch sử" *ngIf="document?.isHistoryTabActive" >
+                  <app-document-detail-history-list 
+                    [document]="document"
+                  ></app-document-detail-history-list>
+                </mat-tab>
+                <mat-tab>
+                  <ng-template mat-tab-label>
+                    KQ xin ý kiến
+                    <!-- <span class="badge badge-danger ml-2">{{ badgeKetQuaYKien }}</span> -->
+                  </ng-template>
+                  <app-document-detail-ket-qua-y-kien
+                    [document]="document"
+                  ></app-document-detail-ket-qua-y-kien>
+                </mat-tab>
+              </mat-tab-group>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

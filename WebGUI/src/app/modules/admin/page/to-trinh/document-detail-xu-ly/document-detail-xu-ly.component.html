@@ -1,0 +1,168 @@
+<div class="mt-3 px-2" *ngIf="document?.statusCode !== documentStatus.DU_THAO">
+  <ng-container
+    *ngIf="
+      document?.statusCode === documentStatus.CHO_BAN_HANH || assigneeId !== currentUserId;
+      else TabXuLyAll
+    "
+  >
+    <div class="label">Ý kiến:</div>
+    <textarea
+      name="y-kien"
+      id="y-kien"
+      rows="3"
+      class="form-control"
+      [(ngModel)]="ykienKhac"
+      placeholder="Nếu bấm ý kiến khác thì cần gõ ý kiến tại đây: Tôi có ý kiến như sau về vấn đề ..."
+    ></textarea>
+    <div class="button-group mt-3">
+      <button type="button" class="btn btn-secondary" (click)="onThuHoi()">Thu hồi</button>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #TabXuLyAll>
+  <div class="label">Ý kiến:</div>
+  <textarea
+    name="y-kien"
+    id="y-kien"
+    rows="3"
+    class="form-control"
+    [(ngModel)]="ykienKhac"
+    placeholder="Nếu bấm ý kiến khác thì cần gõ ý kiến tại đây: Tôi có ý kiến như sau về vấn đề ..."
+  ></textarea>
+  <ng-container *ngIf="document?.statusCode === documentStatus.XIN_Y_KIEN">
+    <div class="button-group mt-3">
+      <button
+        type="button"
+        class="btn btn-secondary"
+        *ngIf="document?.createdBy === currentUserId"
+        (click)="onThuHoi()"
+      >
+        Thu hồi
+      </button>
+      <button type="button" class="btn btn-success" (click)="onDongY()">Đồng ý</button>
+      <button type="button" class="btn btn-danger" (click)="onKhongDongY()">Không đồng ý</button>
+      <button type="button" class="btn btn-primary" (click)="onYKienKhac()">Ý kiến khác</button>
+      <button
+        type="button"
+        *ngIf="userRoles.biThu"
+        class="btn btn-primary"
+        (click)="onChuyenKySoBiThu()"
+      >
+        Chuyển ký số
+      </button>
+    </div>
+  </ng-container>
+  <ng-container
+    *ngIf="
+      document?.statusCode !== documentStatus.XIN_Y_KIEN &&
+      document?.statusCode !== documentStatus.XIN_Y_KIEN_LAI
+    "
+  >
+    <div class="button-group mt-3">
+      <button type="button" class="btn btn-secondary" (click)="onThuHoi()">Thu hồi</button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        *ngIf="document?.statusCode !== documentStatus.TRA_LAI && !userRoles.chuyenVien"
+        (click)="onTraVe()"
+      >
+        Trả về
+      </button>
+      <button type="button" class="btn btn-primary" (click)="onChuyenXuLy()">Chuyển xử lý</button>
+      <ng-container *ngIf="userRoles.chanhVanPhong || userRoles.phoBiThu || userRoles.biThu">
+        <button type="button" class="btn btn-primary" (click)="onChuyenKySo()">Chuyển ký số</button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          *ngIf="document?.statusCode !== documentStatus.KHONG_BAN_HANH"
+          (click)="onKhongBanHanh()"
+        >
+          Không ban hành
+        </button>
+      </ng-container>
+    </div>
+  </ng-container>
+  <div class="button-group mt-3">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="openModal()"
+      *ngIf="document?.statusCode === documentStatus.PHE_DUYET && userRoles?.chanhVanPhong"
+    >
+      In kết quả
+    </button>
+    <button
+      type="button"
+      class="btn btn-secondary"
+      *ngIf="document?.statusCode === documentStatus.PHE_DUYET && userRoles?.chanhVanPhong"
+      (click)="onXinYKienLai()"
+    >
+      Xin ý kiến lại
+    </button>
+    <button type="button" class="btn btn-warning" (click)="triggerFileInput()">
+      <i class="fa-solid fa-file mx-2"></i>Đính kèm
+    </button>
+  </div>
+  <input
+    type="file"
+    id="fileInputXuLy"
+    multiple
+    (change)="onFilesSelected($event)"
+    style="display: none"
+  />
+  <table class="table table-bordered mt-3" *ngIf="files?.length">
+    <thead>
+      <tr>
+        <th colspan="2" scope="col">Danh sách file đính kèm</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let file of files; let i = index">
+        <td>{{ file.name }}</td>
+        <td class="group-button">
+          <button class="btn btn-danger btn-sm me-1" (click)="removeFile(i)">
+            <i class="fa-sharp fa-solid fa-trash" style="color: #ededed"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div
+    class="modal fade"
+    tabindex="-1"
+    [ngClass]="{ 'show d-block': isModalOpen }"
+    [style.display]="isModalOpen ? 'block' : 'none'"
+  >
+    <div class="modal-dialog mt-5">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Nhập ý kiến của bạn</h3>
+          <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="opinionText" class="form-label">Ý kiến</label>
+              <textarea
+                [(ngModel)]="opinionText"
+                name="opinionText"
+                id="opinionText"
+                class="form-control"
+                rows="3"
+                placeholder="Nhập ý kiến của bạn tại đây..."
+              ></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" (click)="exportPrintResult()">
+            Lưu và In
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">Đóng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

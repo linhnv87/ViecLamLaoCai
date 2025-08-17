@@ -1,0 +1,27 @@
+<div class="modal-header">
+    <h4 class="modal-title"></h4>
+    <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-3">
+            <label for="comment">Chọn chuyên viên xử lý ra nghị quyết</label>
+        </div>
+        <div class="col">
+            <div class="d-flex justify-content-between">
+                <div class="d-flex">
+                    <input type="checkbox" [checked]="handler == 0" (click)="onCheck(0)" class="mr-1"> Chuyên viên gửi tờ trình
+                </div>
+                <div class="d-flex">
+                    <input type="checkbox" [checked]="handler == 1" (click)="onCheck(1)" class="mr-1"> Chuyên viên tổng hợp
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="confirmAction()">Gửi</button>
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">Hủy</button>
+</div>

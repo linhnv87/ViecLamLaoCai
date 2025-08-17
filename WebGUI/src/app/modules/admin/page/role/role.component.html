@@ -1,0 +1,123 @@
+<div class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>QUẢN LÝ VAI TRÒ</h1>
+        </div>
+        <!-- /.col -->
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">Trang chủ</li>
+            <li class="breadcrumb-item">QUẢN LÝ VAI TRÒ</li>
+          </ol>
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+  </div>
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <button
+                  *ngIf="
+                    userRoles.chanhVanPhong ||
+                    userRoles.banChapHanh ||
+                    userRoles.admin ||
+                    userRoles.biThu
+                  "
+                  class="btn btn-primary"
+                  [routerLink]="['add']"
+                >
+                  <i class="fas fa-plus-circle"></i>Thêm mới vai trò
+                </button>
+              </h3>
+              <div class="form-group mb-0">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Tìm kiếm..."
+                  [(ngModel)]="searchText"
+                />
+              </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body overflow-auto" style="min-height: 200px; padding-bottom: 150px">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">STT</th>
+                    <th scope="col">Tên vai trò</th>
+                    <th scope="col">Trạng Thái</th>
+                    <th scope="col">Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="let item of filteredRoleData | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }; let i = index"
+                  >
+                    <td>{{ i + 1 }}</td>
+                    <td>
+                        {{ item.description }}
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <span *ngIf="item.active" class="text-success me-2">&#10004;</span>
+                        <span *ngIf="!item.active" class="text-danger me-2">&#10008;</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="btn btn-group">
+                        <a class="btn btn-info" role="button" (click)="toggleActions(item.roleId)">
+                          <i class="fas fa-bars"></i>
+                        </a>
+                        <ul
+                          *ngIf="actionOnItem == item.roleId"
+                          class="dropdown-menu"
+                          style="display: block; left: -160%"
+                        >
+                          <div>
+                            <a [routerLink]="['edit', item.roleId]" class="dropdown-item">
+                              <i class="fas fa-highlighter"></i> Chỉnh sửa
+                            </a>
+                            <a (click)="delete(item.roleId)" class="dropdown-item">
+                              <i class="fas fa-trash-alt"></i> Xóa
+                            </a>
+                          </div>
+                          <div class="mb-2"></div>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                
+                
+                
+                
+              </table>
+            </div>
+            <!-- /.card-body -->
+            <!-- /.card-body -->
+            <div class="card-footer clearfix">
+              <pagination-controls
+                [nextLabel]="'Sau'"
+                [previousLabel]="'Trước'"
+                [autoHide]="true"
+                (pageChange)="currentPage = $event"
+              ></pagination-controls>
+            </div>
+          </div>
+          <!-- /.card -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+  

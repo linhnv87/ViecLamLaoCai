@@ -1,0 +1,246 @@
+<div class="content-header">
+  <!-- <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1 class="m-0">Trang chủ</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item active">Trang chủ</li>
+          <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        </ol>
+      </div>
+    </div>
+  </div> -->
+</div>
+<section class="content">
+  <div class="container-fluid">
+    <!-- Small boxes (Stat box) -->
+    <div class="row">
+      <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-info" [routerLink]="['/admin/to-trinh/tong-to-trinh']">
+          <div class="inner">
+            <h3>{{ dashboardInfo.totalCount }}</h3>
+
+            <p>Tổng tờ trình</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-bag"></i>
+          </div>
+          <span class="small-box-footer">Xem thêm <i class="fas fa-arrow-circle-right"></i></span>
+        </div>
+      </div>
+
+      <!-- ./col -->
+      <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-success" [routerLink]="['/admin/to-trinh/xin-y-kien']">
+          <div class="inner">
+            <h3>{{ dashboardInfo.xinYKienCount }}<sup style="font-size: 20px"></sup></h3>
+
+            <p>Xin ý kiến</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-stats-bars"></i>
+          </div>
+          <span class="small-box-footer"> Xem thêm <i class="fas fa-arrow-circle-right"></i></span>
+        </div>
+      </div>
+      <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-danger" [routerLink]="['/admin/to-trinh/phe-duyet']">
+          <div class="inner">
+            <h3>{{ dashboardInfo.pheDuyetCount }}<sup style="font-size: 20px"></sup></h3>
+
+            <p>Phê duyệt</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-stats-bars"></i>
+          </div>
+          <span class="small-box-footer"> Xem thêm <i class="fas fa-arrow-circle-right"></i></span>
+        </div>
+      </div>
+      <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-maroon" [routerLink]="['/admin/to-trinh/ky-so']">
+          <div class="inner">
+            <h3>{{ dashboardInfo.choKySoCount }}</h3>
+
+            <p>Ký số</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-pie-graph"></i>
+          </div>
+          <span class="small-box-footer"> Xem thêm <i class="fas fa-arrow-circle-right"></i></span>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-secondary" [routerLink]="['/admin/to-trinh/cho-ban-hanh']">
+          <div class="inner">
+            <h3>{{ dashboardInfo.choBanHanhCount }}<sup style="font-size: 20px"></sup></h3>
+
+            <p>Chờ ban hành</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-stats-bars"></i>
+          </div>
+          <span class="small-box-footer"> Xem thêm <i class="fas fa-arrow-circle-right"></i></span>
+        </div>
+      </div>
+      <!-- ./col -->
+      <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-primary" [routerLink]="['/admin/to-trinh/ban-hanh']">
+          <div class="inner">
+            <h3>{{ dashboardInfo.banHanhcount }}</h3>
+
+            <p>Ban hành</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-person-add"></i>
+          </div>
+          <span class="small-box-footer"> Xem thêm <i class="fas fa-arrow-circle-right"></i></span>
+        </div>
+      </div>
+      <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-warning" [routerLink]="['/admin/to-trinh/khong-ban-hanh']">
+          <div class="inner">
+            <h3>{{ dashboardInfo.khongBanHanhCount }}<sup style="font-size: 20px"></sup></h3>
+
+            <p>Không ban hành</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-stats-bars"></i>
+          </div>
+          <span class="small-box-footer"> Xem thêm <i class="fas fa-arrow-circle-right"></i></span>
+        </div>
+      </div>
+      <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div
+          class="small-box bg-danger"
+          style="background-color: #e74c3c !important"
+          [routerLink]="['/admin/to-trinh/du-thao']"
+        >
+          <div class="inner">
+            <h3>{{ dashboardInfo.duThaoCount }}<sup style="font-size: 20px"></sup></h3>
+
+            <p>Dự Thảo</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-stats-bars"></i>
+          </div>
+          <span class="small-box-footer"> Xem thêm <i class="fas fa-arrow-circle-right"></i></span>
+        </div>
+      </div>
+
+      <!-- <div class="col-lg-3 col-6">
+        <div class="small-box bg-olive" [routerLink]="['/admin/to-trinh/4']">
+          <div class="inner">
+            <h3>{{dashboardInfo.approvedCount}}<sup style="font-size: 20px"></sup></h3>
+      
+            <p>Chờ thông qua</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-stats-bars"></i>
+          </div>
+          <span class="small-box-footer"> Xem thêm <i class="fas fa-arrow-circle-right"></i></span>
+        </div>
+      </div> -->
+      <!-- ./col -->
+      <!-- <div class="col-lg-3 col-6">
+        <div class="small-box bg-maroon" [routerLink]="['/admin/to-trinh/8']">
+          <div class="inner">
+            <h3>{{dashboardInfo.toFinalizeCount}}</h3>
+
+            <p>Chờ ra nghị quyết</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-pie-graph"></i>
+          </div>
+          <span class="small-box-footer"> Xem thêm <i class="fas fa-arrow-circle-right"></i></span>
+        </div>
+      </div> -->
+
+      <!-- <div class="col-lg-3 col-6">
+        <div class="small-box bg-maroon" [routerLink]="['/admin/to-trinh/12']">
+          <div class="inner">
+            <h3>{{dashboardInfo.pendingPublishedCount}}</h3>
+
+            <p>Chờ phát hành</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-pie-graph"></i>
+          </div>
+          <span class="small-box-footer"> Xem thêm <i class="fas fa-arrow-circle-right"></i></span>
+        </div>
+      </div>-->
+    </div>
+
+    <div class="row">
+      <section class="col-lg-7 connectedSortable ui-sortable">
+        <div class="card" style="position: relative; left: 0px; top: 0px">
+          <div class="card-header ui-sortable-handle">
+            <h3 class="card-title">
+              <i class="fas fa-th mr-1"></i>
+              Theo tháng
+            </h3>
+            <div class="card-tools"></div>
+          </div>
+          <div class="card-body">
+            <!-- <div class="chartjs-size-monitor">
+              <div class="chartjs-size-monitor-expand">
+                <div class=""></div>
+              </div>
+              <div class="chartjs-size-monitor-shrink">
+                <div class=""></div>
+              </div>
+            </div>
+            <canvas class="chart chartjs-render-monitor" id="line-chart"
+              style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 649px;"
+              width="811" height="312">
+            </canvas>               -->
+            <div style="display: block">
+              <app-line-chart></app-line-chart>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="col-lg-5 connectedSortable ui-sortable">
+        <div class="card">
+          <div class="card-header ui-sortable-handle">
+            <h3 class="card-title">
+              <i class="fas fa-chart-pie mr-1"></i>
+              Theo lĩnh vực
+            </h3>
+            <div class="card-tools"></div>
+          </div>
+          <div class="card-body">
+            <!-- <div class="tab-content p-0">
+              <div class="chart tab-pane active" id="sales-chart" style="position: relative; height: 300px;">
+                <div class="chartjs-size-monitor">
+                  <div class="chartjs-size-monitor-expand">
+                    <div class=""></div>
+                  </div>
+                  <div class="chartjs-size-monitor-shrink">
+                    <div class=""></div>
+                  </div>
+                </div>
+                <canvas id="sales-chart-canvas" height="375" style="height: 300px; display: block; width: 649px;"
+                  width="811" class="chartjs-render-monitor"></canvas>
+              </div>
+            </div> -->
+            <div style="display: block">
+              <app-pie-chart></app-pie-chart>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>

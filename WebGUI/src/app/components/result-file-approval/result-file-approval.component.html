@@ -1,0 +1,39 @@
+  <div class="modal-header">
+    <h4 class="modal-title">Danh sách tài liệu đính kèm</h4>
+    <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" *ngIf="modalFiles?.length">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>STT</th>
+          <th>Tài liệu đính kèm</th>
+          <th>Xem và Tải file</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let file of modalFiles; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>
+            {{ file?.fileName || '' }}
+          </td>
+          <td class="d-flex" style="align-items: center">
+            <button
+            class="btn btn-primary btn-sm"
+            (click)="downloadFile(file.filePath)"
+            [matTooltip]="getFileTooltip(file.filePath)"
+          >
+            <i [ngClass]="getFileIcon(file.filePath)"></i>
+          </button>
+          
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div *ngIf="!modalFiles?.length" class="text-center">
+    <p>Không có tài liệu đính kèm.</p>
+  </div>
+  

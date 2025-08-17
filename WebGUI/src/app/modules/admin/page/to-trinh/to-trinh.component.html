@@ -1,0 +1,342 @@
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>{{ code | getTitleByStatus: 'Danh sách' }}</h1>
+      </div>
+      <!-- /.col -->
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item" (click)="gotoHome()">Trang chủ</li>
+          <li class="breadcrumb-item active">
+            <span>{{ code | getTitleByStatus }}</span>
+          </li>
+        </ol>
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </div>
+  <!-- /.container-fluid -->
+</div>
+
+<div class="page-content p-3">
+  <div class="filter-section" *ngIf="filterForm" [formGroup]="filterForm">
+    <div class="row">
+      <div class="col-3">
+        <label for="search-text">Tiêu đề</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Tìm theo tiêu đề"
+          formControlName="keyword"
+          id="search-text"
+          name="search-text"
+          (keyup.enter)="search()"
+        />
+      </div>
+      <div class="col-3">
+        <label for="search-text">Trạng Thái</label>
+        <select
+          name="search-status"
+          id="search-status"
+          formControlName="status"
+          class="form-control"
+        >
+          <option *ngFor="let item of documentStatusOptions" value="{{ item.value }}">
+            {{ item.text }}
+          </option>
+        </select>
+      </div>
+      <div class="col-3">
+        <label for="search-text">Từ ngày</label>
+        <mat-form-field appearance="outline" class="w-100">
+          <input
+            matInput
+            [matDatepicker]="pickerFrom"
+            formControlName="fromDate"
+            placeholder="DD/MM/YYY"
+          />
+          <mat-datepicker-toggle matIconSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+          <mat-datepicker #pickerFrom></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="col-3">
+        <label for="search-text">Đến ngày</label>
+        <mat-form-field appearance="outline" class="w-100">
+          <input
+            matInput
+            [matDatepicker]="pickerTo"
+            formControlName="toDate"
+            placeholder="DD/MM/YYY"
+          />
+          <mat-datepicker-toggle matIconSuffix [for]="pickerTo"></mat-datepicker-toggle>
+          <mat-datepicker #pickerTo></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-3">
+        <label for="search-type">Loại VB</label>
+        <select name="search-status" id="search-type" formControlName="type" class="form-control">
+          <option [value]="0">Tất cả</option>
+          <option *ngFor="let item of typeOptions" [value]="item.id">
+            {{ item.description }}
+          </option>
+        </select>
+      </div>
+      <div class="col-3">
+        <label for="search-status">Lĩnh Vực</label>
+        <select
+          name="search-status"
+          id="search-status"
+          formControlName="field"
+          class="form-control"
+        >
+          <option [value]="0">Tất cả</option>
+          <option *ngFor="let item of fieldsOptions" [value]="item.id">
+            {{ item.title }}
+          </option>
+        </select>
+      </div>
+      <div class="col-3">
+        <label for="search-year">Năm</label>
+        <select
+          name="search-year"
+          id="search-year"
+          formControlName="year"
+          class="form-control"
+          placeholder="Năm"
+        >
+          <option *ngFor="let item of yearOptions" value="{{ item.id }}">{{ item.text }}</option>
+        </select>
+      </div>
+      <div class="col-3">
+        <label for="search-month">Tháng</label>
+        <select name="search-month" id="search-month" formControlName="month" class="form-control">
+          <option *ngFor="let item of monthOptions" value="{{ item.id }}">
+            {{ item.text }}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="d-flex mt-3">
+      <button (click)="search()" class="btn btn-primary ml-auto mr-2">
+        <i class="fas fa-filter"></i> Lọc
+      </button>
+      <button (click)="clear()" class="btn btn-secondary">
+        <i class="fas fa-refresh"></i> Xóa tìm kiếm
+      </button>
+    </div>
+  </div>
+
+  <div class="table-responsive content-setion mt-3">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th scope="col">STT</th>
+          <th scope="col">Tên</th>
+          <th scope="col">Ngày trình</th>
+          <th scope="col">Hạn phê duyệt</th>
+          <th scope="col">Người trình</th>
+          <th scope="col">Lĩnh vực</th>
+          <th scope="col">Loại VB</th>
+          <th *ngIf="isXinYKien" scope="col">Cho ý kiến</th>
+          <th scope="col">Hành động</th>
+        </tr>
+      </thead>
+      <tbody
+        class="align-middle"
+        *ngFor="
+          let document of documents
+            | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage };
+          let i = index
+        "
+      >
+        <tr>
+          <td>{{ (currentPage - 1) * itemsPerPage + i + 1 }}</td>
+          <td>
+            <span [class]="document?.statusCode | getBadgeByStatus">
+              {{ document?.isTransferredSign ? 'Đã chuyển ký số' : (document?.statusCode | getTitleByStatus) }}
+            </span>
+            <a
+              class="ml-2"
+              style="color: black"
+              matTooltip="Xem chi tiết"
+              [routerLink]="['document-detail', document.id]"
+              [queryParams]="{ assigneeId: document.assigneeId }"
+              >{{ document.title }}</a
+            >
+          </td>
+          <td>{{ document.created | date: DATE_FORMAT.FULL_DATE_TO_SHOW }}</td>
+          <td>{{ document.dateEndApproval | date: DATE_FORMAT.FULL_DATE_TO_SHOW }}</td>
+          <td>{{ document.authorName }}</td>
+          <td>{{ document.fieldName }}</td>
+          <td>{{ document.typeName }}</td>
+          <td
+            *ngIf="document.assigneeId != null && isXinYKien; else emptyCell"
+            [ngClass]="{
+              'green-bold': document.reviewStatus === 'Đã xử lý',
+              normal: document.reviewStatus === 'Chưa xử lý',
+            }"
+          >
+            {{ document.reviewStatus }}
+          </td>
+          <ng-template #emptyCell>
+            <td *ngIf="isXinYKien"></td>
+          </ng-template>
+          <td>
+            <div>
+              <div class="btn-group">
+                <button type="button" class="btn btn-info" (click)="showAction(document.id)">
+                  <i class="fas fa-bars"></i>
+                </button>
+                <div
+                  *ngIf="actionToShow == document.id"
+                  class="dropdown-menu"
+                  style="display: block !important; left: -160% !important"
+                  role="menu"
+                >
+                  <a
+                    class="dropdown-item"
+                    [routerLink]="['document-detail', document.id]"
+                    [queryParams]="{ assigneeId: document.assigneeId }"
+                  >
+                    <i class="fas fa-eye"></i> Xem
+                  </a>
+
+                  <a
+                    class="dropdown-item"
+                    (click)="onXinYKien(document.id)"
+                    *ngIf="document.statusCode == documentStatus.DU_THAO"
+                  >
+                    <i class="fas fa-retweet"></i> Chỉnh sửa
+                  </a>
+                  <a
+                    class="dropdown-item"
+                    *ngIf="
+                      document.statusCode == documentStatus.XIN_Y_KIEN &&
+                      document.createdBy === currentUserId
+                    "
+                    (click)="remind(document.id)"
+                    ><i class="fas fa-bell"></i> Nhắc nhở</a
+                  >
+                  <a
+                    class="dropdown-item"
+                    *ngIf="
+                      document.statusCode == documentStatus.XIN_Y_KIEN &&
+                      document.createdBy === currentUserId
+                    "
+                    (click)="planRemind(document)"
+                    ><i class="fas fa-bell"></i> Hẹn lịch nhắc</a
+                  >
+                  <a
+                    class="dropdown-item"
+                    *ngIf="
+                      document.statusCode == documentStatus.XIN_Y_KIEN &&
+                      document.createdBy === currentUserId
+                    "
+                    [routerLink]="['track-message-result-creator', document.id]"
+                  >
+                    <i class="fa-solid fa-square-poll-horizontal"></i> Kết quả gửi tin nhắn
+                  </a>
+                  <a
+                    class="dropdown-item"
+                    *ngIf="
+                      document.statusCode == documentStatus.XIN_Y_KIEN &&
+                      document.createdBy === currentUserId
+                    "
+                    (click)="onThuHoi(document)"
+                    ><i class="fas fa-undo-alt"></i> Thu hồi</a
+                  >
+
+                  <a
+                    class="dropdown-item"
+                    (click)="onXinYKienLai(document.id)"
+                    *ngIf="document.statusCode == documentStatus.XIN_Y_KIEN_LAI && document.createdBy == currentUserId"
+                  >
+                    <i class="fas fa-retweet"></i> Xin ý kiến lại
+                  </a>
+                  <!-- <a
+                  class="dropdown-item"
+                  (click)="onXinYKienLai(document.id)"
+                  *ngIf="document.statusCode == documentStatus.PHE_DUYET && document.isReturned && document.createdBy === currentUserId"
+                >
+                  <i class="fas fa-retweet"></i> Chỉnh sửa
+                </a> -->
+                  <a
+                    *ngIf="document.statusCode == documentStatus.DU_THAO"
+                    (click)="deleteDocument(document.id)"
+                    class="dropdown-item"
+                  >
+                    <i class="fas fa-trash-alt"></i> Xóa
+                  </a>
+
+                  <!-- <a
+                    class="dropdown-item"
+                    [routerLink]="['xu-ly', document.id]"
+                  >
+                    <i class="fas fa-edit"></i> Chỉnh sửa
+                  </a> -->
+
+                  <!-- <a
+                  *ngIf="document.statusCode == 3 || document.statusCode == 7"
+                  (click)="retrieve(document.id)"
+                  class="dropdown-item"
+                  ><i class="fas fa-undo-alt"></i> Thu hồi</a
+                > -->
+
+                  <!-- <a
+                *ngIf="document.statusCode == 2"
+                (click)="updateStatus(document.id, 3)"
+                class="dropdown-item"
+                ><i class="fas fa-share-square"></i> Gửi duyệt</a
+              > -->
+
+                  <!-- <a
+              *ngIf="document.statusCode == 8 && document.finalizer == 0"
+              (click)="publishDocument(document.id)"
+              class="dropdown-item"
+            >
+              <i class="fas fa-paper-plane"></i> Ban hành nghị quyết</a
+            > -->
+
+                  <!-- <a class="dropdown-item" [routerLink]="['document-detail', document.id]"
+                  ><i class="fas fa-eye"></i> Kết quả xử lý</a
+                > -->
+
+                  <!-- <a
+              *ngIf="
+                !userRoles.chanhVanPhong &&
+                (document.statusCode == 3 || document.statusCode == 7)
+              "
+              (click)="returnDoc(document.id)"
+              class="dropdown-item"
+              ><i class="fas fa-undo-alt"></i> Trả lại</a
+            > -->
+
+                  <!-- <div *ngIf="(userRoles.banChapHanh || userRoles.biThu) && isPriority">
+              <a
+                class="dropdown-item"
+                (click)="priorityDocument(document.id)"
+                class="dropdown-item"
+              >
+                <i class="fa-solid fa-gears"></i> Sắp xếp vị trí</a
+              >
+            </div> -->
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <pagination-controls
+      [nextLabel]="'Sau'"
+      [previousLabel]="'Trước'"
+      [autoHide]="false"
+      (pageChange)="currentPage = $event"
+    ></pagination-controls>
+  </div>
+</div>

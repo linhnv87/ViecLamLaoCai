@@ -1,0 +1,32 @@
+<div class="modal-header">
+    <h4 class="modal-title"></h4>
+    <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-3">
+            <label for="comment">{{title}}</label>
+        </div>
+        <div class="col">
+            <textarea name="comment" id="comment" style="width: 100%;" rows="10" [(ngModel)]="comment"
+                placeholder="{{title}}"></textarea>
+        </div>
+    </div>    
+    <div *ngIf="showUpload" class="row">
+        <div class="col-3">
+            <label>Tệp đính kèm</label>
+        </div>
+        <div class="col">
+            <input type="file" style="display: none;" id="fileInputComment" (change)="onFileSelected($event)">
+            <label class="btn btn-outline-primary" for="fileInputComment"><i class="fas fa-upload"></i> Chọn file</label>
+            <div>{{selectedFileName}}</div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" [disabled]="comment == ''" class="btn btn-primary"
+        (click)="confirmAction()">Gửi</button>
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">Hủy</button>
+</div>

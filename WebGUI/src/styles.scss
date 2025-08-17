@@ -1,0 +1,132 @@
+/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+@include mat.core();
+// Define custom color values
+$black-87-opacity: rgba(0, 0, 0, 0.87);
+$white: #ffffff;
+
+// Define a custom primary palette with #007BFE
+$my-primary: mat.define-palette(
+  (
+    50: #e3f2fd,
+    100: #bbdefb,
+    200: #90caf9,
+    300: #64b5f6,
+    400: #42a5f5,
+    500: #007bfe,
+    600: #0074e0,
+    700: #0066cc,
+    800: #005bb8,
+    900: #004a96,
+    A100: #82b1ff,
+    A200: #448aff,
+    A400: #2979ff,
+    A700: #2962ff,
+    contrast: (
+      50: $black-87-opacity,
+      100: $black-87-opacity,
+      200: $black-87-opacity,
+      300: $black-87-opacity,
+      400: $white,
+      500: $white,
+      600: $white,
+      700: $white,
+      800: $white,
+      900: $white,
+    ),
+  )
+);
+$my-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+
+$my-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $my-primary,
+      accent: $my-accent,
+    ),
+    typography: mat.define-typography-config(),
+    density: 0,
+  )
+);
+
+@include mat.all-component-themes($my-theme);
+
+html,
+body {
+  height: 100%;
+  background-color: #f4f6f9;
+}
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+.nav-sidebar .nav-item .nav-icon {
+  margin-left: 0.05rem;
+  font-size: 1rem;
+  margin-right: 0.2rem;
+  text-align: center;
+  width: 1.6rem;
+}
+.nav-sidebar .nav-item .nav-icon.fa,
+.nav-sidebar > .nav-item .nav-icon.fab,
+.nav-sidebar > .nav-item .nav-icon.fad,
+.nav-sidebar > .nav-item .nav-icon.fal,
+.nav-sidebar > .nav-item .nav-icon.far,
+.nav-sidebar > .nav-item .nav-icon.fas,
+.nav-sidebar > .nav-item .nav-icon.ion,
+.nav-sidebar > .nav-item .nav-icon.svg-inline--fa {
+  font-size: 1.1rem;
+}
+.fw-normal {
+  color: red;
+}
+
+.text-bg-secondary {
+  color: #fff !important;
+  background-color: gray !important;
+}
+.text-bg-success {
+  color: #fff !important;
+  background-color: green !important;
+}
+
+.modal-backdrop {
+  z-index: -1 !important;
+}
+
+/* Desktop-specific styles using a media query */
+@media screen and (min-width: 768px) {
+  /* Styles to apply only on desktop devices */
+  .toast-top {
+    top: 100px;
+    right: 0px;
+    /* Adjust this value as needed for desktop */
+  }
+}
+
+/* material ui */
+
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
+  border-color: #ced4da !important;
+  &:focus {
+    border-color: #ced4da !important;
+  }
+}
+
+.mat-mdc-icon-button.mat-mdc-button-base {
+  height: 35px;
+  width: 35px;
+  padding: 0;
+}
+.mat-mdc-form-field-infix {
+  min-height: 38px;
+}
+.mat-mdc-text-field-wrapper.mdc-text-field--outlined .mat-mdc-form-field-infix {
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+.cdk-overlay-container {
+  z-index: 99999;
+}

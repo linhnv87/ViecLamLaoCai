@@ -1,0 +1,133 @@
+<div class="modal-header">
+    <h4 class="modal-title">Chi tiết luồng</h4>
+    <button type="button" class="close" aria-label="Close" (click)="confirm(false)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-6">
+        <div class="form-group">
+          <label>Tên luồng*</label>
+          <input class="form-control text" [(ngModel)]="model.name" />
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group">
+        <label>Cán bộ được cấu hình*</label>
+        <div class="custom-dropdown" (click)="toggleWorkFLowDropdown($event)">
+          <div class="selected-item">
+            {{ selectedWorkFlowItem?.userFullName || '---Chọn---' }}
+            <i class="fa fa-chevron-down" style="font-size: 12px; color: #333;"></i>
+          </div>
+
+          <div class="dropdown-menu" *ngIf="workFlowDropdownOpen" (click)="onWorkFlowDropdownClick($event)">
+            <input type="text" [(ngModel)]="workFlowSearchText" (input)="filterWorkFlowOptions()"
+              placeholder="Vui lòng nhập tên Cán Bộ để tìm kiếm" class="search-box" />
+
+            <div *ngFor="let item of filteredUserWorkFlowData" class="dropdown-item"
+              (click)="selectWorkFlow(item, $event)" [class.selected]="item.userId === selectedWorkFlowItem?.userId">
+              
+              {{ item.userFullName }}
+            </div>
+          </div>
+        </div>
+      </div></div>
+      <div class="col-6">
+        <div class="form-group">
+          <div class="w-100">
+            <label>Thao tác*</label>
+            <select id="my-select" class="form-control" [(ngModel)]="model.state" name="state">
+              <option value="">---Chọn---</option>
+              <option value="chuyen-xu-ly">Chuyển xử lý</option>
+              <option value="chuyen-ky-so">Chuyển ký số</option>
+              <option value="xin-y-kien-lai">Xin ý kiến lại</option>
+              <option value="tra-ve">Trả về</option>
+            </select>
+          </div>
+
+        </div>
+      </div>
+      <div class="col-6">   <div class="form-group">
+        <label>Trạng thái xử lý*</label>
+        <select id="my-select" class="form-control" [(ngModel)]="model.statusId" name="statusId">
+          <option value="0">---Chọn---</option>
+          <option *ngFor="let status of statusList" [value]="status.id">
+            {{ status.name }}
+          </option>
+        </select>
+        </div>
+      </div>
+      <div class="col-6">
+        <label> Danh sách cán bộ</label>
+        <input
+          [(ngModel)]="searchAllUser"
+          class="form-control mb-2 text w-100"
+          placeholder="Vui lòng nhập tên cán bộ để tìm kiếm."
+        />
+  
+        <div class="user-list">
+          <div class="content">
+            <div class="user-item" *ngFor="let item of [] | filterUser: listAllUserWorkFlow : searchAllUser; let i = index">
+              <div class="user-name">
+                <div>{{ i + 1 }}. {{ item.userFullName }}</div>
+  
+                <i class="fa fa-plus-circle icon-move" (click)="addUser(item)" aria-hidden="true"></i>
+              </div>
+              <div class="user-role">{{ item.roleDescription }}</div>
+            </div>
+          </div>
+          <div class="footer d-flex" *ngIf="listAllUserWorkFlow.length">
+            <span class="total-users font-weight-bold text-primary py-2 px-4">
+              <i class="fa fa-users"></i> Tổng số: {{ listAllUserWorkFlow.length }} cán bộ
+            </span>
+            <span class="ml-auto py-2 px-4" (click)="addAllUser()">
+              Chọn tất cả
+              <i class="fa fa-plus-circle icon-move" aria-hidden="true"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <label> Danh sách cán bộ được chọn</label>
+        <input
+          [(ngModel)]="searchSelectedUser"
+          class="form-control mb-2 text w-100"
+          placeholder="Vui lòng nhập tên cán bộ để tìm kiếm."
+        />
+        <div class="user-list">
+          <div class="content">
+            <div
+              class="user-item"
+              *ngFor="let item of [] | filterUser: listSelectedUserWorkFlow : searchSelectedUser; let i = index"
+            >
+              <div class="user-name">
+                <div>{{ i + 1 }}. {{ item.userFullName }}</div>
+  
+                <i
+                  class="fa fa-minus-circle icon-move"
+                  (click)="removeUser(item)"
+                  aria-hidden="true"
+                ></i>
+              </div>
+              <div class="user-role">{{ item.roleDescription }}</div>
+            </div>
+          </div>
+          <div class="footer d-flex" *ngIf="listSelectedUserWorkFlow.length">
+            <span class="total-users font-weight-bold text-primary py-2 px-4">
+              <i class="fa fa-users"></i> Tổng số: {{ listSelectedUserWorkFlow.length }} cán bộ
+            </span>
+            <span class="ml-auto py-2 px-4" (click)="removeAllUser()">
+              Xoá tất cả
+              <i class="fa fa-minus-circle icon-move" aria-hidden="true"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="onSave()">OK</button>
+    <button type="button" class="btn btn-secondary" (click)="confirm(false)">Hủy</button>
+  </div>
+  

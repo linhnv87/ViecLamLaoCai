@@ -1,0 +1,63 @@
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>LỊCH SỬ THU HỒI</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item active">Trang chủ</li>
+                    <li class="breadcrumb-item">Lịch sử thu hồi</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">                    
+                    <!-- /.card-header -->
+                    <div class="card-body overflow-auto">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">STT</th>
+                                    <th scope="col">Tờ trình</th>
+                                    <!-- <th scope="col">Hành động</th> -->
+                                    <th scope="col">Lý do thu hồi</th>
+                                    <th scope="col">Lúc</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    *ngFor="let document of data | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }; let i = index">
+                                    <td>{{i+1}}</td>
+                                    <td>{{document.documentTitle}}</td>
+                                    <!-- <td>Thu hồi</td> -->
+                                    <td>
+                                        <div (click)="seeNote(document)" style="cursor: pointer;">
+                                            <i class="fas fa-eye"></i> Xem
+                                        </div>
+                                    </td>
+                                    <td>{{document.created | date: 'HH:mm dd/MM/yyyy'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                    <!-- /.card-body -->
+                    <div class="card-footer clearfix">
+                        <pagination-controls [nextLabel]="'Sau'" [previousLabel]="'Trước'" [autoHide]="true"
+                            (pageChange)="currentPage = $event"></pagination-controls>
+
+                    </div>
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>

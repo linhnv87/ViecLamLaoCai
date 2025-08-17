@@ -1,0 +1,28 @@
+<div>
+    <div class="modal-header">
+        <h4 class="modal-title">Thông báo</h4>
+        <button type="button" class="close btn btn-sm btn-secondary" aria-label="Close" (click)="closeModal()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div *ngIf="data.length == 0; else notiList">
+            <i>Không có thông báo nào</i>
+        </div>
+        <ng-template #notiList>
+            <div *ngFor="let item of data.slice(0, 50) | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }">
+                <div class="d-flex justify-content-between p-3" [ngClass]="!item.watched ? 'bg-warning' : 'bg-light'">
+                    {{item.notificationContent}}<a style="color: #2980b9; cursor: pointer;" (click)="watchNoti(item)">[Xem chi tiết]</a>
+                </div>
+                <hr>
+            </div>
+        </ng-template>
+        <div class="mt-4 d-flex justify-content-end">
+            <pagination-controls [nextLabel]="'Sau'" [previousLabel]="'Trước'" [autoHide]="true"
+                (pageChange)="currentPage = $event"></pagination-controls>
+        </div>
+    </div>
+</div>
+<!-- <div class="modal-footer">
+    YES
+</div> -->

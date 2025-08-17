@@ -1,0 +1,20 @@
+<div class="history-list-section mt-4">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>STT</th>
+        <th>Thời gian</th>
+        <th>Người xử lý</th>
+        <th>Ý kiến</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of dataHis; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ item.created | date: DATE_FORMAT.FULL_DATE_TO_SHOW}}</td>
+        <td>{{ item.nameUser }}</td>
+        <td>{{ item.comment }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

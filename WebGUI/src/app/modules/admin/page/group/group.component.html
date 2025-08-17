@@ -1,0 +1,96 @@
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Danh sách nhóm</h1>
+      </div>
+      <!-- /.col -->
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item" (click)="gotoHome()">Trang chủ</li>
+          <li class="breadcrumb-item active">
+            <span>Nhóm</span>
+          </li>
+        </ol>
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </div>
+  <!-- /.container-fluid -->
+</div>
+
+<div class="page-content p-3">
+  <div class="header-content d-flex w-100">
+    <button
+      class="btn btn-primary ml-auto"
+      (click)="addGroup()"
+      data-bs-toggle="modal"
+      data-bs-target="#addGroupModal"
+    >
+      <i class="fas fa-plus"></i> Thêm nhóm
+    </button>
+  </div>
+  <div class="table-responsive content-setion mt-3">
+    <div class="form-group mt-2">
+      <input type="text" class="form-control" placeholder="Tìm kiếm..." [(ngModel)]="searchText" />
+    </div>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th scope="col" [width]="80">STT</th>
+          <th scope="col">Tên</th>
+          <th scope="col" [width]="200">Trạng Thái</th>
+          <th scope="col" [width]="150">Hành động</th>
+        </tr>
+      </thead>
+      <tbody class="align-middle">
+        <tr
+          *ngFor="
+            let group of filterGroupData
+              | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage };
+            let i = index
+          "
+        >
+          <td>{{ (currentPage - 1) * itemsPerPage + i + 1 }}</td>
+          <td>{{ group.groupName }}</td>
+          <td>
+            <span
+              class="badge badge-pill"
+              [ngClass]="{
+                'badge-success': !!group.isActive,
+                'badge-danger': !group.isActive,
+              }"
+              >{{ !!group.isActive ? 'Hoạt động' : 'Không hoạt động' }}</span
+            >
+          </td>
+          <td>
+            <button
+              class="btn btn-primary mr-2"
+              (click)="editGroup(group)"
+              data-bs-toggle="modal"
+              data-bs-target="#editGroupModal"
+            >
+              <i class="fas fa-edit"></i>
+            </button>
+            <button
+              class="btn btn-danger"
+              (click)="deleteGroup(group)"
+              data-bs-toggle="modal"
+              data-bs-target="#deleteGroupModal"
+            >
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <pagination-controls
+      [nextLabel]="'Sau'"
+      [previousLabel]="'Trước'"
+      [autoHide]="false"
+      (pageChange)="currentPage = $event"
+    ></pagination-controls>
+  </div>
+</div>

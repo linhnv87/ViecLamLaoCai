@@ -1,0 +1,411 @@
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Thêm mới tờ trình</h1>
+      </div>
+      <!-- /.col -->
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item">Trang chủ</li>
+          <li class="breadcrumb-item active">Thêm mới tờ trình</li>
+        </ol>
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </div>
+  <!-- /.container-fluid -->
+</div>
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class=" ">
+          <div class=" ">
+            <div class="card card-info" data-select2-id="31">
+              <div class="card-header d-flex align-items-center">
+                <div style="cursor: pointer" (click)="navigateToComponentBWithParam()">
+                  <i class="fas fa-chevron-left"></i>
+                </div>
+                <h3 class="card-title mb-0 ml-3">Thông tin</h3>
+              </div>
+
+              <div class="card-body" data-select2-id="30">
+                <div class="row" data-select2-id="29">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Tiêu đề tờ trình*</label>
+                      <textarea rows="8" class="form-control text" [(ngModel)]="data.title"></textarea>
+                    </div>
+                    <div class="form-group">
+                      <label>Nội dung chính*</label>
+                      <textarea rows="8" class="form-control text" [(ngModel)]="data.note"></textarea>
+                    </div>
+                    <div class="row" data-select2-id="29">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label>Lĩnh vực*</label>
+                          <div class="custom-dropdown" (click)="toggleFieldDropdown($event)">
+                            <div class="selected-item">
+                              {{ selectedField?.title || '---Chọn---' }}
+                              <i class="fa fa-chevron-down" style="font-size: 12px; color: #333;"></i>
+                            </div>
+
+                            <div class="dropdown-menu" *ngIf="fieldDropdownOpen" (click)="onFieldDropdownClick($event)">
+                              <input type="text" [(ngModel)]="fieldSearchText" (input)="filterFieldOptions()"
+                                placeholder="Vui lòng nhập tên lĩnh vực để tìm kiếm" class="search-box" />
+                              <div *ngFor="let item of filteredFieldData" class="dropdown-item"  [class.selected]="item.id === selectedField?.id"
+                                (click)="selectField(item, $event)">
+                                {{ item.title }}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label>Loại VB*</label>
+                          <div class="custom-dropdown" (click)="toggleDropdown($event)">
+                            <div class="selected-item">
+                              {{ selectedItem?.name || '---Chọn---' }}
+                              <i class="fa fa-chevron-down" style="font-size: 12px; color: #333;"></i>
+                            </div>
+
+
+                            <div class="dropdown-menu" *ngIf="dropdownOpen" (click)="onDropdownClick($event)">
+                              <input type="text" [(ngModel)]="searchText" (input)="filterOptions()"
+                                placeholder="Vui lòng nhập tên loại VB để tìm kiếm" class="search-box" />
+
+                              <div *ngFor="let item of filteredOptions" class="dropdown-item" [class.selected]="item.id === selectedItem?.id"
+                                (click)="selectItem(item, $event)">
+                                {{ item.name }}
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <label>Hạn phê duyệt</label>
+                        <mat-form-field appearance="outline" class="w-100 mt-2">
+                          <input matInput [ngxMatDatetimePicker]="picker1" placeholder="Choose a date"
+                            [min]="todayDate" [(ngModel)]="DateEndApproval" (dateChange)="dateApprovedChange()" readonly />
+                          <mat-datepicker-toggle matSuffix [for]="$any(picker1)"></mat-datepicker-toggle>
+                          <ngx-mat-datetime-picker #picker1></ngx-mat-datetime-picker>
+                        </mat-form-field>
+                      </div>
+                      
+                      <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-1" style="height: 24px;">
+                          <label class="mb-0 me-2">Hẹn thời gian nhắc</label>
+                          <mat-checkbox [(ngModel)]="showRemendingDate" class="mb-0"></mat-checkbox>
+                        </div>
+                        <mat-form-field *ngIf="showRemendingDate" appearance="outline" class="w-100 mt-2">
+                          <input matInput [ngxMatDatetimePicker]="picker2" placeholder="Choose a date"
+                            [min]="todayDate" [max]="DateEndApproval" [(ngModel)]="remendingDate"
+                            (dateChange)="dateRemendingChange()" readonly />
+                          <mat-datepicker-toggle matSuffix [for]="$any(picker2)"></mat-datepicker-toggle>
+                          <ngx-mat-datetime-picker #picker2></ngx-mat-datetime-picker>
+                        </mat-form-field>
+                      </div>
+                      
+                      <div class="col-md-12">
+                        <div class="row" *ngIf="data.statusCode !== documentStatus.PHE_DUYET">
+                          <div class="col-12">
+                            <div class="form-group">
+                              <div class="w-100">
+                                <label
+                                  matTooltip="Ngoài danh sách mặc định nhận SMS khi gửi tờ trình thì có thể thêm cán bộ nhận SMS tại đây"
+                                  matTooltipPosition="above">
+                                  Thêm cán bộ nhận SMS
+                                </label>
+                                <mat-checkbox
+                                  class="example-margin"
+                                  [(ngModel)]="isShowSmsList"
+                                  matTooltip="Ngoài danh sách mặc định nhận SMS khi gửi tờ trình thì có thể thêm cán bộ nhận SMS tại đây"
+                                  matTooltipPosition="above">
+                                </mat-checkbox>
+                              </div>
+                                                              
+                            </div>
+                          </div>
+                          <div class="col-12" *ngIf="isShowSmsList">
+                            <div class="form-group">
+                              <label>Nhóm cán bộ nhận SMS</label>
+                              <select class="form-control" name="subjectGroupId" id="subjectGroupId"
+                                [(ngModel)]="selectedDepartmentSMS" (ngModelChange)="onChangeDepartmentSMS($event)">
+                                <option class="form-control" value="0">---Chọn---</option>
+                                <option class="form-control" selected *ngFor="let item of groupOptionsSMS"
+                                  value="{{ item.id }}">
+                                  {{ item.groupName }}
+                                </option>
+                              </select>
+                            </div>
+                          </div>
+                          <div class="col-6" *ngIf="isShowSmsList">
+                            <label>Danh sách cán bộ nhận SMS</label>
+                            <input [(ngModel)]="searchAllUserSMS" class="form-control mb-2 text w-100"
+                              placeholder="Vui lòng nhập tên cán bộ để tìm kiếm." />
+                            <div class="user-list">
+                              <div class="content">
+                                <div class="user-item" *ngFor="let item of [] | filterUser: listUserOfGroupSMS : searchAllUserSMS; let i = index">
+                                  <div class="user-name">
+                                    <div>{{ i + 1 }}. {{ item.userFullName }}</div>
+                                    <i class="fa fa-plus-circle icon-move" (click)="addUserSMS(item)" aria-hidden="true"></i>
+                                  </div>
+                                  <div class="user-role">{{ displayUserRoles(item.roles) }}</div>
+                                </div>                            
+                              </div>
+                              <div class="footer d-flex" *ngIf="listUserOfGroupSMS.length">
+                                <span class="total-users font-weight-bold text-primary py-2 px-4">
+                                  <i class="fa fa-users"></i> Tổng số: {{ listUserOfGroupSMS.length }} cán bộ
+                                </span>
+                                <span class="ml-auto py-2 px-4" (click)="addAllUser()">
+                                  Chọn tất cả
+                                  <i class="fa fa-plus-circle icon-move" aria-hidden="true"></i>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-6" *ngIf="isShowSmsList">
+                            <label>Danh sách cán bộ được chọn nhận SMS</label>
+                            <input [(ngModel)]="searchSelectedUserSMS" class="form-control mb-2 text w-100"
+                              placeholder="Vui lòng nhập tên cán bộ để tìm kiếm." />
+                            <div class="user-list">
+                              <div class="content">
+                                <div class="user-item" *ngFor="let item of [] | filterUser: listSelectedUserSMS : searchSelectedUserSMS; let i = index">
+                                  <div class="user-name">
+                                    <div>{{ i + 1 }}. {{ item.userFullName }}</div>
+                                    <i class="fa fa-minus-circle icon-move" (click)="removeUseSMS(item)" aria-hidden="true"></i>
+                                  </div>
+                                  <div class="user-role">{{ displayUserRoles(item.roles) }}</div>
+                                </div>
+                                
+                              </div>
+                              <div class="footer d-flex" *ngIf="listSelectedUserSMS.length">
+                                <span class="total-users font-weight-bold text-primary py-2 px-4">
+                                  <i class="fa fa-users"></i> Tổng số: {{ listSelectedUserSMS.length }} cán bộ
+                                </span>
+                                <span class="ml-auto py-2 px-4" (click)="removeAllUserSMS()">
+                                  Xoá tất cả
+                                  <i class="fa fa-minus-circle icon-move" aria-hidden="true"></i>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                     
+                      
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="row" *ngIf="data.statusCode !== documentStatus.PHE_DUYET">
+                      <div class="col-12">
+                        <div class="form-group">
+                          <label>Nhóm cán bộ xin ý kiến</label>
+                          <select class="form-control" name="subjectGroupId" id="subjectGroupId"
+                            [(ngModel)]="selectedDepartment" (ngModelChange)="onChangeDepartment($event)">
+                            <option class="form-control" value="0">---Chọn---</option>
+                            <option class="form-control" selected *ngFor="let item of groupOptions"
+                              value="{{ item.id }}">
+                              {{ item.groupName }}
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <label> Danh sách cán bộ</label>
+                        <input [(ngModel)]="searchAllUser" class="form-control mb-2 text w-100"
+                          placeholder="Vui lòng nhập tên cán bộ để tìm kiếm." />
+                        <div class="user-list">
+                          <div class="content">
+                            <div class="user-item" *ngFor="let item of [] | filterUser: listUserOfGroup : searchAllUser; let i = index">
+                              <div class="user-name">
+                                <div>{{ i + 1 }}. {{ item.userFullName }}</div>
+                                <i class="fa fa-plus-circle icon-move" (click)="addUser(item)" aria-hidden="true"></i>
+                              </div>
+                              <div class="user-role">{{ displayUserRoles(item.roles) }}</div>
+                            </div>                            
+                          </div>
+                          <div class="footer d-flex" *ngIf="listUserOfGroup.length">
+                            <span class="total-users font-weight-bold text-primary py-2 px-4">
+                              <i class="fa fa-users"></i> Tổng số: {{ listUserOfGroup.length }} cán bộ
+                            </span>
+                            <span class="ml-auto py-2 px-4" (click)="addAllUser()">
+                              Chọn tất cả
+                              <i class="fa fa-plus-circle icon-move" aria-hidden="true"></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <label> Danh sách cán bộ được chọn</label>
+                        <input [(ngModel)]="searchSelectedUser" class="form-control mb-2 text w-100"
+                          placeholder="Vui lòng nhập tên cán bộ để tìm kiếm." />
+                        <div class="user-list">
+                          <div class="content">
+                            <div class="user-item" *ngFor="let item of [] | filterUser: listSelectedUser : searchSelectedUser; let i = index">
+                              <div class="user-name">
+                                <div>{{ i + 1 }}. {{ item.userFullName }}</div>
+                                <i class="fa fa-minus-circle icon-move" (click)="removeUser(item)" aria-hidden="true"></i>
+                              </div>
+                              <div class="user-role">{{ displayUserRoles(item.roles) }}</div>
+                            </div>
+                            
+                          </div>
+                          <div class="footer d-flex" *ngIf="listSelectedUser.length">
+                            <span class="total-users font-weight-bold text-primary py-2 px-4">
+                              <i class="fa fa-users"></i> Tổng số: {{ listSelectedUser.length }} cán bộ
+                            </span>
+                            <span class="ml-auto py-2 px-4" (click)="removeAllUser()">
+                              Xoá tất cả
+                              <i class="fa fa-minus-circle icon-move" aria-hidden="true"></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group mt-4">
+                      <label>File đính kèm</label>
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th colspan="2" scope="col">Văn bản trình</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <ng-container *ngFor="let file of fileServer; let i = index">
+                            <tr *ngIf="file.fileType === 1">
+                              <td>{{ file.fileName }}</td>
+                              <td class="group-button">
+                                <button class="btn btn-danger btn-sm me-1" (click)="deleteFileServer(file.id)">
+                                  <i class="fa-sharp fa-solid fa-trash" style="color: #ededed"></i>
+                                </button>
+                              </td>
+                            </tr>
+                          </ng-container>
+
+                          <tr *ngFor="let file of files; let i = index">
+                            <td>{{ file.name }}</td>
+                            <td class="group-button">
+                              <button class="btn btn-info btn-sm me-1" (click)="moveFileUp(i)" [disabled]="i === 0">
+                                <i class="fa-solid fa-up-long" style="color: #ffffff"></i>
+                              </button>
+                              <button class="btn btn-secondary btn-sm me-1" (click)="moveFileDown(i)"
+                                [disabled]="i === files.length - 1">
+                                <i class="fa-solid fa-down-long" style="color: #ffffff"></i>
+                              </button>
+                              <button class="btn btn-danger btn-sm me-1" (click)="deleteFile(i)">
+                                <i class="fa-sharp fa-solid fa-trash" style="color: #ededed"></i>
+                              </button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td colspan="2">
+                              <div class="d-flex align-items-center justify-content-center">
+                                <input style="display: none" type="file" id="fileInput"
+                                  (change)="onFileSelected($event)" multiple />
+                                <label class="btn btn-outline-primary" for="fileInput"><i class="fas fa-upload"></i>
+                                  Chọn file</label>
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <hr />
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th colspan="2" scope="col">Văn bản liên quan</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <ng-container *ngFor="let file of fileServer; let i = index">
+                            <tr *ngIf="file.fileType === 0">
+                              <td>{{ file.fileName }}</td>
+                              <td class="group-button">
+                                <button class="btn btn-danger btn-sm me-1" (click)="deleteFileServer(file.id)">
+                                  <i class="fa-sharp fa-solid fa-trash" style="color: #ededed"></i>
+                                </button>
+                              </td>
+                            </tr>
+                          </ng-container>
+                          <tr *ngFor="let file of sideFiles; let i = index">
+                            <td>{{ file.name }}</td>
+                            <td class="group-button">
+                              <button class="btn btn-info btn-sm me-1" (click)="moveSideFileUp(i)" [disabled]="i === 0">
+                                <i class="fa-solid fa-up-long" style="color: #ffffff"></i>
+                              </button>
+                              <button class="btn btn-secondary btn-sm me-1" (click)="moveSideFileDown(i)"
+                                [disabled]="i === sideFiles.length - 1">
+                                <i class="fa-solid fa-down-long" style="color: #ffffff"></i>
+                              </button>
+                              <button class="btn btn-danger btn-sm me-1" (click)="deleteSideFile(i)">
+                                <i class="fa-sharp fa-solid fa-trash" style="color: #ededed"></i>
+                              </button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td colspan="2">
+                              <div class="d-flex align-items-center justify-content-center">
+                                <input style="display: none" type="file" id="fileInput2"
+                                  (change)="onSideFileSelected($event)" multiple />
+                                <label class="btn btn-outline-primary" for="fileInput2"><i class="fas fa-upload"></i>
+                                  Chọn file</label>
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="row">
+                    <ng-container *ngIf="!documentId">
+                      <div class="col-md-6 mb-2">
+                        <div class="mx-2">
+                          <button (click)="submit(true)" class="btn btn-success btn-block"
+                            matTooltip="Lưu và gửi cán bộ xét duyệt">
+                            Gửi tờ trình
+                          </button>
+                        </div>
+                      </div>
+                      <div class="col-md-6 mb-2">
+                        <div class="mx-2">
+                          <button type="button" class="btn btn-primary btn-block" (click)="submit(false)"
+                            matTooltip="Lưu tạm tờ trình">
+                            Lưu tạm
+                          </button>
+                        </div>
+                      </div>
+                    </ng-container>
+                    <ng-container *ngIf="documentId">
+                      <div class="col-md-8 mb-2">
+                        <div class="mx-2">
+                          <button
+                            (click)="data.statusCode === documentStatus.PHE_DUYET ? processTransition() : submit(true)"
+                            class="btn btn-info btn-block"
+                            matTooltip="{{ data.statusCode === documentStatus.DU_THAO ? 'Gửi tờ trình' : (data.statusCode === documentStatus.PHE_DUYET  ? 'Chuyển xử lý' : 'Xin ý kiến lại') }}">
+                            {{ data.statusCode === documentStatus.DU_THAO ? 'Gửi tờ trình' : (data.statusCode ===
+                            documentStatus.PHE_DUYET ? 'Chuyển xử lý' : 'Xin ý kiến lại') }}
+                          </button>
+                        </div>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

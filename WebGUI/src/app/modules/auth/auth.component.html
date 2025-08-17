@@ -1,0 +1,86 @@
+<div
+  class="d-flex justify-content-center"
+  style="align-items: center; height: 100vh; background: url('/assets/Images/login-bg.svg')"
+>
+  <div class="d-flex flex-column justify-content-between">
+    <div></div>
+    <div style="width: 100%; max-width: 600px; height: 600px; margin: auto" class="p-5">
+      <form (submit)="login()">
+        <div class="d-flex justify-content-center mb-4">
+          <img src="/assets/img/bg-login-icon.png" style="width: 40%" alt="" />
+        </div>
+        <div class="d-flex justify-content-center">
+          <style>
+            @media only screen and (min-width: 600px) {
+              .app-title-desktop {
+                display: block;
+              }
+
+              .app-title-mobile {
+                display: none;
+              }
+            }
+
+            @media only screen and (max-width: 600px) {
+              .app-title-desktop {
+                display: none;
+              }
+
+              .app-title-mobile {
+                display: block;
+              }
+            }
+          </style>
+          <h1 class="app-title-desktop" style="text-align: center; text-transform: uppercase">
+            <b> Phần mềm biểu quyết, cho ý kiến của tỉnh uỷ </b>
+          </h1>
+          <h1 class="app-title-mobile" style="text-align: center; text-transform: uppercase">
+            <b> Phần mềm biểu quyết, cho ý kiến của tỉnh uỷ </b>
+          </h1>
+        </div>
+        <br />
+        <div>
+          <div class="form-group d-flex justify-content-center" style="align-items: center">
+            <i class="fas fa-user" style="margin-right: -24px; z-index: 2"></i
+            ><input
+              name="userName"
+              [(ngModel)]="logInData.userName"
+              type="text"
+              class="px-5 form-control"
+              placeholder="Tài khoản"
+            />
+          </div>
+          <br />
+          <div class="form-group d-flex justify-content-center" style="align-items: center">
+            <i class="fas fa-unlock-alt" style="margin-right: -24px; z-index: 2"></i
+            ><input
+              name="password"
+              [(ngModel)]="logInData.password"
+              type="password"
+              class="px-5 form-control"
+              placeholder="Mật khẩu"
+            />
+          </div>
+        </div>
+        <br />
+        <div class="mb-3"><input type="checkbox" checked class="me-3" /> Ghi nhớ đăng nhập</div>
+        <div class="d-flex justify-content-center">
+          <button type="submit" class="btn btn-primary mb-4" style="width: 100%">Đăng nhập</button>
+        </div>
+        <div class="d-flex justify-content-center">
+          <button
+            type="button"
+            (click)="ssoLogin()"
+            class="btn btn-warning mb-4"
+            style="width: 100%"
+          >
+            Đăng nhập SSO
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="d-flex justify-content-center">
+      <!-- &copy; 2023 VPSTECH. All rights reserved -->
+    </div>
+  </div>
+</div>

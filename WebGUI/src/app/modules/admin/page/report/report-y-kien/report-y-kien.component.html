@@ -1,0 +1,139 @@
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Thống kê cho ý kiến</h1>
+      </div>
+      <!-- /.col -->
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item" (click)="gotoHome()">Trang chủ</li>
+          <li class="breadcrumb-item active">
+            <span>Thống kê cho ý kiến</span>
+          </li>
+        </ol>
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </div>
+  <!-- /.container-fluid -->
+</div>
+
+<div class="page-content p-3">
+  <div class="filter-section" *ngIf="filterForm" [formGroup]="filterForm">
+    <div class="row">
+      <div class="col-4">
+        <label for="search-text">Tên cán bộ</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Tìm theo tên cán bộ"
+          formControlName="keyword"
+          id="search-text"
+          name="search-text"
+          (keyup.enter)="getList()"
+        />
+      </div>
+
+      <div class="col-4">
+        <label for="search-text">Từ ngày</label>
+        <mat-form-field appearance="outline" class="w-100">
+          <input
+            matInput
+            [matDatepicker]="pickerFrom"
+            formControlName="fromDate"
+            placeholder="DD/MM/YYY"
+          />
+          <mat-datepicker-toggle matIconSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+          <mat-datepicker #pickerFrom></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="col-4">
+        <label for="search-text">Đến ngày</label>
+        <mat-form-field appearance="outline" class="w-100">
+          <input
+            matInput
+            [matDatepicker]="pickerTo"
+            formControlName="toDate"
+            placeholder="DD/MM/YYY"
+          />
+          <mat-datepicker-toggle matIconSuffix [for]="pickerTo"></mat-datepicker-toggle>
+          <mat-datepicker #pickerTo></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="d-flex mt-3">
+      <button (click)="getList()" class="btn btn-primary ml-auto mr-2">
+        <i class="fas fa-filter"></i> Lọc
+      </button>
+      <button (click)="clear()" class="btn btn-secondary">
+        <i class="fas fa-refresh"></i> Xóa tìm kiếm
+      </button>
+
+      <button (click)="exportExcel()" class="btn btn-success ml-2">
+        <i class="fas fa-file-excel"></i> Xuất file excel
+      </button>
+    </div>
+  </div>
+  <div class="table-responsive content-setion mt-3">
+    <table class="table table-bordered report-table">
+      <thead>
+        <tr>
+          <th scope="col" rowspan="2" [width]="80">STT</th>
+          <th scope="col" rowspan="2">Tên cán bộ</th>
+          <th scope="col" rowspan="2">Chức vụ</th>
+          <th scope="col" rowspan="2">Đơn vị</th>
+          <th scope="col" rowspan="2">Tổng tờ trình</th>
+          <th scope="col" rowspan="2">Chưa cho ý kiến</th>
+          <th scope="col" colspan="3" class="text-center">Đã cho ý kiến</th>
+          <th scope="col" rowspan="2">Xem chi tiết</th>
+        </tr>
+        <tr>
+          <th scope="col">Không đồng ý</th>
+          <th scope="col">Đồng ý</th>
+          <th scope="col">Ý kiến khác</th>
+        </tr>
+      </thead>
+      <tbody class="align-middle">
+        <tr
+          *ngFor="
+            let report of reportReview
+              | paginate
+                : {
+                    itemsPerPage: pagination.pageSize,
+                    currentPage: pagination.pageNumber,
+                    totalItems: pagination.totalCount,
+                  };
+            let i = index
+          "
+        >
+          <td>{{ (pagination.pageNumber - 1) * pagination.pageSize + i + 1 }}</td>
+          <td>{{ report.userFullName }}</td>
+          <td>{{ report.roleDescription }}</td>
+          <td>{{ report.unitName }}</td>
+          <td>{{ report.totalOfDocID }}</td>
+          <td>{{ report.noReview }}</td>
+          <td>{{ report.disAgreed }}</td>
+          <td>{{ report.agreed }}</td>
+          <td>{{ report.other }}</td>
+          <td>
+            <span
+              (click)="viewDetail(report)"
+              style="cursor: pointer; text-decoration: underline; color: rgb(39 168 69)"
+              >Chi tiết</span
+            >
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <pagination-controls
+      [nextLabel]="'Sau'"
+      [previousLabel]="'Trước'"
+      [autoHide]="false"
+      (pageChange)="getData($event)"
+    ></pagination-controls>
+  </div>
+</div>

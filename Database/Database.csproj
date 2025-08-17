@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\AspnetApplication.cs" />
+    <Compile Remove="Models\AspnetMembership.cs" />
+    <Compile Remove="Models\AspnetPath.cs" />
+    <Compile Remove="Models\AspnetPersonalizationAllUser.cs" />
+    <Compile Remove="Models\AspnetPersonalizationPerUser.cs" />
+    <Compile Remove="Models\AspnetProfile.cs" />
+    <Compile Remove="Models\AspnetRole.cs" />
+    <Compile Remove="Models\AspnetSchemaVersion.cs" />
+    <Compile Remove="Models\AspnetUser.cs" />
+    <Compile Remove="Models\AspnetUserInRole.cs" />
+    <Compile Remove="Models\AspnetWebEventEvent.cs" />
+    <Compile Remove="Models\VwAspnetApplication.cs" />
+    <Compile Remove="Models\VwAspnetMembershipUser.cs" />
+    <Compile Remove="Models\VwAspnetProfile.cs" />
+    <Compile Remove="Models\VwAspnetRole.cs" />
+    <Compile Remove="Models\VwAspnetUser.cs" />
+    <Compile Remove="Models\VwAspnetUsersInRole.cs" />
+    <Compile Remove="Models\VwAspnetWebPartStatePath.cs" />
+    <Compile Remove="Models\VwAspnetWebPartStateShared.cs" />
+    <Compile Remove="Models\VwAspnetWebPartStateUser.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.13">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.13">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>

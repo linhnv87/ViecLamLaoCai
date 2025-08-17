@@ -1,0 +1,12 @@
+.wrapper,
+body,
+html {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+.sidebar-mini.layout-fixed {
+    overflow: hidden !important;
+    height: 100vh !important;
+}

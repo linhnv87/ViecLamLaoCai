@@ -1,0 +1,210 @@
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Kết quả gửi tin nhắn</h1>
+      </div>
+      <!-- /.col -->
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item">Trang chủ</li>
+          <li class="breadcrumb-item active">
+            <span>Kết quả gửi tin nhắn</span>
+          </li>
+        </ol>
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </div>
+  <!-- /.container-fluid -->
+</div>
+<div class="page-content p-3">
+  <div *ngIf="!id" class="card">
+    <div class="card-header">
+      <form [formGroup]="dateFilterForm">
+        <div class="d-flex align-items-center">
+          <div class="col-3 mr-3">
+            <label for="search-text">Từ ngày</label>
+            <mat-form-field appearance="outline" class="w-100">
+              <input
+                matInput
+                [matDatepicker]="pickerFrom"
+                formControlName="fromDate"
+                placeholder="DD/MM/YYYY"
+              />
+              <mat-datepicker-toggle matIconSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+              <mat-datepicker #pickerFrom></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-3 mr-3">
+            <label for="search-text">Đến ngày</label>
+            <mat-form-field appearance="outline" class="w-100">
+              <input
+                matInput
+                [matDatepicker]="pickerTo"
+                formControlName="toDate"
+                placeholder="DD/MM/YYYY"
+              />
+              <mat-datepicker-toggle matIconSuffix [for]="pickerTo"></mat-datepicker-toggle>
+              <mat-datepicker #pickerTo></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-3 mr-3">
+            <label for="status">Trạng thái</label>
+            <mat-form-field appearance="outline" class="w-100">
+              <select matNativeControl formControlName="status" (change)="onStatusChange($event)">
+                <option value="">Tất cả</option>
+                <option value="true">Thành công</option>
+                <option value="false">Thất bại</option>
+              </select>
+            </mat-form-field>            
+          </div>
+          <div>
+            <button class="btn btn-info" (click)="filterDocuments()">
+              Lọc
+            </button>
+          </div>
+        </div>
+      </form>
+      <div *ngIf="filteredDocuments.length > 0" class="d-flex align-items-center">
+        <div class="col-3 mb-4 mr-3">
+          <label for="documentSelect" class="form-label">Tờ trình</label>
+          <select id="documentSelect" class="form-control" [(ngModel)]="selectedDocumentId">
+            <option selected disabled value="0">Chọn</option>
+            <option *ngFor="let document of filteredDocuments" [value]="document.id">
+              {{ document.title }}
+            </option>
+          </select>
+        </div>
+        <div>
+          <button class="btn btn-primary" (click)="fetchMessagesByDocId(selectedStatus)">
+            Xem
+          </button>          
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="content-section mt-3">
+        <h2>Danh sách khi thêm mới</h2>
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th scope="col">STT</th>
+                <th scope="col">Tên người nhận</th>
+                <th scope="col">Số điện thoại</th>
+                <th scope="col">Loại tin nhắn</th>
+                <th  *ngIf="this.userRoles.admin" scope="col">Mô tả lỗi</th>
+                <th scope="col">Trạng thái</th>
+                <th scope="col">Thời gian gửi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let group of addedMessages | paginate: { id: 'addedMessagesPagination', itemsPerPage: itemsPerPageAdd, currentPage: currentPageAdded }; let i = index">
+                <tr>
+                  <td colspan="7" class="group-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex" (click)="toggleItemAdded(i)" style="cursor: pointer">
+                      <i class=" me-3 fas fa-chevron-down mr-2"></i>
+                      <span class="me-3">Lần trình {{ group.submitCount }} </span>
+                    </div>
+                    </div>
+                  </td>
+                </tr>    
+                <ng-container *ngIf="group.show"> <ng-container *ngFor="let message of group.smsLogs; let j = index">
+                  <tr>
+                    <td>{{j+1}}</td>
+                    <td>{{ message.receiverName }}</td>
+                    <td>{{ message.phoneNumber }}</td>
+                    <td>{{ message.messageType }}</td>
+                    <td *ngIf="userRoles.admin">{{ message.errorMessage }}</td>
+                    <td>
+                      <span
+                        [ngClass]="{
+                          'badge-success': message.status === 'Thành Công',
+                          'badge-danger': message.status === 'Thất Bại'
+                        }"
+                        class="status-badge">
+                        {{ message.status }}
+                      </span>
+                    </td>
+                    <td>{{ message.sentTime | date: DATE_FORMAT.FULL_DATE_TO_SHOW }}</td>
+                  </tr>
+                </ng-container></ng-container>
+              </ng-container>
+            </tbody>            
+          </table>
+          <div class="d-flex justify-content-between align-items-center">
+            <pagination-controls id="addedMessagesPagination" [nextLabel]="'Sau'" [previousLabel]="'Trước'"
+              [autoHide]="false" (pageChange)="onPageChangeAdded($event)">
+            </pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="content-section mt-3">
+        <h2>Danh sách khi nhắc nhở</h2>
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th scope="col">STT</th>
+                <th scope="col">Tên người nhận</th>
+                <th scope="col">Số điện thoại</th>
+                <th scope="col">Loại tin nhắn</th>
+                <th  *ngIf="this.userRoles.admin" scope="col">Mô tả lỗi</th>
+                <th scope="col">Trạng thái</th>
+                <th scope="col">Thời gian gửi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let group of reminderMessages | paginate: { id: 'reminderMessagesPagination', itemsPerPage: itemsPerPageReminder, currentPage: currentPageReminder }; let i = index">
+                <tr>
+                  <td colspan="7" class="group-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex" (click)="toggleItemReminder(i)" style="cursor: pointer">
+                      <i class=" me-3 fas fa-chevron-down mr-2"></i>
+                      <span class="me-3">Lần trình {{ group.submitCount }} </span>
+                    </div>
+                    </div>
+                  </td>
+                </tr>    
+                <ng-container *ngIf="group.show"><ng-container *ngFor="let message of group.smsLogs; let j = index">
+                  <tr>
+                    <td>{{ j+1}}</td>
+                    <td>{{ message.receiverName }}</td>
+                    <td>{{ message.phoneNumber }}</td>
+                    <td>{{ message.messageType }}</td>
+                    <td *ngIf="userRoles.admin">{{ message.errorMessage }}</td>
+                    <td>
+                      <span
+                        [ngClass]="{
+                          'badge-success': message.status === 'Thành Công',
+                          'badge-danger': message.status === 'Thất Bại'
+                        }"
+                        class="status-badge">
+                        {{ message.status }}
+                      </span>
+                    </td>
+                    <td>{{ message.sentTime | date: DATE_FORMAT.FULL_DATE_TO_SHOW }}</td>
+                  </tr>
+                </ng-container></ng-container>
+              </ng-container>
+            </tbody>            
+          </table>
+          <div class="d-flex justify-content-between align-items-center">
+            <pagination-controls id="reminderMessagesPagination" [nextLabel]="'Sau'" [previousLabel]="'Trước'"
+              [autoHide]="false" (pageChange)="onPageChangeReminder($event)">
+            </pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

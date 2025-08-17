@@ -1,0 +1,27 @@
+<div class="modal-header">
+  <h4 class="modal-title">Hẹn lịch nhắc</h4>
+  <button type="button" class="close" aria-label="Close" (click)="confirm(false)">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="form-group">
+    <label>Thời gian nhắc</label>
+    <mat-form-field appearance="outline" class="w-100">
+      <input
+        matInput
+        [ngxMatDatetimePicker]="picker2"
+        placeholder="Chọn ngày"
+        [min]="todayDate"
+        [max]="dateEndApproval"
+        [(ngModel)]="remendingDate"
+      />
+      <mat-datepicker-toggle matSuffix [for]="$any(picker2)"></mat-datepicker-toggle>
+      <ngx-mat-datetime-picker #picker2></ngx-mat-datetime-picker>
+    </mat-form-field>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary" (click)="confirm(true)">Xác nhận</button>
+  <button type="button" class="btn btn-secondary" (click)="confirm(false)">Hủy</button>
+</div>

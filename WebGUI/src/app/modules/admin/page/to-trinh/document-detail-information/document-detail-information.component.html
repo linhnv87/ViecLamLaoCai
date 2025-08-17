@@ -1,0 +1,89 @@
+<div class="mt-4 fs-6">
+  <div class="row my-2">
+    <div class="col-3 fw-bold">Trạng thái:</div>
+    <div class="col fw-normal">
+      <span [class]="document?.statusCode | getBadgeByStatus">
+        {{ document?.statusCode | getTitleByStatus }}
+      </span>
+    </div>
+  </div>
+  <div class="row my-2">
+    <div class="col-3 fw-bold">Tiêu đề:</div>
+    <div class="col fw-normal" style="max-height: 300px; overflow-y: scroll">
+      {{ document?.title }}
+    </div>
+  </div>
+  <div class="row my-2">
+    <div class="col-3 fw-bold">Lĩnh vực:</div>
+    <div class="col fw-normal">{{ document?.fieldName }}</div>
+  </div>
+  <div class="row my-2">
+    <div class="col-3 fw-bold">Nội dung:</div>
+    <div class="col fw-normal" style="max-height: 300px; overflow-y: scroll">
+      {{ document?.note }}
+    </div>
+  </div>
+  <div class="row my-2">
+    <div class="col-3 fw-bold">Tạo từ:</div>
+    <div class="col fw-normal">
+      {{ document?.created | date: DATE_FORMAT.FULL_DATE_TO_SHOW }}
+    </div>
+  </div>
+  <div class="row my-2">
+    <div class="col-3 fw-bold">Gửi duyệt bởi:</div>
+    <div class="col fw-normal">{{ document?.authorName }}</div>
+  </div>
+  <div class="row my-2">
+    <div class="col-3 fw-bold">Hạn duyệt:</div>
+    <div class="col fw-normal">
+      {{ document?.dateEndApproval | date: DATE_FORMAT.FULL_DATE_TO_SHOW }}
+    </div>
+  </div>
+  <hr />
+  <div  class="d-flex justify-content-end mb-2">
+    <button *ngIf="document?.statusCode=== documentStatus.PHE_DUYET && assigneeId === currentUserId" class="btn btn-primary btn-sm mr-2" (click)="openAddFileModal(document!.id)">
+      <i class="fas fa-plus"></i> Thêm VB liên quan
+    </button>
+  </div>
+  <div class="row my-2">
+    <div class="col">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Tài liệu đính kèm</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="!listAttachment?.length">
+            <td colspan="2">Không đính kèm tập tin</td>
+          </tr>
+          <ng-container *ngIf="!!listAttachment?.length">
+            <tr *ngFor="let file of listAttachment; let ii = index">
+              <td>{{ ii + 1 }}</td>
+              <td matTooltip="Xem file" style="cursor: pointer" (click)="onViewFile(file)">
+                <span *ngIf="file.fileType == 3" class="badge badge-primary">Văn bản ban hành</span>
+                <span *ngIf="file.fileType == 1" class="badge badge-primary">Văn bản trình</span>
+                <span *ngIf="file.fileType == 0" class="badge badge-secondary"
+                  >Văn bản liên quan</span
+                >
+                <span *ngIf="file.fileType == 2" class="badge badge-success">Văn bản ý kiến</span>
+                {{ file.fileName }}
+              </td>
+              <td class="d-flex" style="align-items: center">
+                <a href="{{ file.filePath }}" download matTooltip="Tải file">
+                  <i style="cursor: pointer" class="ml-2 fas fa-file-download"></i>
+                </a>
+                <a *ngIf="file.fileType == 0 && document?.statusCode=== documentStatus.PHE_DUYET && assigneeId === currentUserId" class="mx-2 text-danger" (click)="onDeleteFile(file)" matTooltip="Xóa">
+                  <i class="fas fa-trash-alt"></i>
+                </a>                         
+              </td>
+             
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

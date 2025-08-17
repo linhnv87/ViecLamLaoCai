@@ -1,0 +1,215 @@
+﻿﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Hope Page - File Upload</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./base64.js"></script>
+    <script type="text/javascript" src="./vgcaplugin.js"></script>
+    <script type="text/javascript">
+        function VerifyPDFCallBack(rv) {
+
+        }
+
+        function exc_verify_pdf1() {
+            var prms = {};
+            prms["SessionId"] = "";
+            prms["FileName"] = document.getElementById("file1").value;
+
+            var json_prms = JSON.stringify(prms);
+
+            vgca_verify_pdf(json_prms, VerifyPDFCallBack);
+        }
+
+        function exc_verify_pdf2() {
+            var prms = {};
+            prms["SessionId"] = "";
+            prms["FileName"] = document.getElementById("file2").value;
+
+            var json_prms = JSON.stringify(prms);
+
+            vgca_verify_pdf(json_prms, VerifyPDFCallBack);
+        }
+
+        function exc_verify_pdf3() {
+            var prms = {};
+            prms["SessionId"] = "";
+            prms["FileName"] = document.getElementById("file3").value;
+
+            var json_prms = JSON.stringify(prms);
+
+            vgca_verify_pdf(json_prms, VerifyPDFCallBack);
+        }
+
+        function exc_verify_pdf4() {
+            var prms = {};
+            prms["SessionId"] = "";
+            prms["FileName"] = document.getElementById("file4").value;
+
+            var json_prms = JSON.stringify(prms);
+
+            vgca_verify_pdf(json_prms, VerifyPDFCallBack);
+        }
+
+        function SignFileCallBack1(rv) {
+            var received_msg = JSON.parse(rv);
+            if (received_msg.Status == 0) {
+                //console.log(received_msg);
+                document.getElementById("_signature").value = received_msg.FileName + ":" + received_msg.FileServer;
+                document.getElementById("file1").value = received_msg.FileServer;
+                document.getElementById("file2").value = received_msg.FileServer;
+            } else {
+                document.getElementById("_signature").value = received_msg.Message;
+            }
+        }
+
+        //metadata có kiểu List<KeyValue>
+        //KeyValue là class { string Key; string Value; }
+        function exc_sign_file1() {
+            var prms = {};
+            var scv = [{ "Key": "documentId", "Value": "421" }
+                , { "Key": "employeeID", "Value": "vanthu.syt" }
+                , { "Key": "documentGuidId", "Value": "223B10B8-EDCE-4100-A813-BE4D0DBC34BA" }
+                , { "Key": "OrganizationID", "Value": "01.01.H63" }];
+
+            prms["FileUploadHandler"] = "http://localhost:53362/FileUpload.aspx";
+            prms["SessionId"] = "";
+            prms["FileName"] = "";
+            prms["MetaData"] = scv;
+
+            var json_prms = JSON.stringify(prms);
+            vgca_sign_file(json_prms, SignFileCallBack1);
+        }
+
+        function SignFileCallBack2(rv) {
+            var received_msg = JSON.parse(rv);
+            if (received_msg.Status == 0) {
+                //console.log(received_msg);
+                document.getElementById("_signature").value = received_msg.FileName + ":" + received_msg.FileServer;
+                //document.getElementById("file2").value = received_msg.FileServer;
+                document.getElementById("file3").value = received_msg.FileServer;
+            } else {
+                document.getElementById("_signature").value = received_msg.Message;
+            }
+        }
+
+        //metadata có kiểu List<KeyValue>
+        //KeyValue là class { string Key; string Value; }
+        function exc_sign_file2() {
+            var prms = {};
+            var scv = [{ "Key": "abc", "Value": "abc" }];
+
+            prms["FileUploadHandler"] = "http://kyso.essolution.net/FileUpload.aspx";
+            prms["SessionId"] = "";
+            prms["FileName"] = document.getElementById("file2").value;
+            prms["MetaData"] = scv;
+
+            var json_prms = JSON.stringify(prms);
+            vgca_sign_file(json_prms, SignFileCallBack2);
+        }
+
+        function SignFileCallBack3(rv) {
+            var received_msg = JSON.parse(rv);
+            if (received_msg.Status == 0) {
+                //console.log(received_msg);
+                document.getElementById("_signature").value = received_msg.FileName + ":" + received_msg.FileServer;
+                //document.getElementById("file3").value = received_msg.FileServer;
+                document.getElementById("file4").value = received_msg.FileServer;
+            } else {
+                document.getElementById("_signature").value = received_msg.Message;
+            }
+        }
+
+        //metadata có kiểu List<KeyValue>
+        //KeyValue là class { string Key; string Value; }
+        function exc_sign_file3() {
+            var prms = {};
+            var scv = [{ "Key": "abc", "Value": "abc" }];
+
+            prms["FileUploadHandler"] = "http://kyso.essolution.net/FileUpload.aspx";
+            prms["SessionId"] = "";
+            prms["FileName"] = document.getElementById("file3").value;
+            prms["MetaData"] = scv;
+
+            var json_prms = JSON.stringify(prms);
+            vgca_sign_file(json_prms, SignFileCallBack3);
+        }
+
+        function SignFileCallBack4(rv) {
+            var received_msg = JSON.parse(rv);
+            if (received_msg.Status == 0) {
+                //console.log(received_msg);
+                document.getElementById("_signature").value = received_msg.FileName + ":" + received_msg.FileServer;
+                //document.getElementById("file3").value = received_msg.FileServer;
+                document.getElementById("file4").value = received_msg.FileServer;
+            } else {
+                document.getElementById("_signature").value = received_msg.Message;
+            }
+        }
+
+        //metadata có kiểu List<KeyValue>
+        //KeyValue là class { string Key; string Value; }
+        function exc_sign_file4() {
+            var prms = {};
+            var scv = [{ "Key": "abc", "Value": "abc" }];
+
+            prms["FileUploadHandler"] = "http://kyso.essolution.net/FileUpload.aspx";
+            prms["SessionId"] = "";
+            prms["FileName"] = document.getElementById("file4").value;
+            prms["MetaData"] = scv;
+
+            var json_prms = JSON.stringify(prms);
+            vgca_sign_file(json_prms, SignFileCallBack4);
+        }
+
+        function RequestLicenseCallBack(rv) {
+            var received_msg = JSON.parse(rv);
+            if (received_msg.Status == 0) {
+                document.getElementById("_signature").value = received_msg.LicenseRequest;
+            } else {
+                alert("Ký số không thành công:" + received_msg.Status + ":" + received_msg.Error);
+            }
+        }
+
+    </script>
+</head>
+<body>
+    <form id="message_form">
+        <div id="page-wrapper">
+            <h1>Plugin Demo</h1>
+            <p><textarea id="_signature" cols="80" rows="10" readonly></textarea></p>
+            <p>
+                <button type="button" id="_Config" onclick="vgca_show_config();">Show config</button> <br />
+                <button type="button" id="_request_license" onclick="vgca_license_request(RequestLicenseCallBack);">Get License Request</button><br />
+            </p>
+            <div>
+                <p>
+                    <h3>Trưởng phòng:</h3>
+                    <input type="text" id="file1" size="50" />
+                    <button type="button" id="TruongPhongKyNhay" onclick="exc_sign_file1();">Trưởng Phòng Ký Nháy</button>
+                    <button type="button" id="TruongPhongKyNhay" onclick="exc_verify_pdf1();">Kiểm tra chữ ký</button>
+                </p>
+                <p>
+                    <h3>Chánh Văn phòng:</h3>
+                    <input type="text" id="file2" size="50" />
+                    <button type="button" id="ChanhVanPhongKyTheThuc" onclick="exc_sign_file2();">Chánh Văn Phòng Ký Nháy</button>
+                    <button type="button" id="TruongPhongKyNhay" onclick="exc_verify_pdf2();">Kiểm tra chữ ký</button>
+                </p>
+                <p>
+                    <h3>Giám đốc:</h3>
+                    <input type="text" id="file3" size="50" />
+                    <button type="button" id="GiamDocKyDuyet" onclick="exc_sign_file3();">Giám đốc Ký duyệt</button>
+                    <button type="button" id="TruongPhongKyNhay" onclick="exc_verify_pdf3();">Kiểm tra chữ ký</button>
+                </p>
+                <p>
+                    <h3>Văn thư:</h3>
+                    <input type="text" id="file4" size="50" />
+                    <button type="button" id="VanThuKyPhatHanh" onclick="exc_sign_file4();">Văn thư phát hành</button>
+                    <button type="button" id="TruongPhongKyNhay" onclick="exc_verify_pdf4();">Kiểm tra chữ ký</button>
+                </p>
+            </div>
+        </div>
+    </form>
+</body>
+</html>

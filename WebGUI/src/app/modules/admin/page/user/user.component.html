@@ -1,0 +1,105 @@
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Quản lý tài khoản</h1>
+      </div><!-- /.col -->
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item active">Trang chủ</li>
+          <li class="breadcrumb-item">
+            <span>Quản lý tài khoản</span>            
+          </li>
+        </ol>
+      </div><!-- /.col -->
+    </div><!-- /.row -->
+  </div><!-- /.container-fluid -->
+</div>
+
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">              
+                <button class="btn btn-primary" [routerLink]="['add']"><i class="fas fa-plus-circle"></i>Thêm mới tài khoản</button>
+            </h3>
+            <div class="form-group mb-0">
+              <input type="text" class="form-control" placeholder="Tìm kiếm..."
+              [(ngModel)]="searchText" (input)="filterUsers()">
+            </div>
+          </div>
+         
+          <!-- /.card-header -->
+          <div class="card-body overflow-auto" style="min-height: 200px; padding-bottom: 150px;">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th scope="col">STT</th>
+                  <th scope="col">Tên đăng nhập</th>
+                  <th scope="col">Họ tên</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">Số điện thoại</th>
+                  <th scope="col">Lần cuối đăng nhập</th>
+                  <th scope="col">Hành động</th>
+                </tr>
+              </thead>
+              <tbody class="align-middle"
+                *ngFor="let user of filteredUsers | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }; let i = index">
+                <tr>
+                  <td>{{i+1}}</td>
+                  <td><span matTooltip="Tài khoản đã bị khóa" *ngIf="user.isLockedout" class="badge badge-warning mr-1"><i class="fas fa-user-lock"></i> Tài khoản bị khóa</span>{{user.userName}}</td>
+                  <td>{{user.userFullName}}</td>
+                  <td>{{user.email}}</td>
+                  <td>{{user.phoneNumber}}</td>
+                  <td>{{user.lastloginDate | date:'yyyy-MM-dd'}}</td>
+                  <td>
+                    <div>
+                      <div class="btn btn-group">
+                        <a class="btn btn-info" role="button" (click)="toggleActions(user.userId)">
+                          <i class="fas fa-bars"></i>
+                        </a>              
+                        <ul *ngIf="actionOnItem == user.userId" class="dropdown-menu" style="display: block; left: -160%;">                                        
+                          <div>
+                            <a class="dropdown-item" [routerLink]="['edit', user.userId]"><i class="fas fa-edit"></i> Chỉnh sửa</a>
+                            <a class="dropdown-item" (click)="resetPassword(user)">
+                              <i class="fas fa-highlighter"></i> Reset mật khẩu
+                            </a>
+                            <a class="dropdown-item" (click)="lockUser(user)">
+                              <i class="fas fa-user-lock"></i> {{user.isLockedout ? 'Mở khóa' : 'Khóa tài khoản'}}
+                            </a>
+                            <a class="dropdown-item" (click)="deleteUser(user)">
+                              <i class="fas fa-user-times"></i> Xóa tài khoản
+                            </a>
+                          </div>
+              
+                          <div class="mb-2"></div>
+                        </ul>
+                      </div>
+                    </div>
+                  </td>
+                </tr>              
+              </tbody>
+            </table>
+          </div>
+          <!-- /.card-body -->
+          <!-- /.card-body -->
+          <div class="card-footer clearfix">
+            <pagination-controls [nextLabel]="'Sau'" [previousLabel]="'Trước'" [autoHide]="true"
+              (pageChange)="currentPage = $event"></pagination-controls>
+
+          </div>
+        </div>
+        <!-- /.card -->
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </div><!-- /.container-fluid -->
+</section>
+
+
+
+
+
