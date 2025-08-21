@@ -1,0 +1,243 @@
+<!-- Splash Screen -->
+<app-splash-screen></app-splash-screen>
+
+<div class="container">
+  <div class="search-results-layout">
+    
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1 class="page-title">Kết quả tìm kiếm</h1>
+      <p class="page-subtitle" *ngIf="searchQuery">
+        Tìm kiếm: <strong>"{{searchQuery}}"</strong>
+      </p>
+    </div>
+
+    <!-- Search Form -->
+    <div class="search-form-section">
+      <div class="search-form">
+        <div class="search-input-group">
+          <div class="input-container">
+            <input 
+              type="text" 
+              placeholder="Nhập từ khóa tìm kiếm..." 
+              [(ngModel)]="currentSearchQuery"
+              (keyup.enter)="performSearch()"
+              (input)="onSearchInputChange()"
+              class="search-input">
+            <button 
+              *ngIf="currentSearchQuery" 
+              (click)="clearSearch()" 
+              class="clear-btn"
+              title="Xóa tìm kiếm">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+          <button (click)="performSearch()" class="search-btn">
+            <img src="assets/vieclamlaocai/img/icon/icon-search.svg" alt="Tìm kiếm">
+            Tìm kiếm
+          </button>
+        </div>
+        
+        <div class="filter-row">
+          <select [(ngModel)]="filters.location" (change)="performSearch()" class="filter-select">
+            <option value="">Tất cả địa điểm</option>
+            <option value="Lào Cai">Lào Cai</option>
+            <option value="Sa Pa">Sa Pa</option>
+            <option value="Bát Xát">Bát Xát</option>
+          </select>
+          
+          <select [(ngModel)]="filters.salaryRange" (change)="performSearch()" class="filter-select">
+            <option value="">Tất cả mức lương</option>
+            <option value="5-10">5-10 triệu</option>
+            <option value="10-15">10-15 triệu</option>
+            <option value="15-25">15-25 triệu</option>
+            <option value="25-35">25-35 triệu</option>
+            <option value="35+">Trên 35 triệu</option>
+          </select>
+          
+          <select [(ngModel)]="filters.experience" (change)="performSearch()" class="filter-select">
+            <option value="">Tất cả kinh nghiệm</option>
+            <option value="0-1">0-1 năm</option>
+            <option value="1-2">1-2 năm</option>
+            <option value="2-5">2-5 năm</option>
+            <option value="5+">Trên 5 năm</option>
+          </select>
+          
+          <select [(ngModel)]="filters.jobType" (change)="performSearch()" class="filter-select">
+            <option value="">Tất cả loại hình</option>
+            <option value="Full-time">Toàn thời gian</option>
+            <option value="Part-time">Bán thời gian</option>
+            <option value="Contract">Hợp đồng</option>
+            <option value="Internship">Thực tập</option>
+          </select>
+          
+          <button 
+            (click)="clearAllFilters()" 
+            class="clear-filters-btn"
+            *ngIf="hasActiveFilters()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M21 3v5h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M3 21v-5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Reset filters
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Results Stats -->
+    <div class="results-stats">
+      <div class="stats-info">
+        <span class="results-count">
+          Tìm thấy <strong>{{totalResults}}</strong> việc làm
+          <span *ngIf="searchQuery"> cho "<strong>{{searchQuery}}</strong>"</span>
+        </span>
+        <span class="search-time">trong {{searchTime}}ms</span>
+      </div>
+      
+      <div class="sort-options">
+        <label>Sắp xếp theo:</label>
+        <select [(ngModel)]="sortBy" (change)="sortResults()" class="sort-select">
+          <option value="relevance">Liên quan nhất</option>
+          <option value="date">Ngày đăng mới nhất</option>
+          <option value="salary">Mức lương cao nhất</option>
+          <option value="company">Tên công ty</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Job Results List -->
+    <div class="job-results-section">
+      <div class="job-list" *ngIf="paginatedResults.length > 0">
+        
+        <div class="job-card" *ngFor="let job of paginatedResults">
+          <div class="job-main-info">
+            <div class="company-logo">
+              <img [src]="job.logo" [alt]="job.company" class="logo-img">
+            </div>
+            
+            <div class="job-details">
+              <h3 class="job-title">
+                <a href="#" [title]="job.title">{{job.title}}</a>
+              </h3>
+              <div class="company-name">{{job.company}}</div>
+              <div class="job-meta">
+                <span class="location">
+                  <img src="assets/vieclamlaocai/img/icon/icon-location.svg" alt="">
+                  {{job.location}}
+                </span>
+                <span class="salary">
+                  <img src="assets/vieclamlaocai/img/icon/icon-money.svg" alt="">
+                  {{job.salary}}
+                </span>
+                <span class="experience" *ngIf="job.experience">
+                  <img src="assets/vieclamlaocai/img/icon/icon-hourglass.svg" alt="">
+                  {{job.experience}}
+                </span>
+                <span class="job-type">
+                  <img src="assets/vieclamlaocai/img/icon/icon-briefcase.svg" alt="">
+                  {{job.jobType}}
+                </span>
+              </div>
+              <div class="job-description" *ngIf="job.description">
+                {{job.description | slice:0:150}}{{job.description.length > 150 ? '...' : ''}}
+              </div>
+              <div class="job-tags" *ngIf="job.requirements && job.requirements.length > 0">
+                <span class="tag" *ngFor="let req of job.requirements.slice(0, 4)">{{req}}</span>
+                <span class="tag more" *ngIf="job.requirements.length > 4">+{{job.requirements.length - 4}}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="job-actions">
+            <div class="job-posted-date">
+              <img src="assets/vieclamlaocai/img/icon/icon-calendar.svg" alt="">
+              {{job.postedDate | date:'dd/MM/yyyy'}}
+            </div>
+            <div class="job-status" *ngIf="job.urgent">
+              <span class="urgent-badge">Tuyển gấp</span>
+              <span class="days-left" *ngIf="job.daysLeft">Còn {{job.daysLeft}} ngày</span>
+            </div>
+            <div class="action-buttons">
+              <button class="btn-save" (click)="saveJob(job)" [class.saved]="isJobSaved(job.id)">
+                <img src="assets/vieclamlaocai/img/icon/icon-heart.svg" alt="">
+                {{isJobSaved(job.id) ? 'Đã lưu' : 'Lưu'}}
+              </button>
+              <button class="btn-apply" (click)="applyJob(job)">
+                <img src="assets/vieclamlaocai/img/icon/icon-send.svg" alt="">
+                Ứng tuyển
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="paginatedResults.length === 0 && !isLoading">
+        <div class="empty-icon">
+          <img src="assets/vieclamlaocai/img/icon/icon-search-empty.svg" alt="">
+        </div>
+        <h3 class="empty-title">Không tìm thấy việc làm nào</h3>
+        <p class="empty-message">
+          Hãy thử thay đổi từ khóa tìm kiếm hoặc bộ lọc để tìm thấy nhiều kết quả hơn
+        </p>
+        <div class="empty-suggestions">
+          <p>Gợi ý tìm kiếm:</p>
+          <div class="suggestion-tags">
+            <button class="suggestion-tag" (click)="searchSuggestion('Frontend Developer')">Frontend Developer</button>
+            <button class="suggestion-tag" (click)="searchSuggestion('Marketing')">Marketing</button>
+            <button class="suggestion-tag" (click)="searchSuggestion('Kế toán')">Kế toán</button>
+            <button class="suggestion-tag" (click)="searchSuggestion('Bán hàng')">Bán hàng</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading-state" *ngIf="isLoading">
+        <div class="loading-spinner"></div>
+        <p>Đang tìm kiếm việc làm...</p>
+      </div>
+
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-section" *ngIf="getTotalPages() > 1">
+      <div class="pagination-wrap">
+        <button 
+          [disabled]="currentPage === 1"
+          (click)="goToPage(currentPage - 1)"
+          class="pagination-btn prev">
+          <img src="assets/vieclamlaocai/img/icon/icon-arrow-left.svg" alt="">
+          Trước
+        </button>
+
+        <div class="pagination-numbers">
+          <button 
+            *ngFor="let page of getVisiblePages()"
+            [class]="'pagination-number ' + (currentPage === page ? 'active' : '')"
+            (click)="goToPage(page)">
+            {{page}}
+          </button>
+        </div>
+
+        <button 
+          [disabled]="currentPage === getTotalPages()"
+          (click)="goToPage(currentPage + 1)"
+          class="pagination-btn next">
+          Sau
+          <img src="assets/vieclamlaocai/img/icon/icon-arrow-right.svg" alt="">
+        </button>
+      </div>
+
+      <div class="pagination-info">
+        Hiển thị {{getStartIndex() + 1}}-{{getEndIndex()}} trong tổng số {{totalResults}} việc làm
+      </div>
+    </div>
+
+  </div>
+</div>

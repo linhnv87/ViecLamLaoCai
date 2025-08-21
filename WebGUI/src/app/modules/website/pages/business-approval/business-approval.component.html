@@ -1,0 +1,418 @@
+<!-- Splash Screen -->
+<app-splash-screen></app-splash-screen>
+
+<div class="container">
+  <div class="dashboard-layout">
+    <app-dashboard-sidebar></app-dashboard-sidebar>
+
+    <div class="dashboard-content-wrap">
+      
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1 class="page-title">Phê duyệt, xác thực thông tin doanh nghiệp</h1>
+        <p class="page-subtitle">Quản lý và xác thực thông tin doanh nghiệp đăng ký trên hệ thống</p>
+      </div>
+
+      <!-- Statistics Section -->
+      <div class="statistic-list">
+        <div class="statistic-wrap">
+          <div class="img-wrap orange">
+            <img src="assets/vieclamlaocai/img/icon/icon-clock.svg" alt="">
+          </div>
+          <div class="d-flex flex-column justify-content-center gap-1">
+            <div class="number">{{approvalStats.pending}}</div>
+            <div class="title">Chờ duyệt</div>
+          </div>
+        </div>
+
+        <div class="statistic-wrap">
+          <div class="img-wrap green">
+            <img src="assets/vieclamlaocai/img/icon/icon-check-circle.svg" alt="">
+          </div>
+          <div class="d-flex flex-column justify-content-center gap-1">
+            <div class="number">{{approvalStats.approved}}</div>
+            <div class="title">Đã duyệt</div>
+          </div>
+        </div>
+
+        <div class="statistic-wrap">
+          <div class="img-wrap blue">
+            <img src="assets/vieclamlaocai/img/icon/icon-search.svg" alt="">
+          </div>
+          <div class="d-flex flex-column justify-content-center gap-1">
+            <div class="number">{{approvalStats.reviewing}}</div>
+            <div class="title">Đang xem xét</div>
+          </div>
+        </div>
+
+        <div class="statistic-wrap">
+          <div class="img-wrap red">
+            <img src="assets/vieclamlaocai/img/icon/icon-x-circle.svg" alt="">
+          </div>
+          <div class="d-flex flex-column justify-content-center gap-1">
+            <div class="number">{{approvalStats.rejected}}</div>
+            <div class="title">Từ chối</div>
+          </div>
+        </div>
+
+        <div class="statistic-wrap">
+          <div class="img-wrap purple">
+            <img src="assets/vieclamlaocai/img/icon/icon-calendar.svg" alt="">
+          </div>
+          <div class="d-flex flex-column justify-content-center gap-1">
+            <div class="number">{{getTodaySubmissions()}}</div>
+            <div class="title">Hôm nay</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters Section -->
+      <div class="filters-section">
+        <div class="filters-wrap">
+          <div class="search-wrap">
+            <div class="input-wrap">
+              <input 
+                type="text" 
+                placeholder="Tìm kiếm theo tên doanh nghiệp, mã số thuế..." 
+                [(ngModel)]="searchKeyword"
+                (input)="filterBusinesses()"
+                class="search-input">
+              <img src="assets/vieclamlaocai/img/icon/icon-search.svg" alt="" class="search-icon">
+              <button *ngIf="searchKeyword" (click)="clearSearch()" class="clear-search-btn">
+                <img src="assets/vieclamlaocai/img/icon/icon-x.svg" alt="">
+              </button>
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <div class="filter-wrap">
+              <select [(ngModel)]="statusFilter" (change)="filterBusinesses()" class="filter-select">
+                <option value="all">Tất cả trạng thái</option>
+                <option value="pending">Chờ duyệt</option>
+                <option value="reviewing">Đang xem xét</option>
+                <option value="approved">Đã duyệt</option>
+                <option value="rejected">Từ chối</option>
+              </select>
+            </div>
+
+            <div class="filter-wrap">
+              <select [(ngModel)]="businessTypeFilter" (change)="filterBusinesses()" class="filter-select">
+                <option value="all">Tất cả loại hình</option>
+                <option value="Công nghệ thông tin">Công nghệ thông tin</option>
+                <option value="Đầu tư tài chính">Đầu tư tài chính</option>
+                <option value="Sản xuất chế biến">Sản xuất chế biến</option>
+                <option value="Thương mại dịch vụ">Thương mại dịch vụ</option>
+                <option value="Du lịch dịch vụ">Du lịch dịch vụ</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="results-info">
+          <span class="results-count">Hiển thị {{getPaginatedBusinesses().length}} / {{totalItems}} doanh nghiệp</span>
+        </div>
+      </div>
+
+      <!-- Business List Table -->
+      <div class="table-section">
+        <div class="table-responsive">
+          <table class="business-table">
+            <thead>
+              <tr>
+                <th>Doanh nghiệp</th>
+                <th>Loại hình</th>
+                <th>Ngày đăng ký</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let business of getPaginatedBusinesses()" class="business-row">
+                <td class="business-info">
+                  <div class="business-details">
+                    <div class="business-logo">
+                      <img [src]="business.logo" [alt]="business.businessName" class="logo-img">
+                    </div>
+                    <div class="business-text">
+                      <div class="business-name">{{business.businessName}}</div>
+                      <div class="business-meta">
+                        <span class="tax-code">MST: {{business.taxCode}}</span>
+                        <span class="contact-person">{{business.contactPerson}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                
+                <td class="business-type">
+                  <span class="type-badge">{{business.businessType}}</span>
+                </td>
+                
+                <td class="registration-date">
+                  {{business.registrationDate | date:'dd/MM/yyyy'}}
+                </td>
+                
+                <td class="status-column">
+                  <span [class]="'status-badge ' + getStatusClass(business.status)">
+                    {{getStatusText(business.status)}}
+                  </span>
+                  <div class="document-count">
+                    <img src="assets/vieclamlaocai/img/icon/icon-docs.svg" alt="">
+                    {{business.documents.length}} tài liệu
+                  </div>
+                </td>
+                
+                <td class="actions-column">
+                  <div class="action-buttons">
+                    <button (click)="viewBusinessDetails(business)" class="btn-action view" title="Xem chi tiết">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                      </svg>
+                    </button>
+                    
+                    <button 
+                      *ngIf="business.status === 'pending' || business.status === 'reviewing'"
+                      (click)="approveBusiness(business)" 
+                      class="btn-action approve" 
+                      title="Phê duyệt">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <polyline points="20,6 9,17 4,12" stroke="currentColor" stroke-width="2"/>
+                      </svg>
+                    </button>
+                    
+                    <button 
+                      *ngIf="business.status === 'pending'"
+                      (click)="reviewBusiness(business)" 
+                      class="btn-action review" 
+                      title="Đang xem xét">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                        <polyline points="12,6 12,12 16,14" stroke="currentColor" stroke-width="2"/>
+                      </svg>
+                    </button>
+                    
+                    <button 
+                      *ngIf="business.status === 'pending' || business.status === 'reviewing'"
+                      (click)="rejectBusiness(business)" 
+                      class="btn-action reject" 
+                      title="Từ chối">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
+                        <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="getPaginatedBusinesses().length === 0" class="empty-state">
+          <div class="empty-icon">
+            <img src="assets/vieclamlaocai/img/icon/icon-folder-open.svg" alt="">
+          </div>
+          <div class="empty-title">Không tìm thấy doanh nghiệp nào</div>
+          <div class="empty-subtitle">Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm</div>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div *ngIf="getTotalPages() > 1" class="pagination-section">
+        <div class="pagination-wrap">
+          <button 
+            [disabled]="currentPage === 1"
+            (click)="goToPreviousPage()"
+            class="pagination-btn prev">
+            <img src="assets/vieclamlaocai/img/icon/icon-arrow-left.svg" alt="">
+            Trước
+          </button>
+
+          <div class="pagination-numbers">
+            <button 
+              *ngFor="let page of getVisiblePages()"
+              [class]="'pagination-number ' + (currentPage === page ? 'active' : '')"
+              (click)="goToPage(page)">
+              {{page}}
+            </button>
+          </div>
+
+          <button 
+            [disabled]="currentPage === getTotalPages()"
+            (click)="goToNextPage()"
+            class="pagination-btn next">
+            Sau
+            <img src="assets/vieclamlaocai/img/icon/icon-arrow-right.svg" alt="">
+          </button>
+        </div>
+
+        <div class="pagination-info">
+          Trang {{currentPage}} / {{getTotalPages()}} ({{totalItems}} doanh nghiệp)
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Business Detail Modal -->
+<div *ngIf="showDetailModal" class="modal-overlay" (click)="closeDetailModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2 class="modal-title">Chi tiết doanh nghiệp</h2>
+      <button class="modal-close-btn" (click)="closeDetailModal()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
+          <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="modal-body" *ngIf="selectedBusiness">
+      <div class="business-detail-grid">
+        
+        <!-- Business Info Section -->
+        <div class="detail-section">
+          <div class="section-header">
+            <div class="business-logo-large">
+              <img [src]="selectedBusiness.logo" [alt]="selectedBusiness.businessName" class="logo-img-large">
+            </div>
+            <div class="business-main-info">
+              <h3 class="business-name-large">{{selectedBusiness.businessName}}</h3>
+              <div class="business-meta-large">
+                <span class="tax-code-large">MST: {{selectedBusiness.taxCode}}</span>
+                <span [class]="'status-badge-large ' + getStatusClass(selectedBusiness.status)">
+                  {{getStatusText(selectedBusiness.status)}}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="detail-section">
+          <h4 class="section-title">Thông tin liên hệ</h4>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Người liên hệ:</label>
+              <span>{{selectedBusiness.contactPerson}}</span>
+            </div>
+            <div class="info-item">
+              <label>Email:</label>
+              <span>{{selectedBusiness.email}}</span>
+            </div>
+            <div class="info-item">
+              <label>Số điện thoại:</label>
+              <span>{{selectedBusiness.phone}}</span>
+            </div>
+            <div class="info-item full-width">
+              <label>Địa chỉ:</label>
+              <span>{{selectedBusiness.address}}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Business Details -->
+        <div class="detail-section">
+          <h4 class="section-title">Thông tin doanh nghiệp</h4>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Loại hình:</label>
+              <span>{{selectedBusiness.businessType}}</span>
+            </div>
+            <div class="info-item">
+              <label>Ngày đăng ký:</label>
+              <span>{{selectedBusiness.registrationDate | date:'dd/MM/yyyy'}}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Documents Section -->
+        <div class="detail-section">
+          <h4 class="section-title">Tài liệu đính kèm</h4>
+          <div class="documents-detail-list">
+            <div *ngFor="let doc of selectedBusiness.documents" class="document-detail-item">
+              <div class="document-detail-info">
+                <div class="document-name-large">{{doc.name}}</div>
+                <div class="document-meta">
+                  <span class="document-type-badge">{{doc.type}}</span>
+                  <span class="upload-date">Tải lên: {{doc.uploadDate | date:'dd/MM/yyyy'}}</span>
+                  <span [class]="'verification-badge ' + (doc.verified ? 'verified' : 'unverified')">
+                    {{doc.verified ? 'Đã xác minh' : 'Chưa xác minh'}}
+                  </span>
+                </div>
+              </div>
+              <div class="document-detail-actions">
+                <button (click)="viewDocument(doc)" class="btn-doc-action view">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/>
+                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                  Xem
+                </button>
+                <button (click)="downloadDocument(doc)" class="btn-doc-action download">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="7,10 12,15 17,10" stroke="currentColor" stroke-width="2"/>
+                    <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                  Tải xuống
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes Section -->
+        <div class="detail-section" *ngIf="selectedBusiness.notes">
+          <h4 class="section-title">Ghi chú</h4>
+          <div class="notes-content">
+            {{selectedBusiness.notes}}
+          </div>
+        </div>
+
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <div class="modal-actions">
+        <button 
+          *ngIf="selectedBusiness?.status === 'pending' || selectedBusiness?.status === 'reviewing'"
+          (click)="approveBusiness(selectedBusiness!)" 
+          class="btn-modal-action approve">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <polyline points="20,6 9,17 4,12" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          Phê duyệt
+        </button>
+        
+        <button 
+          *ngIf="selectedBusiness?.status === 'pending'"
+          (click)="reviewBusiness(selectedBusiness!)" 
+          class="btn-modal-action review">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+            <polyline points="12,6 12,12 16,14" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          Đang xem xét
+        </button>
+        
+        <button 
+          *ngIf="selectedBusiness?.status === 'pending' || selectedBusiness?.status === 'reviewing'"
+          (click)="rejectBusiness(selectedBusiness!)" 
+          class="btn-modal-action reject">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
+            <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          Từ chối
+        </button>
+        
+        <button (click)="closeDetailModal()" class="btn-modal-action cancel">
+          Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

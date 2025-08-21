@@ -5,6 +5,7 @@ import { AuthRoutingModule } from './auth-routing.module';
 import { AuthComponent } from './auth.component';
 import { FormsModule } from '@angular/forms';
 import { SsoComponent } from './sso/sso.component';
+import { SharedModule } from '../../shared/shared.module';
 
 
 @NgModule({
@@ -15,6 +16,7 @@ import { SsoComponent } from './sso/sso.component';
   imports: [
     CommonModule,
     FormsModule,
+    SharedModule,
     AuthRoutingModule
   ]
 })

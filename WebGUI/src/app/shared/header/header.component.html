@@ -1,0 +1,166 @@
+<!--header-->
+<div class="header-wrap" style="background: url(assets/vieclamlaocai/img/bg-overlay2.png) center; background-size: cover;">
+
+  <div class="bg-blend2-wrap">
+    <img src="assets/vieclamlaocai/img/bg.png" alt="">
+  </div>
+
+  <div class="container position-relative">
+    <div class="row">
+
+      <div class="nav-wrap">
+        <a (click)="navigateToHome()" class="nav-logo" style="cursor: pointer;">
+          <img src="assets/vieclamlaocai/img/logo.png" alt="" width="60px">
+        </a>
+
+        <div class="nav-list">
+          <a (click)="navigateToHome()" class="nav-item" style="cursor: pointer;">
+            <span class="nav-title">Cơ hội việc làm</span>
+            <img class="dropdown-icon" src="assets/vieclamlaocai/img/icon/icon-arrow-down.svg" alt="">
+            <div class="nav-child">
+              <div class="child-item">Việc làm mới nhất</div>
+              <div class="child-item">Việc làm theo ngành</div>
+              <div class="child-item">Việc làm theo địa điểm</div>
+              <div class="child-item">Việc làm lương cao</div>
+              <div class="child-item">Việc làm part-time</div>
+            </div>
+          </a>
+          <a (click)="navigateToHome()" class="nav-item" style="cursor: pointer;">
+            <span class="nav-title">Công ty</span>
+          </a>
+          <a (click)="navigateToHome()" class="nav-item" style="cursor: pointer;">
+            <span class="nav-title">Hồ sơ & CV</span>
+          </a>
+          <a href="#" class="nav-item">
+            <span class="nav-title">Công cụ</span>
+          </a>
+          <a href="#" class="nav-item">
+            <span class="nav-title">Thông tin Lào Cai</span>
+          </a>
+        </div>
+
+        <div class="nav-user">
+          <div class="noti-wrap" *ngIf="isLoggedIn">
+            <a href="#">
+              <img src="assets/vieclamlaocai/img/icon/icon-noti.svg" alt="">
+            </a>
+          </div>
+
+          <div *ngIf="!isLoggedIn" class="user-wrap">
+
+            <a (click)="navigateToAuth()" class="user-avatar" title="Đăng nhập" style="cursor: pointer;">
+              <img src="assets/vieclamlaocai/img/icon/icon-user.svg" alt="Đăng nhập">
+            </a>
+          </div>
+
+          <div *ngIf="isLoggedIn" class="user-wrap">
+            <a (click)="navigateToDashboard()" class="user-avatar" style="cursor: pointer;">
+              <img src="assets/vieclamlaocai/img/user-avatar.png" alt="">
+            </a>
+
+            <div class="user-info">
+              <span class="text-sky-300">Doanh nghiệp</span>
+              <span class="text-white">{{userInfo?.fullName || 'Người dùng'}}</span>
+            </div>
+
+            <div class="btn-dropdown-wrap">
+              <div class="handle-dropdown">
+                <img src="assets/vieclamlaocai/img/icon/icon-arrow-down.svg" alt="" width="16px">
+              </div>
+
+              <div class="dropdown-wrap">
+                <a (click)="navigateToDashboard()" class="dropdown-item" style="cursor: pointer;">
+                  <img src="assets/vieclamlaocai/img/icon/icon-color-user.png" alt="">
+                  <span>Trang cá nhân</span>
+                </a>
+
+                <a href="#" (click)="logout()" class="dropdown-item">
+                  <img src="assets/vieclamlaocai/img/icon/icon-arrow-right-blue.png" alt="">
+                  <span>Đăng xuất</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Register/Login link for not logged in users -->
+          <div *ngIf="!isLoggedIn" class="actions-wrap">
+            <a (click)="navigateToAuth()" class="register-link" style="cursor: pointer;">
+              <span class="text-white">Đăng nhập</span>
+              <span class="text-sky-300">Vào tài khoản <img src="assets/vieclamlaocai/img/icon/icon-arrow-right-double.svg" alt=""></span>
+            </a>
+          </div>
+        </div>
+
+        <!--        icon toggle mobile menu-->
+        <div class="icon-mobile-menu">
+          <img src="assets/vieclamlaocai/img/icon/icon-menu-white.png" alt="icon menu">
+        </div>
+
+        <!--        mobile menu-->
+        <div class="nav-mobile-wrap">
+
+          <div class="icon-mobile-close-menu">
+            <img src="assets/vieclamlaocai/img/icon/icon-delete.png" alt="icon menu" width="32px">
+          </div>
+
+          <!-- Mobile User Menu - Conditional -->
+          <div class="nav-user-mobile">
+            <!-- Notification - only show when logged in -->
+            <div class="noti-wrap" *ngIf="isLoggedIn">
+              <a href="#">
+                <img src="assets/vieclamlaocai/img/icon/icon-noti.svg" alt="">
+              </a>
+            </div>
+
+            <!-- When NOT logged in -->
+            <div *ngIf="!isLoggedIn" class="user-wrap">
+              <!-- Login Icon -->
+              <a (click)="navigateToAuth()" class="user-avatar" title="Đăng nhập" style="cursor: pointer;">
+                <img src="assets/vieclamlaocai/img/icon/icon-user.svg" alt="Đăng nhập">
+              </a>
+            </div>
+
+            <!-- When logged in -->
+            <div *ngIf="isLoggedIn" class="user-wrap">
+              <a (click)="navigateToDashboard()" class="user-avatar" style="cursor: pointer;">
+                <img src="assets/vieclamlaocai/img/user-avatar.png" alt="">
+              </a>
+
+              <div class="user-info">
+                <span class="text-sky-300">Doanh nghiệp</span>
+                <span class="text-white">{{userInfo?.fullName || 'Người dùng'}}</span>
+              </div>
+
+              <div class="btn-dropdown-wrap">
+                <div class="handle-dropdown">
+                  <img src="assets/vieclamlaocai/img/icon/icon-arrow-down.svg" alt="" width="16px">
+                </div>
+
+                <div class="dropdown-wrap">
+                  <a (click)="navigateToDashboard()" class="dropdown-item" style="cursor: pointer;">
+                    <img src="assets/vieclamlaocai/img/icon/icon-color-user.png" alt="">
+                    <span>Trang cá nhân</span>
+                  </a>
+
+                  <a href="#" (click)="logout()" class="dropdown-item">
+                    <img src="assets/vieclamlaocai/img/icon/icon-arrow-right-blue.png" alt="">
+                    <span>Đăng xuất</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Register/Login link for mobile when not logged in -->
+            <div *ngIf="!isLoggedIn" class="actions-wrap">
+              <a (click)="navigateToAuth()" class="register-link" style="cursor: pointer;">
+                <span class="text-white">Đăng nhập</span>
+                <span class="text-sky-300">Vào tài khoản <img src="assets/vieclamlaocai/img/icon/icon-arrow-right-double.svg" alt=""></span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

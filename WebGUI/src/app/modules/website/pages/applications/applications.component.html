@@ -1,0 +1,174 @@
+<!-- Splash Screen -->
+<app-splash-screen></app-splash-screen>
+
+<!---->
+<div class="container">
+  <div class="dashboard-layout">
+    <app-dashboard-sidebar></app-dashboard-sidebar>
+
+    <div class="d-flex flex-column gap-3">
+
+
+      <div class="dashboard-content-wrap">
+        <div class="mail-box">
+          <div class="banner">
+            <img src="assets/vieclamlaocai/img/Illustrationa.png" alt="">
+          </div>
+          <div class="info">
+            <div class="title">Xác thực email</div>
+            <div class="description">Để tiếp cận với các công việc Hot và Mới nhất</div>
+            <div class="btn2-wrap large orange w-100">Xác thực ngay</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-content-wrap">
+
+        <div class="statistic-list">
+
+          <div class="statistic-wrap">
+            <div class="img-wrap yellow">
+              <img src="assets/vieclamlaocai/img/icon/icon-color-bag.svg" alt="">
+            </div>
+
+            <div class="d-flex flex-column justify-content-center gap-1">
+              <div class="number">{{ statistics.postedJobs }}</div>
+              <div class="title">Việc làm đã đăng</div>
+            </div>
+          </div>
+
+          <div class="statistic-wrap">
+            <div class="img-wrap cyan">
+              <img src="assets/vieclamlaocai/img/icon/icon-doc-user.svg" alt="">
+            </div>
+
+            <div class="d-flex flex-column justify-content-center gap-1">
+              <div class="number">{{ statistics.applications }}</div>
+              <div class="title">Hồ sơ ứng tuyển</div>
+            </div>
+          </div>
+
+          <div class="statistic-wrap">
+            <div class="img-wrap sky">
+              <img src="assets/vieclamlaocai/img/icon/icon-docs.svg" alt="">
+            </div>
+
+            <div class="d-flex flex-column justify-content-center gap-1">
+              <div class="number">{{ statistics.savedProfiles }}</div>
+              <div class="title">Hồ sơ đã lưu</div>
+            </div>
+          </div>
+
+          <div class="statistic-wrap">
+            <div class="img-wrap purple">
+              <img src="assets/vieclamlaocai/img/icon/icon-user-view.svg" alt="">
+            </div>
+
+            <div class="d-flex flex-column justify-content-center gap-1">
+              <div class="number">{{ statistics.profileViews }}</div>
+              <div class="title">Lượt xem hồ sơ</div>
+            </div>
+          </div>
+
+          <div class="statistic-wrap">
+            <div class="img-wrap lime">
+              <img src="assets/vieclamlaocai/img/icon/icon-refresh.svg" alt="">
+            </div>
+
+            <div class="d-flex flex-column justify-content-center gap-1">
+              <div class="number">{{ statistics.refreshCount }}</div>
+              <div class="title">Số lần làm mới</div>
+            </div>
+          </div>
+
+          <div class="statistic-wrap">
+            <div class="img-wrap pink">
+              <img src="assets/vieclamlaocai/img/icon/icon-bag-view.svg" alt="">
+            </div>
+
+            <div class="d-flex flex-column justify-content-center gap-1">
+              <div class="number">{{ statistics.jobViews }}</div>
+              <div class="title">Lượt xem việc làm</div>
+            </div>
+          </div>
+
+
+        </div>
+
+        <div class="section-data">
+          <div class="section-data-title">
+            <span>Việc làm ứng tuyển mới nhất</span>
+            <a href="#" class="btn-link">Xem tất cả</a>
+          </div>
+
+          <div *ngIf="applications.length === 0" class="empty-box-wrap">
+            <img src="assets/vieclamlaocai/img/icon/icon-docs-empty.svg" alt="">
+            <span>Chưa có dữ liệu</span>
+          </div>
+
+          <div *ngIf="applications.length > 0" class="jobs-list">
+            <div *ngFor="let app of applications" class="job-item">
+              <div class="job-header">
+                <img [src]="app.logo" [alt]="app.company" class="company-logo">
+                <div class="job-info">
+                  <h4 class="job-title">{{ app.jobTitle }}</h4>
+                  <p class="company-name">{{ app.company }}</p>
+                </div>
+                <div class="job-status">
+                  <span class="status-badge" [ngClass]="getStatusClass(app.status)">
+                    {{ getStatusText(app.status) }}
+                  </span>
+                </div>
+              </div>
+              <div class="job-details">
+                <span class="salary">{{ app.salary }}</span>
+                <span class="location">{{ app.location }}</span>
+                <span class="date">{{ app.appliedDate }}</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="section-data">
+          <div class="section-data-title">
+            <span>Việc làm đã lưu mới nhất</span>
+            <a href="#" class="btn-link">Xem tất cả</a>
+          </div>
+
+          <div *ngIf="savedJobs.length === 0" class="empty-box-wrap">
+            <img src="assets/vieclamlaocai/img/icon/icon-docs-empty.svg" alt="">
+            <span>Chưa có dữ liệu</span>
+          </div>
+
+          <div *ngIf="savedJobs.length > 0" class="jobs-list">
+            <div *ngFor="let job of savedJobs" class="job-item">
+              <div class="job-header">
+                <img [src]="job.logo" [alt]="job.company" class="company-logo">
+                <div class="job-info">
+                  <h4 class="job-title">
+                    {{ job.jobTitle }}
+                    <span *ngIf="job.urgent" class="urgent-tag">Gấp</span>
+                  </h4>
+                  <p class="company-name">{{ job.company }}</p>
+                </div>
+                <div class="job-actions">
+                  <button class="btn-action save">💾</button>
+                  <button class="btn-action apply">Ứng tuyển</button>
+                </div>
+              </div>
+              <div class="job-details">
+                <span class="salary">{{ job.salary }}</span>
+                <span class="location">{{ job.location }}</span>
+                <span class="date">Lưu: {{ job.savedDate }}</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

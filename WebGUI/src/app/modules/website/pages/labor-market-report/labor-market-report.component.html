@@ -1,0 +1,314 @@
+<!-- Splash Screen -->
+<app-splash-screen></app-splash-screen>
+
+<div class="container">
+  <div class="dashboard-layout">
+    <app-dashboard-sidebar></app-dashboard-sidebar>
+
+    <div class="dashboard-content-wrap">
+      
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="header-content">
+          <div class="header-text">
+            <h1 class="page-title">Báo cáo thị trường lao động</h1>
+            <p class="page-subtitle">Thông tin về xu hướng tuyển dụng và ngành nghề có nhu cầu cao</p>
+          </div>
+          <div class="header-actions">
+            <button (click)="refreshMarketData()" class="btn-action refresh" title="Làm mới dữ liệu">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M23 4v6h-6" stroke="currentColor" stroke-width="2"/>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" stroke="currentColor" stroke-width="2"/>
+              </svg>
+              Làm mới
+            </button>
+            <div class="export-dropdown">
+              <button class="btn-action primary dropdown-toggle">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/>
+                  <polyline points="7,10 12,15 17,10" stroke="currentColor" stroke-width="2"/>
+                  <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Xuất báo cáo
+              </button>
+              <div class="dropdown-menu">
+                <button (click)="exportMarketReport('pdf')" class="dropdown-item">PDF</button>
+                <button (click)="exportMarketReport('excel')" class="dropdown-item">Excel</button>
+                <button (click)="exportMarketReport('csv')" class="dropdown-item">CSV</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters Section -->
+      <div class="filters-section">
+        <div class="filter-grid">
+          <div class="filter-item">
+            <label>Khoảng thời gian:</label>
+            <select [(ngModel)]="selectedTimeRange" (change)="onTimeRangeChange(selectedTimeRange)" class="filter-select">
+              <option value="monthly">Hàng tháng</option>
+              <option value="quarterly">Hàng quý</option>
+              <option value="yearly">Hàng năm</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label>Ngành nghề:</label>
+            <select [(ngModel)]="selectedIndustry" (change)="onIndustryChange(selectedIndustry)" class="filter-select">
+              <option value="all">Tất cả ngành</option>
+              <option value="it">Công nghệ thông tin</option>
+              <option value="ecommerce">Thương mại điện tử</option>
+              <option value="finance">Tài chính ngân hàng</option>
+              <option value="manufacturing">Sản xuất chế biến</option>
+              <option value="tourism">Du lịch khách sạn</option>
+              <option value="education">Giáo dục đào tạo</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label>Khu vực:</label>
+            <select [(ngModel)]="selectedRegion" (change)="onRegionChange(selectedRegion)" class="filter-select">
+              <option value="laocai">Lào Cai</option>
+              <option value="hanoi">Hà Nội</option>
+              <option value="hcm">TP.HCM</option>
+              <option value="danang">Đà Nẵng</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Market Overview -->
+      <div class="market-overview">
+        <div class="overview-grid">
+          <div class="overview-card jobs">
+            <div class="card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                <line x1="8" y1="21" x2="16" y2="21" stroke="currentColor" stroke-width="2"/>
+                <line x1="12" y1="17" x2="12" y2="21" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </div>
+            <div class="card-content">
+              <div class="card-number">{{marketOverview.totalActiveJobs | number}}</div>
+              <div class="card-label">Việc làm đang tuyển</div>
+              <div class="card-trend positive">+{{marketOverview.jobGrowthRate}}% tăng trương</div>
+            </div>
+          </div>
+
+          <div class="overview-card companies">
+            <div class="card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/>
+                <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </div>
+            <div class="card-content">
+              <div class="card-number">{{marketOverview.totalCompaniesHiring | number}}</div>
+              <div class="card-label">Công ty đang tuyển</div>
+              <div class="card-trend positive">Tăng mạnh trong Q1</div>
+            </div>
+          </div>
+
+          <div class="overview-card time">
+            <div class="card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                <polyline points="12,6 12,12 16,14" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </div>
+            <div class="card-content">
+              <div class="card-number">{{marketOverview.avgTimeToHire}}</div>
+              <div class="card-label">Ngày tuyển dụng TB</div>
+              <div class="card-trend positive">Giảm 3 ngày so với trước</div>
+            </div>
+          </div>
+
+          <div class="overview-card salary">
+            <div class="card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <line x1="12" y1="1" x2="12" y2="23" stroke="currentColor" stroke-width="2"/>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </div>
+            <div class="card-content">
+              <div class="card-number">+{{marketOverview.salaryGrowth}}%</div>
+              <div class="card-label">Tăng trưởng lương</div>
+              <div class="card-trend positive">So với cùng kỳ năm trước</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Job Trends by Industry -->
+      <div class="industry-trends-section">
+        <div class="section-header">
+          <h3 class="section-title">Xu hướng tuyển dụng theo ngành</h3>
+          <div class="section-subtitle">Nhu cầu tuyển dụng và mức lương trung bình</div>
+        </div>
+        <div class="industry-trends-grid">
+          <div *ngFor="let trend of jobTrends" class="industry-trend-card">
+            <div class="trend-header">
+              <div class="trend-info">
+                <h4 class="industry-name">{{trend.industry}}</h4>
+                <div [class]="'demand-level ' + getDemandLevelClass(trend.demandLevel)">
+                  {{getDemandLevelText(trend.demandLevel)}}
+                </div>
+              </div>
+              <div class="trend-growth" [style.color]="trend.color">
+                +{{trend.growth}}%
+              </div>
+            </div>
+            <div class="trend-content">
+              <div class="salary-info">
+                <div class="salary-label">Mức lương trung bình:</div>
+                <div class="salary-range">{{trend.avgSalary}}</div>
+              </div>
+              <div class="top-positions">
+                <div class="positions-label">Vị trí hot:</div>
+                <div class="positions-list">
+                  <span *ngFor="let position of trend.topPositions; let last = last" class="position-item">
+                    {{position}}<span *ngIf="!last">, </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="trend-indicator" [style.background]="trend.color"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skills in Demand -->
+      <div class="skills-section">
+        <div class="skills-grid">
+          
+          <!-- Top Skills Chart -->
+          <div class="skills-chart-card">
+            <div class="card-header">
+              <h3 class="card-title">Kỹ năng được tìm kiếm nhiều nhất</h3>
+              <div class="card-subtitle">Top 10 kỹ năng có nhu cầu cao</div>
+            </div>
+            <div class="card-content">
+              <div class="skills-chart">
+                <div *ngFor="let skill of skillDemands" class="skill-bar">
+                  <div class="skill-info">
+                    <div class="skill-name">{{skill.skill}}</div>
+                    <div class="skill-category">{{skill.category}}</div>
+                  </div>
+                  <div class="skill-metrics">
+                    <div class="skill-demand">{{skill.demand}} vị trí</div>
+                    <div [class]="'skill-growth ' + getSkillLevelClass(skill.level)">
+                      +{{skill.growth}}%
+                    </div>
+                  </div>
+                  <div class="skill-bar-container">
+                    <div class="skill-bar-fill" 
+                         [style.width.%]="(skill.demand / skillDemands[0].demand) * 100"
+                         [class]="getSkillLevelClass(skill.level)">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hot Skills -->
+          <div class="hot-skills-card">
+            <div class="card-header">
+              <h3 class="card-title">Kỹ năng "hot" nhất</h3>
+              <div class="card-subtitle">Đang có xu hướng tăng mạnh</div>
+            </div>
+            <div class="card-content">
+              <div class="hot-skills-list">
+                <div *ngFor="let skill of getHotSkills()" class="hot-skill-item">
+                  <div class="hot-skill-info">
+                    <div class="hot-skill-name">{{skill.skill}}</div>
+                    <div class="hot-skill-category">{{skill.category}}</div>
+                  </div>
+                  <div class="hot-skill-badge">
+                    <span class="hot-icon">🔥</span>
+                    <span class="hot-growth">+{{skill.growth}}%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Salary Ranges -->
+      <div class="salary-section">
+        <div class="section-header">
+          <h3 class="section-title">Mức lương theo vị trí</h3>
+          <div class="section-subtitle">Khảo sát mức lương trung bình trên thị trường</div>
+        </div>
+        <div class="salary-table">
+          <div class="salary-header">
+            <div class="col-position">Vị trí</div>
+            <div class="col-experience">Kinh nghiệm</div>
+            <div class="col-salary">Mức lương (triệu VNĐ)</div>
+            <div class="col-count">Số lượng</div>
+          </div>
+          <div class="salary-body">
+            <div *ngFor="let range of salaryRanges" class="salary-row">
+              <div class="col-position">
+                <div class="position-name">{{range.position}}</div>
+              </div>
+              <div class="col-experience">
+                <div class="experience-badge">{{range.experience}}</div>
+              </div>
+              <div class="col-salary">
+                <div class="salary-range-display">
+                  <div class="salary-bar-wrapper">
+                    <div class="salary-bar-track">
+                      <div class="salary-bar-range" 
+                           [style.left.%]="getSalaryBarWidth(range.minSalary)"
+                           [style.width.%]="getSalaryBarWidth(range.maxSalary - range.minSalary)">
+                      </div>
+                      <div class="salary-bar-avg" 
+                           [style.left.%]="getSalaryBarWidth(range.avgSalary)">
+                      </div>
+                    </div>
+                    <div class="salary-text">
+                      {{range.minSalary}} - {{range.maxSalary}} (TB: {{range.avgSalary}})
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-count">
+                <div class="count-badge">{{range.count}} VT</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Market Insights -->
+      <div class="insights-section">
+        <div class="section-header">
+          <h3 class="section-title">Thông tin thị trường</h3>
+          <div class="section-subtitle">Xu hướng và phân tích thị trường lao động</div>
+        </div>
+        <div class="insights-grid">
+          <div *ngFor="let insight of marketInsights" 
+               [class]="'insight-card ' + getInsightClass(insight.impact)">
+            <div class="insight-header">
+              <div class="insight-icon">{{getInsightIcon(insight.impact)}}</div>
+              <div class="insight-meta">
+                <div class="insight-category">{{insight.category}}</div>
+                <div class="insight-date">{{insight.date | date:'dd/MM/yyyy'}}</div>
+              </div>
+            </div>
+            <div class="insight-content">
+              <h4 class="insight-title">{{insight.title}}</h4>
+              <p class="insight-description">{{insight.description}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+

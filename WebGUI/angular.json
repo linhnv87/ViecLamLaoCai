@@ -37,12 +37,7 @@
               "./node_modules/ngx-toastr/toastr.css",
               "src/styles.scss"
             ],
-            "scripts": [
-              "src/assets/Scripts/jquery-3.4.1.min.js",
-              "src/assets/Scripts/bootstrap.bundle.min.js",
-              "src/assets/Scripts/base64.js",
-              "src/assets/Scripts/vgcaplugin.js"
-            ],
+            "scripts": [],
             "allowedCommonJsDependencies": ["moment"]
           },
           "configurations": {

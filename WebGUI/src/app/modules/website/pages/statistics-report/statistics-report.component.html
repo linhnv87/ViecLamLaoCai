@@ -1,0 +1,305 @@
+<!-- Splash Screen -->
+<app-splash-screen></app-splash-screen>
+
+<div class="container">
+  <div class="dashboard-layout">
+    <app-dashboard-sidebar></app-dashboard-sidebar>
+
+    <div class="dashboard-content-wrap">
+      
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="header-content">
+          <div class="header-text">
+            <h1 class="page-title">Tổng hợp báo cáo thống kê</h1>
+            <p class="page-subtitle">Thống kê số lượng doanh nghiệp đăng ký và xu hướng tìm kiếm ứng viên</p>
+          </div>
+          <div class="header-actions">
+            <button (click)="refreshData()" class="btn-action refresh" title="Làm mới dữ liệu">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M23 4v6h-6" stroke="currentColor" stroke-width="2"/>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" stroke="currentColor" stroke-width="2"/>
+              </svg>
+              Làm mới
+            </button>
+            <div class="export-dropdown">
+              <button class="btn-action primary dropdown-toggle">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/>
+                  <polyline points="7,10 12,15 17,10" stroke="currentColor" stroke-width="2"/>
+                  <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Xuất báo cáo
+              </button>
+              <div class="dropdown-menu">
+                <button (click)="exportReport('pdf')" class="dropdown-item">PDF</button>
+                <button (click)="exportReport('excel')" class="dropdown-item">Excel</button>
+                <button (click)="exportReport('csv')" class="dropdown-item">CSV</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters Section -->
+      <div class="filters-section">
+        <div class="filter-grid">
+          <div class="filter-item">
+            <label>Khoảng thời gian:</label>
+            <select [(ngModel)]="selectedTimeRange" (change)="onTimeRangeChange(selectedTimeRange)" class="filter-select">
+              <option value="last7days">7 ngày qua</option>
+              <option value="last30days">30 ngày qua</option>
+              <option value="last3months">3 tháng qua</option>
+              <option value="last6months">6 tháng qua</option>
+              <option value="last12months">12 tháng qua</option>
+              <option value="thisyear">Năm nay</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label>Ngành nghề:</label>
+            <select [(ngModel)]="selectedIndustry" (change)="onIndustryChange(selectedIndustry)" class="filter-select">
+              <option value="all">Tất cả ngành</option>
+              <option value="it">Công nghệ thông tin</option>
+              <option value="trade">Thương mại dịch vụ</option>
+              <option value="manufacturing">Sản xuất chế biến</option>
+              <option value="finance">Đầu tư tài chính</option>
+              <option value="tourism">Du lịch dịch vụ</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label>Chỉ số:</label>
+            <select [(ngModel)]="selectedMetric" (change)="onMetricChange(selectedMetric)" class="filter-select">
+              <option value="all">Tất cả chỉ số</option>
+              <option value="registrations">Đăng ký doanh nghiệp</option>
+              <option value="applications">Hồ sơ ứng tuyển</option>
+              <option value="searches">Tìm kiếm</option>
+              <option value="jobs">Việc làm</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statistics Overview -->
+      <div class="statistics-overview">
+        <div class="stats-grid">
+          <div class="stat-card primary">
+            <div class="stat-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/>
+                <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <div class="stat-number">{{statisticsOverview.totalBusinesses | number}}</div>
+              <div class="stat-label">Tổng doanh nghiệp</div>
+              <div class="stat-change positive">+{{statisticsOverview.monthlyGrowth}}% tháng này</div>
+            </div>
+          </div>
+
+          <div class="stat-card success">
+            <div class="stat-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                <line x1="8" y1="21" x2="16" y2="21" stroke="currentColor" stroke-width="2"/>
+                <line x1="12" y1="17" x2="12" y2="21" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <div class="stat-number">{{statisticsOverview.totalJobPostings | number}}</div>
+              <div class="stat-label">Tin tuyển dụng</div>
+              <div class="stat-change positive">+{{statisticsOverview.activeJobs}} đang hoạt động</div>
+            </div>
+          </div>
+
+          <div class="stat-card warning">
+            <div class="stat-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                <line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" stroke-width="2"/>
+                <line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" stroke-width="2"/>
+                <polyline points="10,9 9,9 8,9" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <div class="stat-number">{{statisticsOverview.totalApplications | number}}</div>
+              <div class="stat-label">Hồ sơ ứng tuyển</div>
+              <div class="stat-change positive">+15.2% so với tháng trước</div>
+            </div>
+          </div>
+
+          <div class="stat-card info">
+            <div class="stat-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/>
+                <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <div class="stat-number">{{statisticsOverview.totalCandidates | number}}</div>
+              <div class="stat-label">Ứng viên đăng ký</div>
+              <div class="stat-change positive">+{{statisticsOverview.yearlyGrowth}}% so với năm trước</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Section -->
+      <div class="charts-section">
+        <div class="charts-grid">
+          
+          <!-- Registration Trends Chart -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3 class="chart-title">Xu hướng đăng ký doanh nghiệp</h3>
+              <div class="chart-legend">
+                <span class="legend-item">
+                  <div class="legend-color primary"></div>
+                  Số lượng đăng ký
+                </span>
+              </div>
+            </div>
+            <div class="chart-content">
+              <div class="simple-line-chart">
+                <div class="chart-grid-lines">
+                  <div *ngFor="let line of [1,2,3,4,5]" class="grid-line"></div>
+                </div>
+                <div class="chart-bars">
+                  <div *ngFor="let trend of registrationTrends" class="chart-bar-group">
+                    <div class="chart-bar" 
+                         [style.height.%]="getChartHeight(trend.value, getMaxValue(registrationTrends))"
+                         [title]="trend.month + ': ' + trend.value + ' đăng ký'">
+                    </div>
+                    <div class="chart-label">{{trend.month}}</div>
+                    <div class="chart-value">{{trend.value}}</div>
+                    <div [class]="'chart-change ' + getTrendClass(trend.change)">
+                      {{trend.change > 0 ? '+' : ''}}{{trend.change}}%
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Industry Distribution -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3 class="chart-title">Phân bổ theo ngành nghề</h3>
+              <div class="chart-stats">
+                <span>{{getTotalBusinessesInIndustries()}} doanh nghiệp</span>
+                <span>{{getTotalJobs()}} việc làm</span>
+              </div>
+            </div>
+            <div class="chart-content">
+              <div class="industry-chart">
+                <div *ngFor="let industry of topIndustries" class="industry-item">
+                  <div class="industry-info">
+                    <div class="industry-name">{{industry.name}}</div>
+                    <div class="industry-stats">
+                      <span>{{industry.businessCount}} DN</span>
+                      <span>{{industry.jobCount}} VL</span>
+                    </div>
+                  </div>
+                  <div class="industry-bar">
+                    <div class="bar-fill" 
+                         [style.width.%]="industry.percentage"
+                         [style.background]="industry.color">
+                    </div>
+                    <div class="bar-percentage">{{industry.percentage}}%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Search Keywords Section -->
+      <div class="keywords-section">
+        <div class="section-header">
+          <h3 class="section-title">Từ khóa tìm kiếm phổ biến</h3>
+          <div class="section-subtitle">Top 8 từ khóa được tìm kiếm nhiều nhất</div>
+        </div>
+        <div class="keywords-grid">
+          <div *ngFor="let keyword of searchKeywords" class="keyword-card">
+            <div class="keyword-info">
+              <div class="keyword-name">{{keyword.keyword}}</div>
+              <div class="keyword-count">{{keyword.count | number}} lượt tìm</div>
+            </div>
+            <div class="keyword-trend">
+              <div [class]="'trend-indicator ' + keyword.trend">
+                <span class="trend-icon">{{getTrendIcon(keyword.trend)}}</span>
+                <span class="trend-percentage" 
+                      [class]="keyword.percentage > 0 ? 'positive' : keyword.percentage < 0 ? 'negative' : 'neutral'">
+                  {{keyword.percentage > 0 ? '+' : ''}}{{keyword.percentage}}%
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Application Trends -->
+      <div class="trends-section">
+        <div class="section-header">
+          <h3 class="section-title">Xu hướng ứng tuyển</h3>
+          <div class="section-subtitle">Thống kê số lượng hồ sơ ứng tuyển qua các tháng</div>
+        </div>
+        <div class="trends-chart">
+          <div class="chart-container">
+            <div class="y-axis">
+              <div class="y-label">Số lượng hồ sơ</div>
+              <div class="y-values">
+                <div *ngFor="let value of [1400, 1200, 1000, 800, 600, 400, 200, 0]" class="y-value">
+                  {{value}}
+                </div>
+              </div>
+            </div>
+            <div class="chart-area">
+              <div class="trend-line-chart">
+                <svg viewBox="0 0 800 300" class="trend-svg">
+                  <!-- Grid lines -->
+                  <defs>
+                    <pattern id="grid" width="80" height="30" patternUnits="userSpaceOnUse">
+                      <path d="M 80 0 L 0 0 0 30" fill="none" stroke="#f0f0f0" stroke-width="1"/>
+                    </pattern>
+                  </defs>
+                  <rect width="100%" height="100%" fill="url(#grid)" />
+                  
+                  <!-- Trend line -->
+                  <polyline 
+                    [attr.points]="getApplicationTrendPoints()"
+                    fill="none" 
+                    stroke="#007aff" 
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+                  
+                  <!-- Data points -->
+                  <circle *ngFor="let trend of applicationTrends; let i = index"
+                    [attr.cx]="getApplicationTrendPoint(trend, i).x"
+                    [attr.cy]="getApplicationTrendPoint(trend, i).y"
+                    r="5"
+                    fill="#007aff"
+                    stroke="white"
+                    stroke-width="2"
+                    [title]="trend.month + ': ' + trend.value + ' hồ sơ'">
+                  </circle>
+                </svg>
+              </div>
+              <div class="x-axis">
+                <div *ngFor="let trend of applicationTrends" class="x-label">
+                  {{trend.month}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
