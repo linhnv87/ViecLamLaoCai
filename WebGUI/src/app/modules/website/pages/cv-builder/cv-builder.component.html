@@ -1,0 +1,257 @@
+<!-- Splash Screen -->
+<app-splash-screen></app-splash-screen>
+
+<div class="container">
+  <div class="dashboard-layout">
+    <app-dashboard-sidebar></app-dashboard-sidebar>
+
+    <div class="dashboard-content-wrap">
+      
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1 class="page-title">{{isEditMode ? 'Chỉnh sửa CV' : 'Tạo CV mới'}}</h1>
+        <p class="page-subtitle">{{isEditMode ? 'Cập nhật thông tin CV của bạn' : 'Tạo CV chuyên nghiệp với thiết kế hiện đại'}}</p>
+        
+        <div class="header-actions">
+          <button (click)="goBack()" class="btn-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M19 12H6m0 0l6 6m-6-6l6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Quay lại
+          </button>
+          <button (click)="saveCV()" class="btn-primary" [disabled]="!isFormValid()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" stroke="currentColor" stroke-width="2"/>
+              <polyline points="17,21 17,13 7,13 7,21" stroke="currentColor" stroke-width="2"/>
+              <polyline points="7,3 7,8 15,8" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            {{isEditMode ? 'Cập nhật CV' : 'Lưu CV'}}
+          </button>
+          <div class="export-dropdown">
+            <button (click)="toggleExportDropdown()" class="btn-export">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/>
+                <polyline points="7,10 12,15 17,10" stroke="currentColor" stroke-width="2"/>
+                <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+              </svg>
+              Xuất file
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                <polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </button>
+            <div *ngIf="showExportDropdown" class="export-menu">
+              <button (click)="exportCV('html')" class="export-option">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                  <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                HTML/CSS
+              </button>
+              <button (click)="exportCV('word')" class="export-option">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                  <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Word
+              </button>
+              <button (click)="exportCV('pdf')" class="export-option">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                  <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                PDF
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CV Builder Layout - Only Preview Panel -->
+      <div class="cv-builder-layout">
+        
+        <!-- Preview Panel (Full Width) -->
+        <div class="preview-panel full-width">
+          <div class="cv-preview">
+            <div class="cv-container">
+              
+              <!-- Left Column -->
+              <div class="cv-left-column">
+                <!-- Profile Section -->
+                <div class="profile-section">
+                  <!-- Profile Image Upload -->
+                  <div class="profile-image" [class.has-image]="cvData.personalInfo.profileImage" (click)="fileInput.click()">
+                    <img *ngIf="cvData.personalInfo.profileImage" [src]="cvData.personalInfo.profileImage" alt="Profile">
+                    <div *ngIf="!cvData.personalInfo.profileImage" class="placeholder-avatar">👤</div>
+                    <input type="file" #fileInput (change)="onImageSelect($event)" accept="image/*" style="display: none;">
+                    <div class="upload-overlay">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/>
+                        <polyline points="17,8 12,3 7,8" stroke="currentColor" stroke-width="2"/>
+                        <line x1="12" y1="3" x2="12" y2="15" stroke="currentColor" stroke-width="2"/>
+                      </svg>
+                    </div>
+                  </div>
+                  
+                  <!-- Gender Selection Icons (like TimViec) -->
+                  <div class="gender-selection">
+                    <div class="gender-option" [class.active]="cvData.personalInfo.gender === 'Nam'" 
+                         (click)="cvData.personalInfo.gender = 'Nam'" title="Nam">
+                      👨
+                    </div>
+                    <div class="gender-option" [class.active]="cvData.personalInfo.gender === 'Nữ'" 
+                         (click)="cvData.personalInfo.gender = 'Nữ'" title="Nữ">
+                      👩
+                    </div>
+                  </div>
+                  
+                  <!-- Name and Job Title (Editable) -->
+                  <h1 class="name" contenteditable="true" 
+                      (blur)="updateFullName($event)" 
+                      [textContent]="cvData.personalInfo.fullName || 'vinh hoang'"></h1>
+                  <h2 class="job-title" contenteditable="true" 
+                      (blur)="updateJobTitle($event)" 
+                      [textContent]="cvData.personalInfo.jobTitle || 'Giám Đốc Kinh Doanh'"></h2>
+                </div>
+
+                <!-- Skills -->
+                <div class="skills-section">
+                  <h3 class="section-heading">Kỹ năng</h3>
+                  <div class="skills-list" *ngIf="cvData.skills.length > 0">
+                    <div class="skill-item" *ngFor="let skill of cvData.skills; let i = index">
+                      <svg class="check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none">
+                        <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                      <span contenteditable="true" 
+                            (blur)="updateSkillName($event, i)"
+                            [textContent]="skill.name || 'Kỹ năng mới'"></span>
+                      <button class="remove-btn" (click)="removeSkill(i)" *ngIf="cvData.skills.length > 1">×</button>
+                    </div>
+                  </div>
+                  <p *ngIf="cvData.skills.length === 0" class="placeholder-text">Chưa có kỹ năng nào</p>
+                  <button class="add-skill-btn" (click)="addSkill()">+ Thêm kỹ năng</button>
+                </div>
+              </div>
+
+              <!-- Right Column -->
+              <div class="cv-right-column">
+                
+                <!-- Career Objective -->
+                <div class="objective-section">
+                  <h3 class="section-heading">Mục tiêu nghề nghiệp</h3>
+                  <div class="objective-content" *ngIf="cvData.summary">
+                    <p contenteditable="true" 
+                       (blur)="updateSummary($event)"
+                       [textContent]="cvData.summary"></p>
+                  </div>
+                  <p *ngIf="!cvData.summary" (click)="cvData.summary = 'Nhập mục tiêu nghề nghiệp...'"
+                     class="placeholder-text">Thêm mục tiêu nghề nghiệp</p>
+                </div>
+
+                <!-- Education -->
+                <div class="education-section">
+                  <h3 class="section-heading">Học vấn</h3>
+                  <div class="education-list" *ngIf="cvData.education.length > 0">
+                    <div class="education-item" *ngFor="let edu of cvData.education; let i = index">
+                      <h4 contenteditable="true" 
+                          (blur)="updateEducationSchool($event, i)"
+                          [textContent]="edu.school || 'Tên trường'"></h4>
+                      <div class="education-details">
+                        <span class="degree" contenteditable="true" 
+                              (blur)="updateEducationDegree($event, i)"
+                              [textContent]="edu.degree || 'Bằng cấp'"></span>
+                        <span class="period">{{formatMonth(edu.startDate || '')}} - {{formatMonth(edu.endDate || '')}}</span>
+                      </div>
+                      <div class="grade" *ngIf="edu.grade" contenteditable="true" 
+                           (blur)="updateEducationGrade($event, i)"
+                           [textContent]="edu.grade"></div>
+                      <div class="grade" *ngIf="!edu.grade" class="placeholder-text" 
+                           (click)="edu.grade = 'Xếp loại'">Thêm xếp loại</div>
+                      <button class="remove-btn" (click)="removeEducation(i)" *ngIf="cvData.education.length > 1">×</button>
+                    </div>
+                  </div>
+                  <p *ngIf="cvData.education.length === 0" class="placeholder-text">Chưa có thông tin học vấn</p>
+                  <button class="add-edu-btn" (click)="addEducation()">+ Thêm học vấn</button>
+                </div>
+
+                <!-- Work Experience -->
+                <div class="experience-section">
+                  <h3 class="section-heading">Kinh nghiệm làm việc</h3>
+                  <div class="experience-list" *ngIf="cvData.experience.length > 0">
+                    <div class="experience-item" *ngFor="let exp of cvData.experience; let i = index">
+                      <h4 contenteditable="true" 
+                          (blur)="updateExperienceCompany($event, i)"
+                          [textContent]="exp.companyName || 'Tên công ty'"></h4>
+                      <div class="experience-details">
+                        <span class="position" contenteditable="true" 
+                              (blur)="updateExperienceJobTitle($event, i)"
+                          [textContent]="exp.jobTitle || 'Chức vụ'"></span>
+                        <span class="period">{{formatMonth(exp.startDate || '')}} - {{exp.isCurrentJob ? 'Hiện tại' : formatMonth(exp.endDate || '')}}</span>
+                      </div>
+                      <div class="description" *ngIf="exp.description" 
+                           contenteditable="true" 
+                           (blur)="updateExperienceDescription($event, i)"
+                           [textContent]="exp.description"></div>
+                      <div class="description" *ngIf="!exp.description" class="placeholder-text" 
+                           (click)="exp.description = 'Mô tả công việc...'">Thêm mô tả công việc</div>
+                      <button class="remove-btn" (click)="removeExperience(i)" *ngIf="cvData.experience.length > 1">×</button>
+                    </div>
+                  </div>
+                  <p *ngIf="cvData.experience.length === 0" class="placeholder-text">Chưa có kinh nghiệm làm việc</p>
+                  <button class="add-exp-btn" (click)="addExperience()">+ Thêm kinh nghiệm</button>
+                </div>
+
+                <!-- Computer Skills -->
+                <div class="computer-skills-section" [class.empty-section]="!cvData.computerSkills">
+                  <h3 class="section-heading">Tin học</h3>
+                  <div class="computer-skills-content" *ngIf="cvData.computerSkills">
+                    <p contenteditable="true" 
+                       (blur)="updateComputerSkills($event)"
+                       [textContent]="cvData.computerSkills"></p>
+                  </div>
+                  <p *ngIf="!cvData.computerSkills" (click)="cvData.computerSkills = 'Nhập kỹ năng tin học...'"
+                     class="placeholder-text">Thêm tin học</p>
+                </div>
+
+                <!-- Languages -->
+                <div class="languages-section" [class.empty-section]="cvData.languages.length === 0">
+                  <h3 class="section-heading">Ngoại ngữ</h3>
+                  <div class="languages-list" *ngIf="cvData.languages.length > 0">
+                    <div class="language-item" *ngFor="let lang of cvData.languages; let i = index">
+                      <span class="language-name" contenteditable="true" 
+                            (blur)="updateLanguageName($event, i)"
+                            [textContent]="lang.name"></span>: 
+                      <span class="language-level" contenteditable="true" 
+                            (blur)="updateLanguageLevel($event, i)"
+                            [textContent]="lang.level"></span>
+                      <button class="remove-btn" (click)="removeLanguage(i)" *ngIf="cvData.languages.length > 1">×</button>
+                    </div>
+                  </div>
+                  <p *ngIf="cvData.languages.length === 0" (click)="addLanguage()" 
+                     class="placeholder-text">Thêm ngoại ngữ</p>
+                  <button class="add-lang-btn" (click)="addLanguage()" *ngIf="cvData.languages.length > 0">+ Thêm ngoại ngữ</button>
+                </div>
+
+                <!-- Interests -->
+                <div class="interests-section" [class.empty-section]="!cvData.interests">
+                  <h3 class="section-heading">Sở thích</h3>
+                  <div class="interests-content" *ngIf="cvData.interests">
+                    <p contenteditable="true" 
+                       (blur)="updateInterests($event)"
+                       [textContent]="cvData.interests"></p>
+                  </div>
+                  <p *ngIf="!cvData.interests" (click)="cvData.interests = 'Nhập sở thích...'"
+                     class="placeholder-text">Thêm sở thích</p>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+
+    </div>
+  </div>
+</div>

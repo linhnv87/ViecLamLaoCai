@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { LOCAL_STORAGE_KEYS } from '../../utils/constants';
-import { WebsiteMenuModel, getActiveMenuItems } from '../../config/website-menu';
+import { WebsiteMenuModel, getActiveMenuItems, getMenuItemsByRole } from '../../config/website-menu';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { GetCurrentUserRoles, GetRoleInfo } from '../../utils/commonFunctions';
 
 @Component({
   selector: 'app-dashboard-sidebar',
@@ -13,6 +14,7 @@ export class DashboardSidebarComponent implements OnInit {
   userInfo: any = null;
   menuItems: WebsiteMenuModel[] = [];
   currentUrl = '';
+  userRoleInfo: any = null;
 
   constructor(private router: Router) {}
 
@@ -32,10 +34,16 @@ export class DashboardSidebarComponent implements OnInit {
     if (userInfoString) {
       this.userInfo = JSON.parse(userInfoString);
     }
+    this.userRoleInfo = GetRoleInfo();
   }
 
   loadMenuItems(): void {
-    this.menuItems = getActiveMenuItems();
+    const userRoles = GetCurrentUserRoles();
+    if (userRoles && userRoles.length > 0) {
+      this.menuItems = getMenuItemsByRole(userRoles);
+    } else {
+      this.menuItems = getActiveMenuItems();
+    }
   }
 
   isActive(path: string | undefined): boolean {
@@ -50,5 +58,13 @@ export class DashboardSidebarComponent implements OnInit {
     if (path && path !== '#') {
       window.location.href = path;
     }
+  }
+
+  getUserMainRole(): string {
+    if (this.userRoleInfo?.admin) return 'Admin';
+    if (this.userRoleInfo?.ungVien) return 'Ứng viên';
+    if (this.userRoleInfo?.doanhNghiep) return 'Doanh nghiệp';
+    if (this.userRoleInfo?.coQuanQuanLy) return 'Cơ quan quản lý nhà nước';
+    return 'Người dùng';
   }
 }

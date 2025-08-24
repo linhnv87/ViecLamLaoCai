@@ -59,8 +59,8 @@
             </a>
 
             <div class="user-info">
-              <span class="text-sky-300">Doanh nghiệp</span>
-              <span class="text-white">{{userInfo?.fullName || 'Người dùng'}}</span>
+              <span class="text-sky-300">{{getRoleDisplayName()}}</span>
+              <span class="text-white">{{userInfo?.displayName || 'Người dùng'}}</span>
             </div>
 
             <div class="btn-dropdown-wrap">
@@ -71,7 +71,12 @@
               <div class="dropdown-wrap">
                 <a (click)="navigateToDashboard()" class="dropdown-item" style="cursor: pointer;">
                   <img src="assets/vieclamlaocai/img/icon/icon-color-user.png" alt="">
-                  <span>Trang cá nhân</span>
+                  <span>Trang quản lý </span>
+                </a>
+                
+                <a (click)="navigateToChangePassword()" class="dropdown-item">
+                  <i class="fas fa-lock"></i>
+                  <span>Đổi mật khẩu</span>
                 </a>
 
                 <a href="#" (click)="logout()" class="dropdown-item">
@@ -127,7 +132,7 @@
               </a>
 
               <div class="user-info">
-                <span class="text-sky-300">Doanh nghiệp</span>
+                <span class="text-sky-300">{{getRoleDisplayName()}}</span>
                 <span class="text-white">{{userInfo?.fullName || 'Người dùng'}}</span>
               </div>
 
@@ -140,6 +145,11 @@
                   <a (click)="navigateToDashboard()" class="dropdown-item" style="cursor: pointer;">
                     <img src="assets/vieclamlaocai/img/icon/icon-color-user.png" alt="">
                     <span>Trang cá nhân</span>
+                  </a>
+                  
+                  <a routerLink="/website/change-password" class="dropdown-item">
+                    <i class="fas fa-lock"></i>
+                    <span>Đổi mật khẩu</span>
                   </a>
 
                   <a href="#" (click)="logout()" class="dropdown-item">

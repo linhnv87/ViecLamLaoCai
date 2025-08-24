@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SplashScreenService } from '../../../../services/splash-screen.service';
-import { StatisticsService, StatisticsOverview, TrendData, SearchTrendData, IndustryStatistic } from '../../../../services/website/statistics.service';
+import { StatisticsService } from '../../../../services/website/statistics.service';
+import { StatisticsOverview, TrendData, SearchTrendData, IndustryStatistic } from '../../../../models/statistics.model';
 
 @Component({
   selector: 'app-statistics-report',
@@ -191,3 +192,9 @@ export class StatisticsReportComponent implements OnInit {
     };
   }
 }
+
+
+
+
+
+

@@ -17,6 +17,11 @@ import { LaborMarketReportComponent } from './pages/labor-market-report/labor-ma
 import { RegisterBusinessComponent } from './pages/register-business/register-business.component';
 import { RegisterCandidateComponent } from './pages/register-candidate/register-candidate.component';
 import { SearchResultsComponent } from './pages/search-results/search-results.component';
+import { CvManagementComponent } from './pages/cv-management/cv-management.component';
+import { CvBuilderComponent } from './pages/cv-builder/cv-builder.component';
+import { JobDetailComponent } from './pages/job-detail/job-detail.component';
+import { ChangeInfoPageComponent } from './pages/change-info/change-info-page.component';
+import { ChangePasswordPageComponent } from './pages/change-password/change-password-page.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +35,12 @@ import { SearchResultsComponent } from './pages/search-results/search-results.co
     LaborMarketReportComponent,
     RegisterBusinessComponent,
     RegisterCandidateComponent,
-    SearchResultsComponent
+    SearchResultsComponent,
+    CvManagementComponent,
+    CvBuilderComponent,
+    JobDetailComponent,
+    ChangeInfoPageComponent,
+    ChangePasswordPageComponent
   ],
   imports: [
     CommonModule,
@@ -41,3 +51,4 @@ import { SearchResultsComponent } from './pages/search-results/search-results.co
   ]
 })
 export class WebsiteModule { }
+

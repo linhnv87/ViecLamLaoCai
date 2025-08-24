@@ -88,7 +88,7 @@
                 class="job-wrap" 
                 *ngFor="let job of group; let i = index"
                 [class.active]="i === 1">
-                <a href="#" class="title">{{job.title}}</a>
+                <a [routerLink]="['/website/job', job.id]" class="title">{{job.title}}</a>
                 <div class="company">
                   <img class="company-logo" [src]="job.logo" [alt]="job.company">
                   <div class="company-name">{{job.company}}</div>
@@ -155,7 +155,7 @@
 
                 <div class="job2-wrap" *ngFor="let job of group">
                   <div class="header">
-                    <a href="#" class="title">{{job.title}}</a>
+                    <a [routerLink]="['/website/job', job.id]" class="title">{{job.title}}</a>
                     <div class="tags">
                       <div class="tag-wrap orange">{{job.experience}}</div>
                       <div class="tag-wrap">{{job.salary}}</div>
@@ -228,111 +228,37 @@
 
         <div class="group2-wrap">
 
-          <div class="job-wrap">
-            <a href="#" class="title">Kế toán nội bộ - không yêu cầu kinh nghiệm</a>
+          <!-- Dynamic latest jobs from service -->
+          <div 
+            class="job-wrap" 
+            *ngFor="let job of latestJobs; let i = index; trackBy: trackByIndex"
+            [class.active]="i === 2 || i === 4">
+            <a [routerLink]="['/website/job', job.id]" class="title">{{ job.title }}</a>
             <div class="company">
-              <img class="company-logo" src="assets/vieclamlaocai/img/image 16.png" alt="">
-              <div class="company-name">Công ty Cổ phần dịch vụ Công nghệ TSC Việt Nam</div>
+              <img class="company-logo" [src]="job.logo" [alt]="job.company">
+              <div class="company-name">{{ job.company }}</div>
             </div>
             <div class="tags">
-              <div class="tag-wrap">15 - 50 triệu</div>
-              <div class="tag-wrap orange">Còn 5 ngày</div>
+              <div class="tag-wrap">{{ job.salary }}</div>
+              <div 
+                class="tag-wrap" 
+                [class.orange]="job.urgent"
+                [class.green]="!job.urgent">
+                {{ job.urgent ? 'Còn ' + job.daysLeft + ' ngày' : 'Việc làm hot' }}
+              </div>
             </div>
           </div>
 
-          <div class="job-wrap">
-            <a href="#" class="title">Kế toán nội bộ - không yêu cầu kinh nghiệm</a>
+          <!-- Loading state for latest jobs -->
+          <div class="job-wrap" *ngIf="latestJobs.length === 0">
+            <a href="#" class="title">Đang tải việc làm mới nhất...</a>
             <div class="company">
               <img class="company-logo" src="assets/vieclamlaocai/img/image 16.png" alt="">
-              <div class="company-name">Công ty Cổ phần dịch vụ Công nghệ TSC Việt Nam</div>
+              <div class="company-name">Vui lòng chờ trong giây lát</div>
             </div>
             <div class="tags">
-              <div class="tag-wrap">15 - 50 triệu</div>
-              <div class="tag-wrap orange">Còn 5 ngày</div>
-            </div>
-          </div>
-
-          <div class="job-wrap active">
-            <a href="#" class="title">Kế toán nội bộ - không yêu cầu kinh nghiệm</a>
-            <div class="company">
-              <img class="company-logo" src="assets/vieclamlaocai/img/image 16.png" alt="">
-              <div class="company-name">Công ty Cổ phần dịch vụ Công nghệ TSC Việt Nam</div>
-            </div>
-            <div class="tags">
-              <div class="tag-wrap">15 - 50 triệu</div>
-              <div class="tag-wrap orange">Còn 5 ngày</div>
-            </div>
-          </div>
-
-          <div class="job-wrap">
-            <a href="#" class="title">Kế toán nội bộ - không yêu cầu kinh nghiệm</a>
-            <div class="company">
-              <img class="company-logo" src="assets/vieclamlaocai/img/image 16.png" alt="">
-              <div class="company-name">Công ty Cổ phần dịch vụ Công nghệ TSC Việt Nam</div>
-            </div>
-            <div class="tags">
-              <div class="tag-wrap">15 - 50 triệu</div>
-              <div class="tag-wrap orange">Còn 5 ngày</div>
-            </div>
-          </div>
-
-          <div class="job-wrap active">
-            <a href="#" class="title">Kế toán nội bộ - không yêu cầu kinh nghiệm</a>
-            <div class="company">
-              <img class="company-logo" src="assets/vieclamlaocai/img/image 16.png" alt="">
-              <div class="company-name">Công ty Cổ phần dịch vụ Công nghệ TSC Việt Nam</div>
-            </div>
-            <div class="tags">
-              <div class="tag-wrap">15 - 50 triệu</div>
-              <div class="tag-wrap orange">Còn 5 ngày</div>
-            </div>
-          </div>
-
-          <div class="job-wrap">
-            <a href="#" class="title">Kế toán nội bộ - không yêu cầu kinh nghiệm</a>
-            <div class="company">
-              <img class="company-logo" src="assets/vieclamlaocai/img/image 16.png" alt="">
-              <div class="company-name">Công ty Cổ phần dịch vụ Công nghệ TSC Việt Nam</div>
-            </div>
-            <div class="tags">
-              <div class="tag-wrap">15 - 50 triệu</div>
-              <div class="tag-wrap orange">Còn 5 ngày</div>
-            </div>
-          </div>
-
-          <div class="job-wrap">
-            <a href="#" class="title">Kế toán nội bộ - không yêu cầu kinh nghiệm</a>
-            <div class="company">
-              <img class="company-logo" src="assets/vieclamlaocai/img/image 16.png" alt="">
-              <div class="company-name">Công ty Cổ phần dịch vụ Công nghệ TSC Việt Nam</div>
-            </div>
-            <div class="tags">
-              <div class="tag-wrap">15 - 50 triệu</div>
-              <div class="tag-wrap orange">Còn 5 ngày</div>
-            </div>
-          </div>
-
-          <div class="job-wrap">
-            <a href="#" class="title">Kế toán nội bộ - không yêu cầu kinh nghiệm</a>
-            <div class="company">
-              <img class="company-logo" src="assets/vieclamlaocai/img/image 16.png" alt="">
-              <div class="company-name">Công ty Cổ phần dịch vụ Công nghệ TSC Việt Nam</div>
-            </div>
-            <div class="tags">
-              <div class="tag-wrap">15 - 50 triệu</div>
-              <div class="tag-wrap orange">Còn 5 ngày</div>
-            </div>
-          </div>
-
-          <div class="job-wrap">
-            <a href="#" class="title">Kế toán nội bộ - không yêu cầu kinh nghiệm</a>
-            <div class="company">
-              <img class="company-logo" src="assets/vieclamlaocai/img/image 16.png" alt="">
-              <div class="company-name">Công ty Cổ phần dịch vụ Công nghệ TSC Việt Nam</div>
-            </div>
-            <div class="tags">
-              <div class="tag-wrap">15 - 50 triệu</div>
-              <div class="tag-wrap orange">Còn 5 ngày</div>
+              <div class="tag-wrap">Đang tải...</div>
+              <div class="tag-wrap orange">Đang tải...</div>
             </div>
           </div>
 
@@ -396,59 +322,55 @@
         </div>
 
         <div class="section-content">
+          <div class="js-company-slide owl-carousel owl-theme slide-dots item-padding-bottom" *ngIf="featuredCompanies.length > 0">
+            <div 
+              class="company-wrap" 
+              *ngFor="let company of featuredCompanies; trackBy: trackByIndex"
+              [title]="company.name + ' - ' + company.industry">
+              <div class="logo">
+                <img [src]="company.logo" [alt]="company.name">
+              </div>
+              <div class="number">{{ company.jobCount }} việc làm</div>
+            </div>
+          </div>
 
-          <div class="js-company-slide owl-carousel owl-theme slide-dots item-padding-bottom">
-
+          <div class="js-company-slide owl-carousel owl-theme slide-dots item-padding-bottom" *ngIf="featuredCompanies.length === 0">
             <div class="company-wrap">
               <div class="logo">
                 <img src="assets/vieclamlaocai/img/image 22.png" alt="">
               </div>
-              <div class="number">10 việc làm</div>
+              <div class="number">Đang tải...</div>
             </div>
-
             <div class="company-wrap">
               <div class="logo">
                 <img src="assets/vieclamlaocai/img/image 19.png" alt="">
               </div>
-              <div class="number">15 việc làm</div>
+              <div class="number">Đang tải...</div>
             </div>
-
             <div class="company-wrap">
               <div class="logo">
                 <img src="assets/vieclamlaocai/img/image 21.png" alt="">
               </div>
-              <div class="number">10 việc làm</div>
+              <div class="number">Đang tải...</div>
             </div>
-
             <div class="company-wrap">
               <div class="logo">
                 <img src="assets/vieclamlaocai/img/image 18.png" alt="">
               </div>
-              <div class="number">10 việc làm</div>
+              <div class="number">Đang tải...</div>
             </div>
-
-            <div class="company-wrap">
-              <div class="logo">
-                <img src="assets/vieclamlaocai/img/image 18.png" alt="">
-              </div>
-              <div class="number">10 việc làm</div>
-            </div>
-
             <div class="company-wrap">
               <div class="logo">
                 <img src="assets/vieclamlaocai/img/image 22.png" alt="">
               </div>
-              <div class="number">10 việc làm</div>
+              <div class="number">Đang tải...</div>
             </div>
-
             <div class="company-wrap">
               <div class="logo">
                 <img src="assets/vieclamlaocai/img/image 19.png" alt="">
               </div>
-              <div class="number">15 việc làm</div>
+              <div class="number">Đang tải...</div>
             </div>
-
-
           </div>
 
         </div>

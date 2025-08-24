@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd, NavigationStart } from '@angular/router';
-import { LOCAL_STORAGE_KEYS } from '../../utils/constants';
+import { LOCAL_STORAGE_KEYS, ROLES } from '../../utils/constants';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
@@ -70,11 +70,41 @@ export class HeaderComponent implements OnInit, OnDestroy {
     console.log('Navigating to dashboard with page reload');
     window.location.href = '/website/dashboard';
   }
-
+  navigateToChangePassword(): void {
+    console.log('Navigating to dashboard with page reload');
+    window.location.href = '/website/change-password';
+  }
+ 
   logout(): void {
     localStorage.removeItem(LOCAL_STORAGE_KEYS.USER_INFO);
     this.isLoggedIn = false;
     this.userInfo = null;
     window.location.href = '/website/home';
+  }
+
+  getRoleDisplayName(): string {
+    if (!this.userInfo || !this.userInfo.roles || !this.userInfo.roles.length) {
+      return 'Người dùng';
+    }
+
+    const mainRoles = [ROLES.UNG_VIEN, ROLES.DOANH_NGHIEP, ROLES.CO_QUAN_QUAN_LY, ROLES.ADMIN];
+    const userRole = this.userInfo.roles.find((role: string) => mainRoles.includes(role));
+    
+    if (!userRole) {
+      return 'Người dùng';
+    }
+
+    switch (userRole) {
+      case ROLES.UNG_VIEN:
+        return 'Ứng viên';
+      case ROLES.DOANH_NGHIEP:
+        return 'Doanh nghiệp';
+      case ROLES.CO_QUAN_QUAN_LY:
+        return 'Cơ quan quản lý';
+      case ROLES.ADMIN:
+        return 'Quản trị viên';
+      default:
+        return 'Người dùng';
+    }
   }
 }

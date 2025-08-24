@@ -2,97 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { BaseResponseModel } from '../../models/baseResponse.model';
+import { BusinessDashboardModel, CandidateDashboardModel, AdminDashboardModel, RecentJobModel, RecentCandidateModel, SavedJobModel, RecentApplicationModel, ActivityModel, SystemHealthModel } from '../../models/dashboard.model';
 import { environment } from '../../../environments/environments';
-
-export interface BusinessDashboardModel {
-  totalJobs: number;
-  activeJobs: number;
-  totalApplications: number;
-  totalViews: number;
-  todayApplications: number;
-  todayViews: number;
-  recentJobs: RecentJobModel[];
-  recentCandidates: RecentCandidateModel[];
-}
-
-export interface CandidateDashboardModel {
-  totalApplications: number;
-  pendingApplications: number;
-  approvedApplications: number;
-  rejectedApplications: number;
-  profileViews: number;
-  savedJobs: SavedJobModel[];
-  recentApplications: RecentApplicationModel[];
-}
-
-export interface AdminDashboardModel {
-  totalBusinesses: number;
-  pendingApprovals: number;
-  totalJobs: number;
-  totalCandidates: number;
-  todayRegistrations: number;
-  systemHealth: SystemHealthModel;
-}
-
-export interface RecentJobModel {
-  id: number;
-  title: string;
-  company: string;
-  applications: number;
-  views: number;
-  postedDate: string;
-  status: string;
-  urgent: boolean;
-}
-
-export interface RecentCandidateModel {
-  id: number;
-  name: string;
-  position: string;
-  experience: string;
-  education: string;
-  appliedDate: string;
-  status: string;
-  avatar: string;
-}
-
-export interface SavedJobModel {
-  id: number;
-  jobTitle: string;
-  company: string;
-  logo: string;
-  salary: string;
-  savedDate: string;
-  location: string;
-  urgent: boolean;
-}
-
-export interface RecentApplicationModel {
-  id: number;
-  jobTitle: string;
-  company: string;
-  logo: string;
-  salary: string;
-  status: string;
-  appliedDate: string;
-  location: string;
-}
-
-export interface ActivityModel {
-  id: number;
-  type: 'application' | 'job_view' | 'profile_update' | 'message';
-  title: string;
-  description: string;
-  timestamp: string;
-  userId: string;
-}
-
-export interface SystemHealthModel {
-  status: 'healthy' | 'warning' | 'error';
-  uptime: string;
-  responseTime: number;
-  activeUsers: number;
-}
 
 @Injectable({
   providedIn: 'root'
@@ -153,11 +64,49 @@ export class DashboardService {
           id: 1,
           name: 'Nguyễn Văn A',
           position: 'Frontend Developer',
-          experience: '3 năm',
-          education: 'Đại học Bách Khoa',
+          experience: '3 năm kinh nghiệm',
+          education: 'Đại học Bách Khoa Hà Nội',
           appliedDate: '2024-01-15',
           status: 'new',
-          avatar: 'assets/vieclamlaocai/img/image 16.png'
+          avatar: 'assets/vieclamlaocai/img/image 16.png',
+          age: 28,
+          location: 'Lào Cai',
+          level: 'Nhân viên',
+          industry: 'Công nghệ thông tin',
+          previousCompany: 'Công ty TNHH ABC Tech',
+          salaryExpectation: '15 - 25 triệu'
+        },
+        {
+          id: 2,
+          name: 'Trần Thị B',
+          position: 'Kế toán',
+          experience: '5 năm kinh nghiệm',
+          education: 'Đại học Kinh tế Quốc dân',
+          appliedDate: '2024-01-14',
+          status: 'reviewed',
+          avatar: 'assets/vieclamlaocai/img/Ellipse 6.png',
+          age: 32,
+          location: 'Lào Cai',
+          level: 'Trưởng nhóm',
+          industry: 'Kế toán - Kiểm toán',
+          previousCompany: 'Công ty CP Đầu tư XYZ',
+          salaryExpectation: '12 - 18 triệu'
+        },
+        {
+          id: 3,
+          name: 'Lê Văn C',
+          position: 'Marketing Executive',
+          experience: '2 năm kinh nghiệm',
+          education: 'Đại học Ngoại thương',
+          appliedDate: '2024-01-13',
+          status: 'contacted',
+          avatar: 'assets/vieclamlaocai/img/image 23.png',
+          age: 26,
+          location: 'Lào Cai',
+          level: 'Nhân viên',
+          industry: 'Marketing - PR',
+          previousCompany: 'Công ty TNHH Marketing DEF',
+          salaryExpectation: '10 - 15 triệu'
         }
       ]
     };
@@ -176,7 +125,10 @@ export class DashboardService {
       pendingApplications: 8,
       approvedApplications: 5,
       rejectedApplications: 2,
-      profileViews: 234,
+      profileViews: 0,
+      suitableJobs: 74,
+      employerEmails: 0,
+      totalCVs: 0,
       savedJobs: [
         {
           id: 1,
@@ -200,6 +152,38 @@ export class DashboardService {
           appliedDate: '2024-01-15',
           location: 'Lào Cai'
         }
+      ],
+      appliedJobs: [
+        {
+          id: 1,
+          jobTitle: 'Frontend Developer - React/Angular',
+          company: 'Công ty TNHH Công nghệ ABC',
+          logo: 'assets/vieclamlaocai/img/image 16.png',
+          salary: '15 - 25 triệu',
+          status: 'pending',
+          appliedDate: '2024-01-15',
+          location: 'Lào Cai'
+        },
+        {
+          id: 2,
+          jobTitle: 'Backend Developer - Node.js',
+          company: 'Công ty Cổ phần Phần mềm GHI',
+          logo: 'assets/vieclamlaocai/img/image 23.png',
+          salary: '25 - 40 triệu',
+          status: 'reviewing',
+          appliedDate: '2024-01-14',
+          location: 'Hà Nội'
+        },
+        {
+          id: 3,
+          jobTitle: 'UI/UX Designer',
+          company: 'Công ty TNHH Thiết kế XYZ',
+          logo: 'assets/vieclamlaocai/img/image 16.png',
+          salary: '18 - 30 triệu',
+          status: 'accepted',
+          appliedDate: '2024-01-13',
+          location: 'TP. Hồ Chí Minh'
+        }
       ]
     };
 
@@ -210,4 +194,35 @@ export class DashboardService {
       result: dummyData
     });
   }
+
+  getAdminDashboardDummy(): Observable<BaseResponseModel<AdminDashboardModel>> {
+    const dummyData: AdminDashboardModel = {
+      totalBusinesses: 60,
+      pendingApprovals: 12,
+      approvedBusinesses: 45,
+      rejectedBusinesses: 3,
+      totalJobs: 1247,
+      totalCandidates: 89,
+      todayRegistrations: 5,
+      systemHealth: {
+        status: 'healthy',
+        uptime: '99.9%',
+        responseTime: 150,
+        activeUsers: 234
+      }
+    };
+
+    return of({
+      statusCode: 200,
+      isSuccess: true,
+      message: 'Success',
+      result: dummyData
+    });
+  }
 }
+
+
+
+
+
+

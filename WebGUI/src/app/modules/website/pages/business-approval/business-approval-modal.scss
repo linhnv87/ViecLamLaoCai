@@ -134,6 +134,11 @@
             background: linear-gradient(135deg, #cce5ff, #b3d9ff);
             color: #004085;
           }
+          
+          &.status-secondary {
+            background: linear-gradient(135deg, #e9ecef, #dee2e6);
+            color: #6c757d;
+          }
         }
       }
     }

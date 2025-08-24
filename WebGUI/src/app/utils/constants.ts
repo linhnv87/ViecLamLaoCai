@@ -19,7 +19,11 @@ export const ROLES = {
   PHO_BI_THU: 'pho-bi-thu',
   BI_THU: 'bi-thu',
   VAN_THU: 'van-thu',
+  UNG_VIEN: 'ung-vien',
+  DOANH_NGHIEP: 'doanh-nghiep',
+  CO_QUAN_QUAN_LY: 'co-quan-quan-ly',
 };
+
 export const ROLE_OPTIONS = [
   {
     value: ROLES.CHUYEN_VIEN,
@@ -33,6 +37,18 @@ export const ROLE_OPTIONS = [
   { value: ROLES.PHO_BI_THU, text: 'Phó bí thư' },
   { value: ROLES.BI_THU, text: 'Bí thư' },
   { value: ROLES.VAN_THU, text: 'Văn thư' },
+  {
+    value: ROLES.UNG_VIEN,
+    text: 'Ứng viên',
+  },
+  { 
+    value: ROLES.DOANH_NGHIEP, 
+    text: 'Doanh nghiệp' 
+  },
+  { 
+    value: ROLES.CO_QUAN_QUAN_LY, 
+    text: 'Cơ quan quản lý nhà nước' 
+  },
 ];
 
 export const DOCUMENT_STATUS = {

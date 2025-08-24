@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SplashScreenService } from '../../../../services/splash-screen.service';
-import { HomeService, FeaturedJob } from '../../../../services/website/home.service';
+import { HomeService } from '../../../../services/website/home.service';
+import { FeaturedJob } from '../../../../models/home.model';
 
 export interface SearchFilters {
   location: string;

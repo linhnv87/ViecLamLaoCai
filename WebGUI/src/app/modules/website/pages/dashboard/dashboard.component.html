@@ -10,260 +10,515 @@
 
       <div class="statistic-list">
 
-        <div class="statistic-wrap">
-          <div class="img-wrap yellow">
-            <img src="assets/vieclamlaocai/img/icon/icon-color-bag.svg" alt="">
-          </div>
-
-          <div class="d-flex flex-column justify-content-center gap-1">
-            <div class="number">3</div>
-            <div class="title">Việc làm đã đăng</div>
-          </div>
-        </div>
-
-        <div class="statistic-wrap">
-          <div class="img-wrap cyan">
-            <img src="assets/vieclamlaocai/img/icon/icon-doc-user.svg" alt="">
-          </div>
-
-          <div class="d-flex flex-column justify-content-center gap-1">
-            <div class="number">55</div>
-            <div class="title">Hồ sơ ứng tuyển</div>
-          </div>
-        </div>
-
-        <div class="statistic-wrap">
-          <div class="img-wrap sky">
-            <img src="assets/vieclamlaocai/img/icon/icon-docs.svg" alt="">
-          </div>
-
-          <div class="d-flex flex-column justify-content-center gap-1">
-            <div class="number">2</div>
-            <div class="title">Hồ sơ đã lưu</div>
-          </div>
-        </div>
-
-        <div class="statistic-wrap">
+        <!-- Doanh Nghiep Role - 4 statistics -->
+        <div class="statistic-wrap" *ngIf="isDoanhNghiep()">
           <div class="img-wrap purple">
             <img src="assets/vieclamlaocai/img/icon/icon-user-view.svg" alt="">
           </div>
 
           <div class="d-flex flex-column justify-content-center gap-1">
-            <div class="number">245</div>
+            <div class="number">{{doanhNghiepStats.totalProfileViews}}</div>
             <div class="title">Lượt xem hồ sơ</div>
           </div>
         </div>
 
-        <div class="statistic-wrap">
-          <div class="img-wrap lime">
-            <img src="assets/vieclamlaocai/img/icon/icon-refresh.svg" alt="">
+        <div class="statistic-wrap" *ngIf="isDoanhNghiep()">
+          <div class="img-wrap yellow">
+            <img src="assets/vieclamlaocai/img/icon/icon-color-bag.svg" alt="">
           </div>
 
           <div class="d-flex flex-column justify-content-center gap-1">
-            <div class="number">14</div>
-            <div class="title">Số lần làm mới</div>
+            <div class="number">{{doanhNghiepStats.totalJobs}}</div>
+            <div class="title">Việc làm đã đăng</div>
           </div>
         </div>
 
-        <div class="statistic-wrap">
-          <div class="img-wrap pink">
-            <img src="assets/vieclamlaocai/img/icon/icon-bag-view.svg" alt="">
+        <div class="statistic-wrap" *ngIf="isDoanhNghiep()">
+          <div class="img-wrap cyan">
+            <img src="assets/vieclamlaocai/img/icon/icon-doc-user.svg" alt="">
           </div>
 
           <div class="d-flex flex-column justify-content-center gap-1">
-            <div class="number">666</div>
-            <div class="title">Lượt xem việc làm</div>
+            <div class="number">{{doanhNghiepStats.totalApplications}}</div>
+            <div class="title">Hồ sơ ứng tuyển</div>
           </div>
         </div>
 
+        <div class="statistic-wrap" *ngIf="isDoanhNghiep()">
+          <div class="img-wrap sky">
+            <img src="assets/vieclamlaocai/img/icon/icon-docs.svg" alt="">
+          </div>
+
+          <div class="d-flex flex-column justify-content-center gap-1">
+            <div class="number">{{doanhNghiepStats.todayApplications}}</div>
+            <div class="title">Hồ sơ ứng tuyển hôm nay</div>
+          </div>
+        </div>
+
+        <!-- Ung Vien Role - 4 statistics -->
+        <div class="statistic-wrap" *ngIf="isUngVien()">
+          <div class="img-wrap yellow">
+            <img src="assets/vieclamlaocai/img/icon/icon-color-bag.svg" alt="">
+          </div>
+
+          <div class="d-flex flex-column justify-content-center gap-1">
+            <div class="number">{{ungVienStats.suitableJobs}}</div>
+            <div class="title">Việc làm phù hợp</div>
+          </div>
+        </div>
+
+        <div class="statistic-wrap" *ngIf="isUngVien()">
+          <div class="img-wrap purple">
+            <img src="assets/vieclamlaocai/img/icon/icon-user-view.svg" alt="">
+          </div>
+
+          <div class="d-flex flex-column justify-content-center gap-1">
+            <div class="number">{{ungVienStats.profileViews}}</div>
+            <div class="title">Lượt xem hồ sơ</div>
+          </div>
+        </div>
+
+        <div class="statistic-wrap" *ngIf="isUngVien()">
+          <div class="img-wrap cyan">
+            <img src="assets/vieclamlaocai/img/icon/icon-doc-user.svg" alt="">
+          </div>
+
+          <div class="d-flex flex-column justify-content-center gap-1">
+            <div class="number">{{ungVienStats.employerEmails}}</div>
+            <div class="title">NTD gửi email mời ứng tuyển</div>
+          </div>
+        </div>
+
+        <div class="statistic-wrap" *ngIf="isUngVien()">
+          <div class="img-wrap sky">
+            <img src="assets/vieclamlaocai/img/icon/icon-docs.svg" alt="">
+          </div>
+
+          <div class="d-flex flex-column justify-content-center gap-1">
+            <div class="number">{{ungVienStats.totalCVs}}</div>
+            <div class="title">Tổng CV đang có</div>
+          </div>
+        </div>
+
+        <!-- Co Quan Quan Ly Role - 4 statistics -->
+        <div class="statistic-wrap" *ngIf="isCoQuanQuanLy()">
+          <div class="img-wrap orange">
+            <img src="assets/vieclamlaocai/img/icon/icon-doc-user.svg" alt="">
+          </div>
+
+          <div class="d-flex flex-column justify-content-center gap-1">
+            <div class="number">{{coQuanQuanLyStats.pendingApprovals}}</div>
+            <div class="title">Chờ phê duyệt</div>
+          </div>
+        </div>
+
+        <div class="statistic-wrap" *ngIf="isCoQuanQuanLy()">
+          <div class="img-wrap green">
+            <img src="assets/vieclamlaocai/img/icon/icon-color-bag.svg" alt="">
+          </div>
+
+          <div class="d-flex flex-column justify-content-center gap-1">
+            <div class="number">{{coQuanQuanLyStats.approvedBusinesses}}</div>
+            <div class="title">Đã phê duyệt</div>
+          </div>
+        </div>
+
+        <div class="statistic-wrap" *ngIf="isCoQuanQuanLy()">
+          <div class="img-wrap red">
+            <img src="assets/vieclamlaocai/img/icon/icon-docs.svg" alt="">
+          </div>
+
+          <div class="d-flex flex-column justify-content-center gap-1">
+            <div class="number">{{coQuanQuanLyStats.rejectedBusinesses}}</div>
+            <div class="title">Từ chối</div>
+          </div>
+        </div>
+
+        <div class="statistic-wrap" *ngIf="isCoQuanQuanLy()">
+          <div class="img-wrap blue">
+            <img src="assets/vieclamlaocai/img/icon/icon-user-view.svg" alt="">
+          </div>
+
+          <div class="d-flex flex-column justify-content-center gap-1">
+            <div class="number">{{coQuanQuanLyStats.totalBusinesses}}</div>
+            <div class="title">Tổng doanh nghiệp</div>
+          </div>
+        </div>
 
       </div>
 
       <div class="section-data">
-        <div class="section-data-title">Danh sách ứng viên phù hợp</div>
+        <div class="section-data-title">{{getSectionTitle()}}</div>
 
-        <div class="user-data-wrap">
-          <div class="user-data-user">
-            <img src="assets/vieclamlaocai/img/Ellipse 6.png" alt="" class="avatar">
-            <a href="#" class="name">Võ Mạnh Tuấn</a>
-            <div class="experiment tag-wrap orange">5 năm kinh nghiệm</div>
-            <div class="tag">
-              <span>Kế toán</span>
-              <span class="dot"></span>
-              <span>36 tuổi</span>
+        <!-- Doanh Nghiep Role - Danh sách ứng viên phù hợp -->
+        <div *ngIf="isDoanhNghiep() && hasRecentCandidates">
+          <div class="user-data-wrap" *ngFor="let candidate of recentCandidatesData">
+            <div class="user-data-user">
+              <img [src]="candidate.avatar" alt="" class="avatar">
+              <a href="#" class="name">{{candidate.name}}</a>
+              <div class="experiment tag-wrap orange">{{candidate.experience}}</div>
+              <div class="tag">
+                <span>{{candidate.position}}</span>
+                <span class="dot"></span>
+                <span>{{candidate.age}} tuổi</span>
+              </div>
+            </div>
+
+            <div class="user-data-info">
+              <div class="info-row">
+                <div class="d-flex gap-3 align-items-center">
+                  <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                  <span>Địa điểm</span>
+                </div>
+                <div>{{candidate.location}}</div>
+              </div>
+
+              <div class="info-row">
+                <div class="d-flex gap-3 align-items-center">
+                  <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                  <span>Cấp bậc</span>
+                </div>
+                <div>{{candidate.level}}</div>
+              </div>
+
+              <div class="info-row">
+                <div class="d-flex gap-3 align-items-center">
+                  <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                  <span>Ngành nghề</span>
+                </div>
+                <div>{{candidate.industry}}</div>
+              </div>
+
+              <div class="info-row">
+                <div class="d-flex gap-3 align-items-center">
+                  <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                  <span>Kinh nghiệm</span>
+                </div>
+                <div>{{candidate.previousCompany}}</div>
+              </div>
+
+              <div class="info-row">
+                <div class="d-flex gap-3 align-items-center">
+                  <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                  <span>Bằng cấp</span>
+                </div>
+                <div>{{candidate.education}}</div>
+              </div>
+
+              <div class="d-flex justify-content-end mt-3">
+                <div class="tag-wrap px-5">{{candidate.salaryExpectation}}</div>
+              </div>
             </div>
           </div>
-
-          <div class="user-data-info">
-
-            <div class="info-row">
-              <div class="d-flex gap-3 align-items-center">
-                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
-                <span>Địa điểm</span>
-              </div>
-              <div>TP. Hồ Chí Minh</div>
-            </div>
-
-            <div class="info-row">
-              <div class="d-flex gap-3 align-items-center">
-                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
-                <span>Cấp bậc</span>
-              </div>
-              <div>Nhân viên</div>
-            </div>
-
-            <div class="info-row">
-              <div class="d-flex gap-3 align-items-center">
-                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
-                <span>Ngành nghề</span>
-              </div>
-              <div>Xuất nhập khẩu</div>
-            </div>
-
-            <div class="info-row">
-              <div class="d-flex gap-3 align-items-center">
-                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
-                <span>Kinh nghiệm</span>
-              </div>
-              <div>Công ty CP KD CBTS Và XNK Quốc Việt</div>
-            </div>
-
-            <div class="info-row">
-              <div class="d-flex gap-3 align-items-center">
-                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
-                <span>Bằng cấp</span>
-              </div>
-              <div>ĐH Ngoại thương TPHCM</div>
-            </div>
-
-            <div class="d-flex justify-content-end mt-3">
-              <div class="tag-wrap px-5">15 - 50 triệu</div>
-            </div>
-
-          </div>
-
         </div>
-        <div class="user-data-wrap">
-          <div class="user-data-user">
-            <img src="assets/vieclamlaocai/img/Ellipse 6.png" alt="" class="avatar">
-            <a href="#" class="name">Võ Mạnh Tuấn</a>
-            <div class="experiment tag-wrap orange">5 năm kinh nghiệm</div>
-            <div class="tag">
-              <span>Kế toán</span>
-              <span class="dot"></span>
-              <span>36 tuổi</span>
-            </div>
+
+        <!-- Doanh Nghiep Role - No data fallback -->
+        <div *ngIf="isDoanhNghiep() && !hasRecentCandidates" class="text-center py-4">
+          <div class="text-muted">
+            <i class="fas fa-info-circle"></i>
+            <p>Chưa có ứng viên phù hợp nào</p>
           </div>
-
-          <div class="user-data-info">
-
-            <div class="info-row">
-              <div class="d-flex gap-3 align-items-center">
-                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
-                <span>Địa điểm</span>
-              </div>
-              <div>TP. Hồ Chí Minh</div>
-            </div>
-
-            <div class="info-row">
-              <div class="d-flex gap-3 align-items-center">
-                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
-                <span>Cấp bậc</span>
-              </div>
-              <div>Nhân viên</div>
-            </div>
-
-            <div class="info-row">
-              <div class="d-flex gap-3 align-items-center">
-                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
-                <span>Ngành nghề</span>
-              </div>
-              <div>Xuất nhập khẩu</div>
-            </div>
-
-            <div class="info-row">
-              <div class="d-flex gap-3 align-items-center">
-                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
-                <span>Kinh nghiệm</span>
-              </div>
-              <div>Công ty CP KD CBTS Và XNK Quốc Việt</div>
-            </div>
-
-            <div class="info-row">
-              <div class="d-flex gap-3 align-items-center">
-                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
-                <span>Bằng cấp</span>
-              </div>
-              <div>ĐH Ngoại thương TPHCM</div>
-            </div>
-
-            <div class="d-flex justify-content-end mt-3">
-              <div class="tag-wrap px-5">15 - 50 triệu</div>
-            </div>
-
-          </div>
-
         </div>
-        <div class="user-data-wrap">
-          <div class="user-data-user">
-            <img src="assets/vieclamlaocai/img/Ellipse 6.png" alt="" class="avatar">
-            <a href="#" class="name">Võ Mạnh Tuấn</a>
-            <div class="experiment tag-wrap orange">5 năm kinh nghiệm</div>
-            <div class="tag">
-              <span>Kế toán</span>
-              <span class="dot"></span>
-              <span>36 tuổi</span>
+
+        <!-- Ung Vien Role - Việc làm đã lưu gần đây -->
+        <div *ngIf="isUngVien() && hasSavedJobs">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="section-data-title">Việc làm đã lưu gần đây</div>
+            <a href="#" class="btn btn-outline-primary btn-sm">Xem tất cả</a>
+          </div>
+          <div class="user-data-wrap" *ngFor="let savedJob of savedJobsData">
+            <div class="user-data-user">
+              <img [src]="savedJob.logo" alt="" class="avatar">
+              <a href="#" class="name">{{savedJob.jobTitle}}</a>
+              <div class="experiment tag-wrap orange">{{savedJob.company}}</div>
+              <div class="tag">
+                <span>{{savedJob.location}}</span>
+                <span class="dot"></span>
+                <span>{{savedJob.salary}}</span>
+              </div>
+            </div>
+
+            <div class="user-data-info">
+              <div class="info-row">
+                <div class="d-flex gap-3 align-items-center">
+                  <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                  <span>Công ty</span>
+                </div>
+                <div>{{savedJob.company}}</div>
+              </div>
+
+              <div class="info-row">
+                <div class="d-flex gap-3 align-items-center">
+                  <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                  <span>Địa điểm</span>
+                </div>
+                <div>{{savedJob.location}}</div>
+              </div>
+
+              <div class="info-row">
+                <div class="d-flex gap-3 align-items-center">
+                  <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                  <span>Mức lương</span>
+                </div>
+                <div>{{savedJob.salary}}</div>
+              </div>
+
+              <div class="info-row">
+                <div class="d-flex gap-3 align-items-center">
+                  <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                  <span>Ngày lưu</span>
+                </div>
+                <div>{{savedJob.savedDate}}</div>
+              </div>
             </div>
           </div>
+        </div>
 
-          <div class="user-data-info">
-
-            <div class="info-row">
-              <div class="d-flex gap-3 align-items-center">
-                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
-                <span>Địa điểm</span>
-              </div>
-              <div>TP. Hồ Chí Minh</div>
-            </div>
-
-            <div class="info-row">
-              <div class="d-flex gap-3 align-items-center">
-                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
-                <span>Cấp bậc</span>
-              </div>
-              <div>Nhân viên</div>
-            </div>
-
-            <div class="info-row">
-              <div class="d-flex gap-3 align-items-center">
-                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
-                <span>Ngành nghề</span>
-              </div>
-              <div>Xuất nhập khẩu</div>
-            </div>
-
-            <div class="info-row">
-              <div class="d-flex gap-3 align-items-center">
-                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
-                <span>Kinh nghiệm</span>
-              </div>
-              <div>Công ty CP KD CBTS Và XNK Quốc Việt</div>
-            </div>
-
-            <div class="info-row">
-              <div class="d-flex gap-3 align-items-center">
-                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
-                <span>Bằng cấp</span>
-              </div>
-              <div>ĐH Ngoại thương TPHCM</div>
-            </div>
-
-            <div class="d-flex justify-content-end mt-3">
-              <div class="tag-wrap px-5">15 - 50 triệu</div>
-            </div>
-
+        <!-- Ung Vien Role - No data fallback -->
+        <div *ngIf="isUngVien() && !hasSavedJobs" class="text-center py-4">
+          <div class="text-muted">
+            <i class="fas fa-info-circle"></i>
+            <p>Bạn chưa lưu việc làm nào</p>
           </div>
+        </div>
 
+        <!-- Ung Vien Role - Việc làm đã ứng tuyển mới nhất -->
+        <div *ngIf="isUngVien() && hasAppliedJobs" class="mt-4 mb-2">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="section-data-title">Việc làm đã ứng tuyển mới nhất</div>
+            <a href="#" class="btn btn-outline-primary btn-sm">Xem tất cả</a>
+          </div>
+          <div class="user-data-wrap" *ngFor="let appliedJob of appliedJobsData">
+            <div class="user-data-user">
+              <img [src]="appliedJob.logo" alt="" class="avatar">
+              <a href="#" class="name">{{appliedJob.jobTitle}}</a>
+              <div class="experiment tag-wrap green">{{appliedJob.company}}</div>
+              <div class="tag">
+                <span>{{appliedJob.location}}</span>
+                <span class="dot"></span>
+                <span>{{appliedJob.salary}}</span>
+              </div>
+            </div>
+
+            <div class="user-data-info">
+              <div class="info-row">
+                <div class="d-flex gap-3 align-items-center">
+                  <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                  <span>Công ty</span>
+                </div>
+                <div>{{appliedJob.company}}</div>
+              </div>
+
+              <div class="info-row">
+                <div class="d-flex gap-3 align-items-center">
+                  <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                  <span>Địa điểm</span>
+                </div>
+                <div>{{appliedJob.location}}</div>
+              </div>
+
+              <div class="info-row">
+                <div class="d-flex gap-3 align-items-center">
+                  <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                  <span>Mức lương</span>
+                </div>
+                <div>{{appliedJob.salary}}</div>
+              </div>
+
+              <div class="info-row">
+                <div class="d-flex gap-3 align-items-center">
+                  <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                  <span>Ngày ứng tuyển</span>
+                </div>
+                <div>{{appliedJob.appliedDate}}</div>
+              </div>
+
+              <div class="d-flex justify-content-end mt-3">
+                <div class="tag-wrap px-5" [ngClass]="{
+                  'status-pending': appliedJob.status === 'pending',
+                  'status-reviewing': appliedJob.status === 'reviewing',
+                  'status-accepted': appliedJob.status === 'accepted',
+                  'status-rejected': appliedJob.status === 'rejected'
+                }">{{getStatusText(appliedJob.status)}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ung Vien Role - No applied jobs fallback -->
+        <div *ngIf="isUngVien() && !hasAppliedJobs" class="mt-4 ">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="section-data-title">Việc làm đã ứng tuyển mới nhất</div>
+            <a href="#" class="btn btn-outline-primary btn-sm">Xem tất cả</a>
+          </div>
+          <div class="text-center py-4">
+            <div class="text-muted">
+              <i class="fas fa-info-circle"></i>
+              <p>Bạn chưa ứng tuyển việc làm nào</p>
+            </div>
+          </div>
+        </div>
+
+
+
+        <!-- Co Quan Quan Ly Role - Biểu đồ thống kê phê duyệt -->
+        <div *ngIf="isCoQuanQuanLy()">
+          <div class="chart-container">
+            <div class="chart-header">
+              <h4 class="chart-title">Thống kê phê duyệt doanh nghiệp</h4>
+              <div class="chart-legend">
+                <span class="legend-item">
+                  <span class="legend-color pending"></span>
+                  Chờ phê duyệt
+                </span>
+                <span class="legend-item">
+                  <span class="legend-color approved"></span>
+                  Đã phê duyệt
+                </span>
+                <span class="legend-item">
+                  <span class="legend-color rejected"></span>
+                  Từ chối
+                </span>
+              </div>
+            </div>
+            
+            <div class="chart-content">
+              <!-- Biểu đồ cột cho hôm nay -->
+              <div class="bar-chart">
+                <div class="chart-subtitle">Thống kê hôm nay</div>
+                <div class="chart-bars">
+                  <div class="chart-bar-group">
+                    <div class="chart-bar pending" [style.height.%]="getBarHeight(coQuanQuanLyStats.pendingApprovals, coQuanQuanLyStats.totalBusinesses)">
+                      <span class="bar-value">{{coQuanQuanLyStats.pendingApprovals}}</span>
+                    </div>
+                    <div class="bar-label">Chờ duyệt</div>
+                  </div>
+                  
+                  <div class="chart-bar-group">
+                    <div class="chart-bar approved" [style.height.%]="getBarHeight(coQuanQuanLyStats.approvedBusinesses, coQuanQuanLyStats.totalBusinesses)">
+                      <span class="bar-value">{{coQuanQuanLyStats.approvedBusinesses}}</span>
+                    </div>
+                    <div class="bar-label">Đã duyệt</div>
+                  </div>
+                  
+                  <div class="chart-bar-group">
+                    <div class="chart-bar rejected" [style.height.%]="getBarHeight(coQuanQuanLyStats.rejectedBusinesses, coQuanQuanLyStats.totalBusinesses)">
+                      <span class="bar-value">{{coQuanQuanLyStats.rejectedBusinesses}}</span>
+                    </div>
+                    <div class="bar-label">Từ chối</div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Thống kê chi tiết hôm nay -->
+              <div class="today-stats">
+                <div class="today-header">
+                  <h5 class="today-title">📅 Chi tiết hôm nay</h5>
+                  <div class="today-date">{{getCurrentDate()}}</div>
+                </div>
+                
+                <div class="today-metrics">
+                  <div class="metric-item pending">
+                    <div class="metric-icon">⏳</div>
+                    <div class="metric-content">
+                      <div class="metric-value">{{coQuanQuanLyStats.pendingApprovals}}</div>
+                      <div class="metric-label">Chờ phê duyệt</div>
+                      <div class="metric-change positive">+{{coQuanQuanLyStats.pendingApprovals}} so với hôm qua</div>
+                    </div>
+                  </div>
+                  
+                  <div class="metric-item approved">
+                    <div class="metric-icon">✅</div>
+                    <div class="metric-content">
+                      <div class="metric-value">{{coQuanQuanLyStats.approvedBusinesses}}</div>
+                      <div class="metric-label">Đã phê duyệt</div>
+                      <div class="metric-change positive">+{{coQuanQuanLyStats.approvedBusinesses}} so với hôm qua</div>
+                    </div>
+                  </div>
+                  
+                  <div class="metric-item rejected">
+                    <div class="metric-icon">❌</div>
+                    <div class="metric-content">
+                      <div class="metric-value">{{coQuanQuanLyStats.rejectedBusinesses}}</div>
+                      <div class="metric-label">Từ chối</div>
+                      <div class="metric-change negative">+{{coQuanQuanLyStats.rejectedBusinesses}} so với hôm qua</div>
+                    </div>
+                  </div>
+                  
+                  <div class="metric-item total">
+                    <div class="metric-icon">📊</div>
+                    <div class="metric-content">
+                      <div class="metric-value">{{coQuanQuanLyStats.totalBusinesses}}</div>
+                      <div class="metric-label">Tổng doanh nghiệp</div>
+                      <div class="metric-change neutral">Tổng cộng trong hệ thống</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fallback content if no role or no data -->
+        <div *ngIf="!isDoanhNghiep() && !isUngVien() && !isCoQuanQuanLy()">
+          <div class="user-data-wrap">
+            <div class="user-data-user">
+              <img src="assets/vieclamlaocai/img/Ellipse 6.png" alt="" class="avatar">
+              <a href="#" class="name">Võ Mạnh Tuấn</a>
+              <div class="experiment tag-wrap orange">5 năm kinh nghiệm</div>
+              <div class="tag">
+                <span>Kế toán</span>
+                <span class="dot"></span>
+                <span>36 tuổi</span>
+              </div>
+            </div>
+
+            <div class="user-data-info">
+              <div class="info-row">
+                <div class="d-flex gap-3 align-items-center">
+                  <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                  <span>Địa điểm</span>
+                </div>
+                <div>TP. Hồ Chí Minh</div>
+              </div>
+
+              <div class="info-row">
+                <div class="d-flex gap-3 align-items-center">
+                  <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                  <span>Cấp bậc</span>
+                </div>
+                <div>Nhân viên</div>
+              </div>
+
+              <div class="info-row">
+                <div class="d-flex gap-3 align-items-center">
+                  <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                  <span>Ngành nghề</span>
+                </div>
+                <div>Xuất nhập khẩu</div>
+              </div>
+
+              <div class="info-row">
+                <div class="d-flex gap-3 align-items-center">
+                  <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                  <span>Kinh nghiệm</span>
+                </div>
+                <div>Công ty CP KD CBTS Và XNK Quốc Việt</div>
+              </div>
+
+              <div class="info-row">
+                <div class="d-flex gap-3 align-items-center">
+                  <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                  <span>Bằng cấp</span>
+                </div>
+                <div>ĐH Ngoại thương TPHCM</div>
+              </div>
+
+              <div class="d-flex justify-content-end mt-3">
+                <div class="tag-wrap px-5">15 - 50 triệu</div>
+              </div>
+            </div>
+          </div>
         </div>
 
       </div>

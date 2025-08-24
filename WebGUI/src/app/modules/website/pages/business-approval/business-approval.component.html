@@ -77,11 +77,14 @@
                 [(ngModel)]="searchKeyword"
                 (input)="filterBusinesses()"
                 class="search-input">
-              <img src="assets/vieclamlaocai/img/icon/icon-search.svg" alt="" class="search-icon">
               <button *ngIf="searchKeyword" (click)="clearSearch()" class="clear-search-btn">
                 <img src="assets/vieclamlaocai/img/icon/icon-x.svg" alt="">
               </button>
             </div>
+            <button (click)="filterBusinesses()" class="search-btn">
+              <img src="assets/vieclamlaocai/img/icon/icon-search.svg" alt="">
+              <span>Tìm kiếm</span>
+            </button>
           </div>
 
           <div class="filter-group">

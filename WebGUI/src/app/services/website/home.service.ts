@@ -2,65 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { BaseResponseModel } from '../../models/baseResponse.model';
+import { FeaturedJob, SuggestedJob, JobCategory, HomePageStats, LatestJob, FeaturedCompany, HomePageData } from '../../models/home.model';
 import { environment } from '../../../environments/environments';
-
-export interface FeaturedJob {
-  id: number;
-  title: string;
-  company: string;
-  logo: string;
-  salary: string;
-  location: string;
-  urgent: boolean;
-  daysLeft: number;
-  featured: boolean;
-  description?: string;
-  requirements?: string[];
-  benefits?: string[];
-  jobType?: string;
-  experience?: string;
-  postedDate?: string;
-}
-
-export interface SuggestedJob {
-  id: number;
-  title: string;
-  company: string;
-  logo: string;
-  salary: string;
-  experience: string;
-  location: string;
-  description?: string;
-  requirements?: string[];
-  jobType?: string;
-  postedDate?: string;
-}
-
-export interface JobCategory {
-  icon: string;
-  title: string;
-  count: number;
-  description?: string;
-  growthRate?: number;
-  averageSalary?: string;
-}
-
-export interface HomePageStats {
-  totalJobs: number;
-  totalCompanies: number;
-  totalCandidates: number;
-  newJobsThisWeek: number;
-  featuredJobsCount: number;
-  urgentJobsCount: number;
-}
-
-export interface HomePageData {
-  stats: HomePageStats;
-  featuredJobs: FeaturedJob[];
-  suggestedJobs: SuggestedJob[];
-  jobCategories: JobCategory[];
-  recentActivities: any[];
-}
 
 @Injectable({
   providedIn: 'root'
@@ -69,6 +12,17 @@ export class HomeService {
   private baseUrl = `${environment.apiUrl}/Home`;
 
   constructor(private http: HttpClient) {}
+  // GET /api/Home/GetJobs?type=latest|featured|suggested&count=6&userId=123
+  getJobs(type: 'latest' | 'featured' | 'suggested', options?: { count?: number; userId?: string }): Observable<BaseResponseModel<FeaturedJob[] | LatestJob[] | SuggestedJob[]>> {
+    let apiUrl = `${this.baseUrl}/GetJobs`;
+    const params: string[] = [];
+    params.push(`type=${encodeURIComponent(type)}`);
+    if (options?.count !== undefined) params.push(`count=${options.count}`);
+    if (type === 'suggested' && options?.userId) params.push(`userId=${encodeURIComponent(options.userId)}`);
+    if (params.length > 0) apiUrl += `?${params.join('&')}`;
+    return this.http.get<BaseResponseModel<any>>(apiUrl);
+  }
+
 
   // GET /api/Home/GetHomePageData
   getHomePageData(): Observable<BaseResponseModel<HomePageData>> {
@@ -77,17 +31,17 @@ export class HomeService {
   }
 
   // GET /api/Home/GetFeaturedJobs
-  getFeaturedJobs(limit?: number): Observable<BaseResponseModel<FeaturedJob[]>> {
-    const apiUrl = `${this.baseUrl}/GetFeaturedJobs${limit ? `?limit=${limit}` : ''}`;
+  getFeaturedJobs(count?: number): Observable<BaseResponseModel<FeaturedJob[]>> {
+    const apiUrl = `${this.baseUrl}/GetTopFeaturedJobs${typeof count === 'number' ? `/${count}` : ''}`;
     return this.http.get<BaseResponseModel<FeaturedJob[]>>(apiUrl);
   }
 
   // GET /api/Home/GetSuggestedJobs
-  getSuggestedJobs(userId?: string, limit?: number): Observable<BaseResponseModel<SuggestedJob[]>> {
-    let apiUrl = `${this.baseUrl}/GetSuggestedJobs`;
-    const params = [];
+  getSuggestedJobs(userId?: string, count?: number): Observable<BaseResponseModel<SuggestedJob[]>> {
+    let apiUrl = `${this.baseUrl}/GetTopSuggestedJobs`;
+    const params: string[] = [];
+    if (typeof count === 'number') params.push(`count=${count}`);
     if (userId) params.push(`userId=${userId}`);
-    if (limit) params.push(`limit=${limit}`);
     if (params.length > 0) apiUrl += `?${params.join('&')}`;
     
     return this.http.get<BaseResponseModel<SuggestedJob[]>>(apiUrl);
@@ -118,9 +72,24 @@ export class HomeService {
   }
 
   // GET /api/Home/GetPopularSearches
-  getPopularSearches(): Observable<BaseResponseModel<string[]>> {
-    const apiUrl = `${this.baseUrl}/GetPopularSearches`;
+  getPopularSearches(count?: number, period?: 'day' | 'week' | 'month'): Observable<BaseResponseModel<string[]>> {
+    let apiUrl = `${this.baseUrl}/GetPopularSearches${typeof count === 'number' ? `/${count}` : ''}`;
+    const params: string[] = [];
+    if (period) params.push(`period=${encodeURIComponent(period)}`);
+    if (params.length > 0) apiUrl += `?${params.join('&')}`;
     return this.http.get<BaseResponseModel<string[]>>(apiUrl);
+  }
+
+  // GET /api/Home/GetLatestJobs
+  getLatestJobs(count?: number): Observable<BaseResponseModel<LatestJob[]>> {
+    const apiUrl = `${this.baseUrl}/GetLatestJobs${typeof count === 'number' ? `/${count}` : ''}`;
+    return this.http.get<BaseResponseModel<LatestJob[]>>(apiUrl);
+  }
+
+  // GET /api/Home/GetFeaturedCompanies
+  getFeaturedCompanies(count?: number): Observable<BaseResponseModel<FeaturedCompany[]>> {
+    const apiUrl = `${this.baseUrl}/GetFeaturedCompanies${typeof count === 'number' ? `/${count}` : ''}`;
+    return this.http.get<BaseResponseModel<FeaturedCompany[]>>(apiUrl);
   }
 
   // ===== DUMMY DATA METHODS (for development) =====
@@ -235,7 +204,7 @@ export class HomeService {
     });
   }
 
-  getFeaturedJobsDummy(limit?: number): Observable<BaseResponseModel<FeaturedJob[]>> {
+  getFeaturedJobsDummy(count?: number): Observable<BaseResponseModel<FeaturedJob[]>> {
     const featuredJobs: FeaturedJob[] = [
       {
         id: 1,
@@ -323,7 +292,7 @@ export class HomeService {
       }
     ];
 
-    const result = limit ? featuredJobs.slice(0, limit) : featuredJobs;
+    const result = count ? featuredJobs.slice(0, count) : featuredJobs;
 
     return of({
       statusCode: 200,
@@ -333,7 +302,7 @@ export class HomeService {
     });
   }
 
-  getSuggestedJobsDummy(userId?: string, limit?: number): Observable<BaseResponseModel<SuggestedJob[]>> {
+  getSuggestedJobsDummy(userId?: string, count?: number): Observable<BaseResponseModel<SuggestedJob[]>> {
     const suggestedJobs: SuggestedJob[] = [
       {
         id: 4,
@@ -403,7 +372,7 @@ export class HomeService {
       }
     ];
 
-    const result = limit ? suggestedJobs.slice(0, limit) : suggestedJobs;
+    const result = count ? suggestedJobs.slice(0, count) : suggestedJobs;
 
     return of({
       statusCode: 200,
@@ -657,4 +626,225 @@ export class HomeService {
       result: popularSearches
     });
   }
+
+  getLatestJobsDummy(count?: number): Observable<BaseResponseModel<LatestJob[]>> {
+    const latestJobs: LatestJob[] = [
+      {
+        id: 201,
+        title: 'Kế toán nội bộ - không yêu cầu kinh nghiệm',
+        company: 'Công ty Cổ phần dịch vụ Công nghệ TSC Việt Nam',
+        logo: 'assets/vieclamlaocai/img/image 16.png',
+        salary: '15 - 50 triệu',
+        location: 'Lào Cai',
+        urgent: true,
+        daysLeft: 5,
+        postedDate: '2024-01-16',
+        jobType: 'Full-time',
+        experience: '0-1 năm'
+      },
+      {
+        id: 202,
+        title: 'Nhân viên Kinh doanh - Bán hàng',
+        company: 'Công ty TNHH Thương mại ABC',
+        logo: 'assets/vieclamlaocai/img/image 23.png',
+        salary: '12 - 25 triệu',
+        location: 'Lào Cai',
+        urgent: false,
+        daysLeft: 8,
+        postedDate: '2024-01-16',
+        jobType: 'Full-time',
+        experience: '1-2 năm'
+      },
+      {
+        id: 203,
+        title: 'Chuyên viên IT Support',
+        company: 'Công ty CP Công nghệ DEF',
+        logo: 'assets/vieclamlaocai/img/image 16.png',
+        salary: '10 - 18 triệu',
+        location: 'Lào Cai',
+        urgent: true,
+        daysLeft: 3,
+        postedDate: '2024-01-15',
+        jobType: 'Full-time',
+        experience: '1-3 năm'
+      },
+      {
+        id: 204,
+        title: 'Nhân viên Hành chính - Nhân sự',
+        company: 'Công ty TNHH Dịch vụ GHI',
+        logo: 'assets/vieclamlaocai/img/image 23.png',
+        salary: '8 - 15 triệu',
+        location: 'Lào Cai',
+        urgent: false,
+        daysLeft: 10,
+        postedDate: '2024-01-15',
+        jobType: 'Full-time',
+        experience: '0-2 năm'
+      },
+      {
+        id: 205,
+        title: 'Graphic Designer',
+        company: 'Công ty TNHH Sáng tạo JKL',
+        logo: 'assets/vieclamlaocai/img/image 16.png',
+        salary: '9 - 16 triệu',
+        location: 'Lào Cai',
+        urgent: false,
+        daysLeft: 7,
+        postedDate: '2024-01-14',
+        jobType: 'Full-time',
+        experience: '1-2 năm'
+      },
+      {
+        id: 206,
+        title: 'Nhân viên Telesales',
+        company: 'Công ty CP Viễn thông MNO',
+        logo: 'assets/vieclamlaocai/img/image 23.png',
+        salary: '7 - 12 triệu',
+        location: 'Lào Cai',
+        urgent: true,
+        daysLeft: 6,
+        postedDate: '2024-01-14',
+        jobType: 'Full-time',
+        experience: '0-1 năm'
+      },
+      {
+        id: 207,
+        title: 'Lập trình viên PHP',
+        company: 'Công ty TNHH Phần mềm PQR',
+        logo: 'assets/vieclamlaocai/img/image 16.png',
+        salary: '15 - 28 triệu',
+        location: 'Lào Cai',
+        urgent: false,
+        daysLeft: 12,
+        postedDate: '2024-01-13',
+        jobType: 'Full-time',
+        experience: '2-4 năm'
+      },
+      {
+        id: 208,
+        title: 'Trưởng phòng Kinh doanh',
+        company: 'Công ty CP Đầu tư STU',
+        logo: 'assets/vieclamlaocai/img/image 23.png',
+        salary: '25 - 45 triệu',
+        location: 'Lào Cai',
+        urgent: false,
+        daysLeft: 15,
+        postedDate: '2024-01-12',
+        jobType: 'Full-time',
+        experience: '5+ năm'
+      }
+    ];
+
+    const result = count ? latestJobs.slice(0, count) : latestJobs;
+
+    return of({
+      statusCode: 200,
+      isSuccess: true,
+      message: 'Success',
+      result: result
+    });
+  }
+
+  getFeaturedCompaniesDummy(count?: number): Observable<BaseResponseModel<FeaturedCompany[]>> {
+    const featuredCompanies: FeaturedCompany[] = [
+      {
+        id: 101,
+        name: 'Công ty TNHH Công nghệ ABC',
+        logo: 'assets/vieclamlaocai/img/image 22.png',
+        jobCount: 15,
+        industry: 'Công nghệ thông tin',
+        size: '50-200 nhân viên',
+        location: 'Lào Cai',
+        verified: true,
+        description: 'Chuyên phát triển phần mềm và ứng dụng web',
+        website: 'https://abctech.vn'
+      },
+      {
+        id: 102,
+        name: 'Công ty CP Đầu tư XYZ',
+        logo: 'assets/vieclamlaocai/img/image 19.png',
+        jobCount: 12,
+        industry: 'Tài chính - Đầu tư',
+        size: '100-500 nhân viên',
+        location: 'Lào Cai',
+        verified: true,
+        description: 'Đầu tư và phát triển bất động sản',
+        website: 'https://xyzinvest.vn'
+      },
+      {
+        id: 103,
+        name: 'Công ty TNHH Marketing DEF',
+        logo: 'assets/vieclamlaocai/img/image 21.png',
+        jobCount: 8,
+        industry: 'Marketing - Quảng cáo',
+        size: '20-50 nhân viên',
+        location: 'Lào Cai',
+        verified: true,
+        description: 'Dịch vụ marketing và quảng cáo trực tuyến',
+        website: 'https://defmarketing.vn'
+      },
+      {
+        id: 104,
+        name: 'Công ty CP Sản xuất GHI',
+        logo: 'assets/vieclamlaocai/img/image 18.png',
+        jobCount: 10,
+        industry: 'Sản xuất - Chế biến',
+        size: '200-500 nhân viên',
+        location: 'Lào Cai',
+        verified: true,
+        description: 'Sản xuất và chế biến nông sản',
+        website: 'https://ghimanufacturing.vn'
+      },
+      {
+        id: 105,
+        name: 'Công ty TNHH Xây dựng JKL',
+        logo: 'assets/vieclamlaocai/img/image 22.png',
+        jobCount: 14,
+        industry: 'Xây dựng - Kiến trúc',
+        size: '100-200 nhân viên',
+        location: 'Lào Cai',
+        verified: true,
+        description: 'Thi công xây dựng dân dụng và công nghiệp',
+        website: 'https://jklconstruction.vn'
+      },
+      {
+        id: 106,
+        name: 'Công ty CP Du lịch MNO',
+        logo: 'assets/vieclamlaocai/img/image 19.png',
+        jobCount: 7,
+        industry: 'Du lịch - Khách sạn',
+        size: '50-100 nhân viên',
+        location: 'Lào Cai',
+        verified: true,
+        description: 'Dịch vụ du lịch và khách sạn cao cấp',
+        website: 'https://mnotourism.vn'
+      },
+      {
+        id: 107,
+        name: 'Công ty TNHH Logistics PQR',
+        logo: 'assets/vieclamlaocai/img/image 18.png',
+        jobCount: 9,
+        industry: 'Vận tải - Logistics',
+        size: '50-100 nhân viên',
+        location: 'Lào Cai',
+        verified: true,
+        description: 'Dịch vụ vận chuyển và logistics chuyên nghiệp',
+        website: 'https://pqrlogistics.vn'
+      }
+    ];
+
+    const result = count ? featuredCompanies.slice(0, count) : featuredCompanies;
+
+    return of({
+      statusCode: 200,
+      isSuccess: true,
+      message: 'Success',
+      result: result
+    });
+  }
 }
+
+
+
+
+

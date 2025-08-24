@@ -12,13 +12,12 @@
         </div>
       </div>
       <div class="user-role">
-        <div class="btn-wrap yellow">Tài khoản doanh nghiệp</div>
+        <div class="btn-wrap yellow">{{getUserMainRole()}}</div>
       </div>
-      <div class="user-name">{{userInfo?.fullName || 'Cty Diaocvang'}}</div>
+      <div class="user-name">{{userInfo?.displayName || 'Cty Diaocvang'}}</div>
     </div>
 
     <div class="sidebar-menu-wrap">
-      <!-- Dynamic menu items from config -->
       <div 
         *ngFor="let menuItem of menuItems" 
         class="menu-item" 

@@ -32,6 +32,12 @@ export interface RoleInfo {
   phoBiThu: boolean;
   biThu: boolean;
   vanThu: boolean;
+  // Thêm 3 role mới
+  ungVien: boolean;
+  doanhNghiep: boolean;
+  coQuanQuanLy: boolean;
+  // Index signature để cho phép truy cập động bằng string key
+  [key: string]: boolean;
 }
 
 export const GetRoleInfo = () => {
@@ -49,6 +55,10 @@ export const GetRoleInfo = () => {
       phoBiThu: currentRoles.includes(ROLES.PHO_BI_THU),
       biThu: currentRoles.includes(ROLES.BI_THU),
       vanThu: currentRoles.includes(ROLES.VAN_THU),
+      // Thêm 3 role mới
+      ungVien: currentRoles.includes(ROLES.UNG_VIEN),
+      doanhNghiep: currentRoles.includes(ROLES.DOANH_NGHIEP),
+      coQuanQuanLy: currentRoles.includes(ROLES.CO_QUAN_QUAN_LY),
     };
     return roleInfo;
   }
@@ -58,11 +68,16 @@ export const GetRoleInfo = () => {
     banChapHanh: false,
     banThuongVu: false,
     truongPhong: false,
+    photruongPhong: false,
     phoChanhVanPhong: false,
     chanhVanPhong: false,
     phoBiThu: false,
     biThu: false,
     vanThu: false,
+    // Thêm 3 role mới
+    ungVien: false,
+    doanhNghiep: false,
+    coQuanQuanLy: false,
   };
 };
 

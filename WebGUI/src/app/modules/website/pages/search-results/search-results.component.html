@@ -83,7 +83,7 @@
               <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M3 21v-5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            Reset filters
+            Clear
           </button>
         </div>
       </div>
@@ -96,7 +96,7 @@
           Tìm thấy <strong>{{totalResults}}</strong> việc làm
           <span *ngIf="searchQuery"> cho "<strong>{{searchQuery}}</strong>"</span>
         </span>
-        <span class="search-time">trong {{searchTime}}ms</span>
+        <!-- <span class="search-time">trong {{searchTime}}ms</span> -->
       </div>
       
       <div class="sort-options">
@@ -179,9 +179,9 @@
 
       <!-- Empty State -->
       <div class="empty-state" *ngIf="paginatedResults.length === 0 && !isLoading">
-        <div class="empty-icon">
+        <!-- <div class="empty-icon">
           <img src="assets/vieclamlaocai/img/icon/icon-search-empty.svg" alt="">
-        </div>
+        </div> -->
         <h3 class="empty-title">Không tìm thấy việc làm nào</h3>
         <p class="empty-message">
           Hãy thử thay đổi từ khóa tìm kiếm hoặc bộ lọc để tìm thấy nhiều kết quả hơn
@@ -238,6 +238,5 @@
         Hiển thị {{getStartIndex() + 1}}-{{getEndIndex()}} trong tổng số {{totalResults}} việc làm
       </div>
     </div>
-
   </div>
 </div>

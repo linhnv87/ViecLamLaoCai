@@ -1,0 +1,231 @@
+<div class="job-detail-page" *ngIf="!isLoading && job; else loadingTpl">
+  <div class="container">
+    <!-- Breadcrumb + Back -->
+    <nav class="mb-3" aria-label="breadcrumb">
+      <ol class="breadcrumb small mb-1">
+        <li class="breadcrumb-item"><a routerLink="/website/home">Trang chủ</a></li>
+        <li class="breadcrumb-item"><a routerLink="/website/search">Việc làm</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ job.title }}</li>
+      </ol>
+    </nav>
+    <div class="job-header card shadow-sm border-0 mb-3">
+      <div class="card-body">
+        <div class="row g-4 align-items-center">
+          <div class="col-auto">
+            <img class="company-logo rounded" [src]="job.logo" [alt]="job.company" style="width: 120px; height: 120px; object-fit: cover;" />
+          </div>
+          <div class="col">
+            <h1 class="h3 mb-3 title">{{ job.title }}</h1>
+            <div class="meta text-muted mb-3">
+              <span class="company fs-5">{{ job.company }}</span>
+              <span class="dot mx-3">•</span>
+              <span class="location fs-5">{{ job.location }}</span>
+              <span class="dot mx-3">•</span>
+              <span class="views fs-6">{{ job.views | number }} lượt xem</span>
+              <span class="dot mx-3">•</span>
+              <span class="posted fs-6">Ngày đăng: {{ job.postedDate }}</span>
+            </div>
+            <div class="mt-3 d-flex flex-wrap gap-3 align-items-center">
+              <span class="salary h4 mb-0 me-3 text-primary">{{ job.salary }}</span>
+              <span class="badge bg-light text-dark fs-6">Hình thức: {{ job.jobType }}</span>
+              <span class="badge bg-light text-dark fs-6">Kinh nghiệm: {{ job.experience }}</span>
+              <span class="badge bg-light text-dark fs-6">Số lượng: {{ job.quantity }}</span>
+              <span class="badge deadline-badge fs-6">Hạn nộp: {{ job.deadline }}</span>
+            </div>
+            <div class="chips mt-3" *ngIf="job.categories?.length">
+              <span class="chip" *ngFor="let c of job.categories; trackBy: trackByIndex">{{ c }}</span>
+            </div>
+            <div class="mt-4 d-flex gap-3 flex-wrap">
+              <a class="btn btn-primary btn-apply">Ứng tuyển ngay</a>
+              <button class="btn btn-outline-secondary">Lưu công việc</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <!-- Tabs like reference: Thông tin / Công ty / Mức độ phù hợp -->
+        <div class="card shadow-sm mb-3">
+          <div class="card-header bg-white border-0">
+            <ul class="nav nav-tabs card-header-tabs">
+              <li class="nav-item">
+                <a class="nav-link" [class.active]="activeTab === 'thongtin'" (click)="setTab('thongtin')">Thông tin</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" [class.active]="activeTab === 'congty'" (click)="setTab('congty')">Công ty</a>
+              </li>
+            </ul>
+          </div>
+          <div class="card-body">
+            <ng-container [ngSwitch]="activeTab">
+              <div *ngSwitchCase="'thongtin'">
+                <!-- Info grid like screenshot -->
+                <div class="row g-3 mb-4">
+                  <div class="col-md-6">
+                    <div class="info-item d-flex align-items-center p-3 rounded bg-light">
+                      <i class="fas fa-calendar-alt me-3 text-primary"></i>
+                      <div class="flex-fill">
+                        <div class="text-muted small">Ngày đăng</div>
+                        <strong>{{ job.postedDate }}</strong>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="info-item d-flex align-items-center p-3 rounded bg-light">
+                      <i class="fas fa-users me-3 text-primary"></i>
+                      <div class="flex-fill">
+                        <div class="text-muted small">Số lượng tuyển</div>
+                        <strong>{{ job.quantity }}</strong>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="info-item d-flex align-items-center p-3 rounded bg-light">
+                      <i class="fas fa-medal me-3 text-primary"></i>
+                      <div class="flex-fill">
+                        <div class="text-muted small">Chức vụ</div>
+                        <strong>{{ job.position || 'Nhân viên' }}</strong>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="info-item d-flex align-items-center p-3 rounded bg-light">
+                      <i class="fas fa-hard-hat me-3 text-primary"></i>
+                      <div class="flex-fill">
+                        <div class="text-muted small">Hình thức làm việc</div>
+                        <strong>{{ job.jobType }}</strong>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="info-item d-flex align-items-center p-3 rounded bg-light">
+                      <i class="fas fa-venus-mars me-3 text-primary"></i>
+                      <div class="flex-fill">
+                        <div class="text-muted small">Yêu cầu giới tính</div>
+                        <strong>{{ job.gender || 'Không yêu cầu' }}</strong>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="info-item d-flex align-items-center p-3 rounded bg-light">
+                      <i class="fas fa-star me-3 text-primary"></i>
+                      <div class="flex-fill">
+                        <div class="text-muted small">Kinh nghiệm</div>
+                        <strong>{{ job.experience }}</strong>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="info-item d-flex align-items-center p-3 rounded bg-light">
+                      <i class="fas fa-graduation-cap me-3 text-primary"></i>
+                      <div class="flex-fill">
+                        <div class="text-muted small">Bằng cấp</div>
+                        <strong>{{ job.degree || 'Không yêu cầu' }}</strong>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="info-item d-flex align-items-center p-3 rounded bg-light">
+                      <i class="fas fa-language me-3 text-primary"></i>
+                      <div class="flex-fill">
+                        <div class="text-muted small">Ngôn ngữ</div>
+                        <strong>{{ job.language || 'Tiếng Việt' }}</strong>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12" *ngIf="job.categories?.length">
+                    <div class="info-item d-flex align-items-center p-3 rounded bg-light">
+                      <i class="fas fa-briefcase me-3 text-primary"></i>
+                      <div class="flex-fill">
+                        <div class="text-muted small">Ngành nghề</div>
+                        <strong class="text-end">{{ (job.categories || []).join(' / ') }}</strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <h2 class="section-title">Mô tả công việc</h2>
+                <p class="lead-text">{{ job.description }}</p>
+
+                <h2 class="section-title mt-4">Mô tả công việc chi tiết</h2>
+                <ul class="mb-4 ps-4">
+                  <li *ngFor="let r of job.requirements; trackBy: trackByIndex" class="mb-2">{{ r }}</li>
+                </ul>
+
+                <h2 class="section-title mt-4">Quyền lợi được hưởng</h2>
+                <ul class="mb-4 ps-4">
+                  <li *ngFor="let b of job.benefits; trackBy: trackByIndex" class="mb-2">{{ b }}</li>
+                </ul>
+
+                <h2 class="section-title mt-4">Địa điểm làm việc</h2>
+                <div class="location-info p-3 bg-light rounded">
+                  <p class="mb-0 fs-5">{{ job.companyAddress || '56 ngõ 236 Khương Đình, phường Khương Đình, Hà Nội' }}</p>
+                </div>
+              </div>
+              <div *ngSwitchCase="'congty'">
+                <h2 class="h6">Giới thiệu công ty</h2>
+                <p class="mb-0">{{ job.companyDescription }}</p>
+              </div>
+              <div *ngSwitchCase="'phuhop'">
+                <div class="text-muted small">Chức năng đánh giá mức độ phù hợp sẽ hiển thị tại đây.</div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <!-- Việc làm hot -->
+        <div class="card shadow-sm mb-3 hot-jobs-card" *ngIf="hotJobs.length">
+          <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h3 class="h6 mb-0">Việc làm hot</h3>
+            <a class="small" routerLink="/website/search">Xem tất cả</a>
+          </div>
+          <div class="hot-list">
+            <a *ngFor="let h of hotJobs; trackBy: trackByIndex" [routerLink]="['/website/job', h.id]" class="hot-item card border rounded-3 mb-3 text-decoration-none">
+              <div class="card-body p-3">
+                <div class="d-flex align-items-start gap-3">
+                  <img *ngIf="h.logo" [src]="h.logo" alt="" width="60" height="60" class="rounded flex-shrink-0"/>
+                  <div class="flex-fill">
+                    <div class="title fw-semibold text-dark mb-2 fs-6">{{ h.title }}</div>
+                    <div class="company text-muted small mb-2">{{ h.company }}</div>
+                    <div class="job-details d-flex flex-wrap gap-3 align-items-center">
+                      <div class="d-flex align-items-center gap-1">
+                        <i class="fas fa-dollar-sign text-primary small"></i>
+                        <span class="salary text-primary fw-semibold small">{{ h.salary }}</span>
+                      </div>
+                      <div class="d-flex align-items-center gap-1">
+                        <i class="fas fa-map-marker-alt text-muted small"></i>
+                        <span class="location text-muted small">{{ h.location }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr class="my-2">
+                <div class="deadline d-flex align-items-center gap-1">
+                  <i class="fas fa-clock text-info small"></i>
+                  <span class="text-info small">Còn {{ h.deadline || '5' }} ngày</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingTpl>
+  <div class="container">
+    <div class="loading-wrap text-center py-5">
+      <div class="spinner-border text-primary mb-3" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <div>Đang tải chi tiết công việc...</div>
+    </div>
+  </div>
+</ng-template>
+
+

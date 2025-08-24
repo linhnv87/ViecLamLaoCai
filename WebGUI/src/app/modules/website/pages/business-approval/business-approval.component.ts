@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SplashScreenService } from '../../../../services/splash-screen.service';
-import { BusinessService, BusinessApprovalData, DocumentInfo, BusinessApprovalStats } from '../../../../services/website/business.service';
+import { BusinessService } from '../../../../services/website/business.service';
+import { BusinessApprovalData, DocumentInfo, BusinessApprovalStats } from '../../../../models/business.model';
 
 @Component({
   selector: 'app-business-approval',
@@ -30,7 +31,7 @@ export class BusinessApprovalComponent implements OnInit {
 
   // Pagination
   currentPage = 1;
-  itemsPerPage = 10;
+  itemsPerPage = 5;
   totalItems = 0;
 
   constructor(
@@ -204,11 +205,11 @@ export class BusinessApprovalComponent implements OnInit {
 
   getStatusClass(status: string): string {
     switch(status) {
-      case 'pending': return 'warning';
-      case 'approved': return 'success';
-      case 'rejected': return 'danger';
-      case 'reviewing': return 'info';
-      default: return 'secondary';
+      case 'pending': return 'status-pending';
+      case 'approved': return 'status-approved';
+      case 'rejected': return 'status-rejected';
+      case 'reviewing': return 'status-reviewing';
+      default: return 'status-secondary';
     }
   }
 

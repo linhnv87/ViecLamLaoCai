@@ -1,18 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SplashScreenService } from '../../../../services/splash-screen.service';
-import { HomeService, FeaturedJob, SuggestedJob, JobCategory, HomePageStats } from '../../../../services/website/home.service';
+import { HomeService } from '../../../../services/website/home.service';
+import { FeaturedJob, SuggestedJob, JobCategory, HomePageStats, LatestJob, FeaturedCompany } from '../../../../models/home.model';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit {
 
   featuredJobs: FeaturedJob[] = [];
   suggestedJobs: SuggestedJob[] = [];
   jobCategories: JobCategory[] = [];
+  latestJobs: LatestJob[] = [];
+  featuredCompanies: FeaturedCompany[] = [];
   homeStats: HomePageStats = {
     totalJobs: 0,
     totalCompanies: 0,
@@ -41,6 +44,58 @@ export class HomeComponent implements OnInit {
     this.loadHomePageData();
   }
 
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.initializeCarousels();
+    }, 1000);
+  }
+
+  private initializeCarousels(): void {
+    if (typeof (window as any).$ !== 'undefined' && (window as any).$.fn.owlCarousel) {
+      console.log('Initializing carousels...');
+      
+      // Initialize company slide carousel
+      if ((window as any).$('.js-company-slide').length && !(window as any).$('.js-company-slide').hasClass('owl-loaded')) {
+        try {
+          (window as any).$('.js-company-slide').owlCarousel({
+            items: 2,
+            slideSpeed: 1000,
+            autoplay: true,
+            loop: true,
+            smartSpeed: 1000,
+            margin: 0,
+            fluidSpeed: 500,
+            autoplayTimeout: 5000,
+            dots: true,
+            nav: false,
+            responsive: {
+              576: { items: 2 },
+              992: { items: 3 },
+              1200: { items: 5 }
+            },
+            animateIn: 'fadeIn',
+            animateOut: 'fadeOut'
+          });
+          console.log('Company carousel initialized successfully');
+        } catch (e) {
+          console.error('Error initializing company carousel:', e);
+        }
+      } else {
+        console.log('Company carousel already initialized or not found');
+      }
+    } else {
+      console.log('jQuery or owlCarousel not available, retrying...');
+      setTimeout(() => {
+        this.initializeCarousels();
+      }, 500);
+    }
+  }
+
+  public reinitializeCarousels(): void {
+    console.log('Manually reinitializing carousels...');
+    this.initializeCarousels();
+  }
+
   loadHomePageData(): void {
     this.splashScreenService.show({
       type: 'loading',
@@ -49,20 +104,19 @@ export class HomeComponent implements OnInit {
       showProgress: true
     });
 
-    // Load all home page data in parallel
     this.loadFeaturedJobs();
     this.loadSuggestedJobs();
     this.loadJobCategories();
+    this.loadLatestJobs();
+    this.loadFeaturedCompanies();
     this.loadHomeStats();
 
-    // Hide splash screen quickly since we have loading states in template
     setTimeout(() => {
       this.splashScreenService.hide();
     }, 800);
   }
 
   loadFeaturedJobs(): void {
-    // Load data immediately (synchronously for demo)
     setTimeout(() => {
       this.homeService.getFeaturedJobsDummy(6).subscribe(res => {
         if (res.isSuccess) {
@@ -74,7 +128,6 @@ export class HomeComponent implements OnInit {
   }
 
   loadSuggestedJobs(): void {
-    // Load data immediately (synchronously for demo)
     setTimeout(() => {
       this.homeService.getSuggestedJobsDummy(undefined, 6).subscribe(res => {
         if (res.isSuccess) {
@@ -86,7 +139,6 @@ export class HomeComponent implements OnInit {
   }
 
   loadJobCategories(): void {
-    // Load data immediately (synchronously for demo)
     setTimeout(() => {
       this.homeService.getJobCategoriesDummy().subscribe(res => {
         if (res.isSuccess) {
@@ -95,6 +147,31 @@ export class HomeComponent implements OnInit {
         }
       });
     }, 300);
+  }
+
+  loadLatestJobs(): void {
+    setTimeout(() => {
+      this.homeService.getLatestJobsDummy(8).subscribe(res => {
+        if (res.isSuccess) {
+          this.latestJobs = res.result;
+          console.log('Latest jobs loaded:', this.latestJobs.length);
+        }
+      });
+    }, 400);
+  }
+
+  loadFeaturedCompanies(): void {
+    setTimeout(() => {
+      this.homeService.getFeaturedCompaniesDummy(7).subscribe(res => {
+        if (res.isSuccess) {
+          this.featuredCompanies = res.result;
+          console.log('Featured companies loaded:', this.featuredCompanies.length);
+          setTimeout(() => {
+            this.initializeCarousels();
+          }, 100);
+        }
+      });
+    }, 500);
   }
 
   loadHomeStats(): void {
@@ -107,20 +184,16 @@ export class HomeComponent implements OnInit {
   }
 
   searchJobs(searchQuery: any = {}): void {
-    // Prepare search parameters
     const queryParams: any = {};
-    
     if (searchQuery.keyword) queryParams.q = searchQuery.keyword;
     if (searchQuery.location) queryParams.location = searchQuery.location;
     if (searchQuery.salaryRange) queryParams.salary = searchQuery.salaryRange;
     if (searchQuery.experience) queryParams.experience = searchQuery.experience;
     if (searchQuery.category) queryParams.category = searchQuery.category;
 
-    // Navigate to search results page
     this.router.navigate(['/website/search'], { queryParams });
   }
 
-  // Additional helper methods for the template
   getUrgentJobsCount(): number {
     return this.featuredJobs.filter(job => job.urgent).length;
   }
@@ -133,7 +206,6 @@ export class HomeComponent implements OnInit {
     return this.homeStats.totalJobs;
   }
 
-  // Helper method to group jobs for carousel display
   getJobGroups<T>(jobs: T[], groupSize: number): T[][] {
     const groups: T[][] = [];
     for (let i = 0; i < jobs.length; i += groupSize) {
@@ -142,13 +214,14 @@ export class HomeComponent implements OnInit {
     return groups;
   }
 
-  // Format job count for display (e.g., 5365 -> "5.365")
   formatJobCount(count: number): string {
     return count.toLocaleString('vi-VN');
   }
 
-  // TrackBy function for better performance
   trackByIndex(index: number, item: any): number {
     return index;
   }
+
+
 }
+

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SplashScreenService } from '../../../../services/splash-screen.service';
-import { LaborMarketService, MarketOverview, JobTrend, SkillDemand, SalaryRange, MarketInsight } from '../../../../services/website/labor-market.service';
+import { LaborMarketService } from '../../../../services/website/labor-market.service';
+import { MarketOverview, JobTrend, SkillDemand, SalaryRange, MarketInsight } from '../../../../models/labor-market.model';
 
 // Note: All interfaces are now imported from LaborMarketService
 // This eliminates duplicate interface declarations
@@ -302,5 +303,11 @@ export class LaborMarketReportComponent implements OnInit {
     return this.skillDemands.filter(skill => skill.level === 'hot');
   }
 }
+
+
+
+
+
+
 
 
