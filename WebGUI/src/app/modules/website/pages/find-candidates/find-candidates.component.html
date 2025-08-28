@@ -1,0 +1,408 @@
+<!-- Splash Screen -->
+<app-splash-screen></app-splash-screen>
+
+<!---->
+<div class="container">
+  <div class="dashboard-layout">
+    <app-dashboard-sidebar></app-dashboard-sidebar>
+
+    <div class="dashboard-content-wrap">
+
+      <div class="section-data">
+        <div class="section-data-title">Chiến dịch tìm ứng viên phù hợp</div>
+
+        <div class="campaign-wrap">
+
+          <div class="select-campaign">
+            <div class="select-wrap">
+              <img src="assets/vieclamlaocai/img/icon/icon-dropdown-black.svg" alt="" class="select-icon">
+              <select id="select-campaign" class="hide-dropdown" name="salary" data-placeholder="Chọn chiến dịch khác" data-dynamic-select>
+                <option value="" selected data-img="">Chọn chiến dịch khác</option>
+                <option value="1" data-img="">Chiến dịch 1</option>
+                <option value="2" data-img="">Chiến dịch tháng 7</option>
+                <option value="3" data-img="">Chiến dịch vòng loại</option>
+              </select>
+            </div>
+
+            <div class="btn2-wrap large orange">Lưu chiến dịch</div>
+          </div>
+
+          <div class="filter-campaign">
+            <div class="field-wrap">
+              <div class="field-label">Tiêu đề công việc</div>
+
+              <div class="field-item border">
+                <input type="text" placeholder="Nhập tiêu đề công việc" name="title">
+              </div>
+            </div>
+
+            <div class="field-wrap">
+              <div class="field-label">Ngành nghề</div>
+
+              <div class="field-item border">
+                <select class="form-select">
+                  <option disabled selected>Tất cả ngành nghề</option>
+                  <option value="1">One</option>
+                  <option value="2">Two</option>
+                  <option value="3">Three</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field-wrap">
+              <div class="field-label">Địa điểm</div>
+
+              <div class="field-item border">
+                <select class="form-select">
+                  <option disabled selected>Chọn địa điểm</option>
+                  <option value="1">One</option>
+                  <option value="2">Two</option>
+                  <option value="3">Three</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field-wrap">
+              <div class="field-label">Trình độ học vấn</div>
+
+              <div class="field-item border">
+                <select class="form-select">
+                  <option disabled selected>Chọn trình độ</option>
+                  <option value="1">One</option>
+                  <option value="2">Two</option>
+                  <option value="3">Three</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field-wrap">
+              <div class="field-label">Cấp bậc mong muốn</div>
+
+              <div class="field-item border">
+                <select class="form-select">
+                  <option disabled selected>Chọn cấp bậc</option>
+                  <option value="1">One</option>
+                  <option value="2">Two</option>
+                  <option value="3">Three</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field-wrap">
+              <div class="field-label">Số năm kinh nghiệm</div>
+
+              <div class="field-item border">
+                <select class="form-select">
+                  <option disabled selected>Chọn năm kinh nghiệm</option>
+                  <option value="1">One</option>
+                  <option value="2">Two</option>
+                  <option value="3">Three</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field-wrap">
+              <div class="field-label">Loại hình công việc</div>
+
+              <div class="field-item border">
+                <select class="form-select">
+                  <option disabled selected>Chọn loại hình công việc</option>
+                  <option value="1">One</option>
+                  <option value="2">Two</option>
+                  <option value="3">Three</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field-wrap">
+              <div class="field-label">Mức lương</div>
+
+              <div class="field-item border">
+                <select class="form-select">
+                  <option disabled selected>Chọn mức lương</option>
+                  <option value="1">One</option>
+                  <option value="2">Two</option>
+                  <option value="3">Three</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field-wrap">
+              <div class="field-label">Giới tính</div>
+
+              <div class="field-item border">
+                <select class="form-select">
+                  <option disabled selected>Chọn giới tính</option>
+                  <option value="1">One</option>
+                  <option value="2">Two</option>
+                  <option value="3">Three</option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="filter-actions">
+            <div class="btn2-wrap large gray">Xoá lọc</div>
+            <div class="btn2-wrap large">Tìm kiếm</div>
+          </div>
+
+        </div>
+      </div>
+
+      <br>
+      <br>
+
+      <div class="section-data">
+        <div class="section-data-title">Danh sách ứng viên phù hợp</div>
+
+        <div class="user-data-wrap">
+          <div class="user-data-user">
+            <img src="assets/vieclamlaocai/img/Ellipse 6.png" alt="" class="avatar">
+            <a href="#" class="name">Võ Mạnh Tuấn</a>
+            <div class="experiment tag-wrap orange">5 năm kinh nghiệm</div>
+            <div class="tag">
+              <span>Kế toán</span>
+              <span class="dot"></span>
+              <span>36 tuổi</span>
+            </div>
+          </div>
+
+          <div class="user-data-info">
+
+            <div class="info-row">
+              <div class="d-flex gap-3 align-items-center">
+                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                <span>Địa điểm</span>
+              </div>
+              <div>TP. Hồ Chí Minh</div>
+            </div>
+
+            <div class="info-row">
+              <div class="d-flex gap-3 align-items-center">
+                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                <span>Cấp bậc</span>
+              </div>
+              <div>Nhân viên</div>
+            </div>
+
+            <div class="info-row">
+              <div class="d-flex gap-3 align-items-center">
+                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                <span>Ngành nghề</span>
+              </div>
+              <div>Xuất nhập khẩu</div>
+            </div>
+
+            <div class="info-row">
+              <div class="d-flex gap-3 align-items-center">
+                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                <span>Kinh nghiệm</span>
+              </div>
+              <div>Công ty CP KD CBTS Và XNK Quốc Việt</div>
+            </div>
+
+            <div class="info-row">
+              <div class="d-flex gap-3 align-items-center">
+                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                <span>Bằng cấp</span>
+              </div>
+              <div>ĐH Ngoại thương TPHCM</div>
+            </div>
+
+            <div class="d-flex justify-content-end mt-3">
+              <div class="tag-wrap px-5">15 - 50 triệu</div>
+            </div>
+
+          </div>
+
+        </div>
+        <div class="user-data-wrap">
+          <div class="user-data-user">
+            <img src="assets/vieclamlaocai/img/Ellipse 6.png" alt="" class="avatar">
+            <a href="#" class="name">Võ Mạnh Tuấn</a>
+            <div class="experiment tag-wrap orange">5 năm kinh nghiệm</div>
+            <div class="tag">
+              <span>Kế toán</span>
+              <span class="dot"></span>
+              <span>36 tuổi</span>
+            </div>
+          </div>
+
+          <div class="user-data-info">
+
+            <div class="info-row">
+              <div class="d-flex gap-3 align-items-center">
+                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                <span>Địa điểm</span>
+              </div>
+              <div>TP. Hồ Chí Minh</div>
+            </div>
+
+            <div class="info-row">
+              <div class="d-flex gap-3 align-items-center">
+                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                <span>Cấp bậc</span>
+              </div>
+              <div>Nhân viên</div>
+            </div>
+
+            <div class="info-row">
+              <div class="d-flex gap-3 align-items-center">
+                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                <span>Ngành nghề</span>
+              </div>
+              <div>Xuất nhập khẩu</div>
+            </div>
+
+            <div class="info-row">
+              <div class="d-flex gap-3 align-items-center">
+                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                <span>Kinh nghiệm</span>
+              </div>
+              <div>Công ty CP KD CBTS Và XNK Quốc Việt</div>
+            </div>
+
+            <div class="info-row">
+              <div class="d-flex gap-3 align-items-center">
+                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                <span>Bằng cấp</span>
+              </div>
+              <div>ĐH Ngoại thương TPHCM</div>
+            </div>
+
+            <div class="d-flex justify-content-end mt-3">
+              <div class="tag-wrap px-5">15 - 50 triệu</div>
+            </div>
+
+          </div>
+
+        </div>
+        <div class="user-data-wrap">
+          <div class="user-data-user">
+            <img src="assets/vieclamlaocai/img/Ellipse 6.png" alt="" class="avatar">
+            <a href="#" class="name">Võ Mạnh Tuấn</a>
+            <div class="experiment tag-wrap orange">5 năm kinh nghiệm</div>
+            <div class="tag">
+              <span>Kế toán</span>
+              <span class="dot"></span>
+              <span>36 tuổi</span>
+            </div>
+          </div>
+
+          <div class="user-data-info">
+
+            <div class="info-row">
+              <div class="d-flex gap-3 align-items-center">
+                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                <span>Địa điểm</span>
+              </div>
+              <div>TP. Hồ Chí Minh</div>
+            </div>
+
+            <div class="info-row">
+              <div class="d-flex gap-3 align-items-center">
+                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                <span>Cấp bậc</span>
+              </div>
+              <div>Nhân viên</div>
+            </div>
+
+            <div class="info-row">
+              <div class="d-flex gap-3 align-items-center">
+                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                <span>Ngành nghề</span>
+              </div>
+              <div>Xuất nhập khẩu</div>
+            </div>
+
+            <div class="info-row">
+              <div class="d-flex gap-3 align-items-center">
+                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                <span>Kinh nghiệm</span>
+              </div>
+              <div>Công ty CP KD CBTS Và XNK Quốc Việt</div>
+            </div>
+
+            <div class="info-row">
+              <div class="d-flex gap-3 align-items-center">
+                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                <span>Bằng cấp</span>
+              </div>
+              <div>ĐH Ngoại thương TPHCM</div>
+            </div>
+
+            <div class="d-flex justify-content-end mt-3">
+              <div class="tag-wrap px-5">15 - 50 triệu</div>
+            </div>
+
+          </div>
+
+        </div>
+        <div class="user-data-wrap">
+          <div class="user-data-user">
+            <img src="assets/vieclamlaocai/img/Ellipse 6.png" alt="" class="avatar">
+            <a href="#" class="name">Võ Mạnh Tuấn</a>
+            <div class="experiment tag-wrap orange">5 năm kinh nghiệm</div>
+            <div class="tag">
+              <span>Kế toán</span>
+              <span class="dot"></span>
+              <span>36 tuổi</span>
+            </div>
+          </div>
+
+          <div class="user-data-info">
+
+            <div class="info-row">
+              <div class="d-flex gap-3 align-items-center">
+                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                <span>Địa điểm</span>
+              </div>
+              <div>TP. Hồ Chí Minh</div>
+            </div>
+
+            <div class="info-row">
+              <div class="d-flex gap-3 align-items-center">
+                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                <span>Cấp bậc</span>
+              </div>
+              <div>Nhân viên</div>
+            </div>
+
+            <div class="info-row">
+              <div class="d-flex gap-3 align-items-center">
+                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                <span>Ngành nghề</span>
+              </div>
+              <div>Xuất nhập khẩu</div>
+            </div>
+
+            <div class="info-row">
+              <div class="d-flex gap-3 align-items-center">
+                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                <span>Kinh nghiệm</span>
+              </div>
+              <div>Công ty CP KD CBTS Và XNK Quốc Việt</div>
+            </div>
+
+            <div class="info-row">
+              <div class="d-flex gap-3 align-items-center">
+                <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
+                <span>Bằng cấp</span>
+              </div>
+              <div>ĐH Ngoại thương TPHCM</div>
+            </div>
+
+            <div class="d-flex justify-content-end mt-3">
+              <div class="tag-wrap px-5">15 - 50 triệu</div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -96,6 +96,7 @@ builder.Services.AddScoped<ITblGroupRepository, TblGroupRepository>();
 builder.Services.AddScoped<ITblGroupDetailRepository, TblGroupDetailRepository>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IUnitRepository, UnitRepository>();
+builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 
 
 builder.Services.AddScoped<IToTrinhService, ToTrinhService>();
@@ -117,6 +118,9 @@ builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IUnitService, UnitService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IBusinessVerificationService, BusinessVerificationService>();
+builder.Services.AddScoped<IHomeService, HomeService>();
 
 builder.Services.AddHostedService<AutoSMSReminderService>();
 builder.Services.AddHostedService<AutoApprovingService>();

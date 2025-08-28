@@ -27,6 +27,9 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { ResultFileApprovalComponent } from './components/result-file-approval/result-file-approval.component';
 import { AddFileComponent } from './components/add-file/add-file.component';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+import { SharedModule } from './shared/shared.module';
+
+
 
 @NgModule({
   declarations: [
@@ -39,6 +42,7 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
     HandlerSelectComponent,
     ResultFileApprovalComponent,
     AddFileComponent,
+
     // PieChartComponent,
     // LineChartComponent,
   ],
@@ -50,7 +54,18 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
     MatTooltipModule,
     HttpClientModule,
     ToastrModule.forRoot({
-      positionClass: 'toast-top', // Set the position class
+      timeOut: 5000,
+      positionClass: 'toast-top-right',
+      preventDuplicates: true,
+      progressBar: true,
+      closeButton: true,
+      enableHtml: true,
+      tapToDismiss: true,
+      toastClass: 'ngx-toastr',
+      titleClass: 'toast-title',
+      messageClass: 'toast-message',
+      easeTime: 300,
+      extendedTimeOut: 1000,
     }),
     NgbModule,
     NgxPaginationModule,
@@ -59,7 +74,8 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
     NgxMatTimepickerModule,
     NgxMomentDateModule,
     NgxMatNativeDateModule,
-    NgxExtendedPdfViewerModule
+    NgxExtendedPdfViewerModule,
+    SharedModule
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'vi' }],
   bootstrap: [AppComponent],

@@ -1,0 +1,54 @@
+<div class="splash-screen" 
+     [class.fade-out]="!isVisible" 
+     [ngClass]="splashClass"
+     *ngIf="isVisible">
+  <div class="splash-content">
+    
+    <!-- Icon/Animation Container -->
+    <div class="icon-container">
+      <!-- Loading Spinner -->
+      <div class="loading-spinner" *ngIf="iconClass === 'icon-spinner'">
+        <div class="spinner-ring"></div>
+        <div class="spinner-ring"></div>
+        <div class="spinner-ring"></div>
+      </div>
+
+      <!-- Success Icon -->
+      <div class="success-icon" *ngIf="iconClass === 'icon-success'">
+        <div class="checkmark">
+          <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+            <circle cx="30" cy="30" r="28" stroke="#28a745" stroke-width="4" fill="none"/>
+            <path d="M15 30l10 10 20-20" stroke="#28a745" stroke-width="4" 
+                  stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Error Icon -->
+      <div class="error-icon" *ngIf="iconClass === 'icon-error'">
+        <div class="error-mark">
+          <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+            <circle cx="30" cy="30" r="28" stroke="#dc3545" stroke-width="4" fill="none"/>
+            <path d="20 20l20 20M40 20l-20 20" stroke="#dc3545" stroke-width="4" 
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-container">
+      <h2 class="splash-title">{{ config.title }}</h2>
+      <p class="splash-message" *ngIf="config.message">{{ config.message }}</p>
+    </div>
+
+    <div class="progress-container" *ngIf="config.type === 'loading' && config.showProgress">
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+    </div>
+
+    <div class="splash-footer" *ngIf="config.type === 'loading'">
+      <p>&copy; 2024 Việc Làm Lào Cai. All rights reserved.</p>
+    </div>
+  </div>
+</div>

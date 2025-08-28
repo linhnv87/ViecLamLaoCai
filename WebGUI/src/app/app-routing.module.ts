@@ -1,11 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { SsoComponent } from './modules/auth/sso/sso.component';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'admin',
+    redirectTo: 'website',
     pathMatch: 'full',
   },
   {
@@ -19,14 +18,6 @@ const routes: Routes = [
   {
     path: 'admin',
     loadChildren: () => import('./modules/admin/admin.module').then(m => m.AdminModule),
-  },
-  {
-    path: 'signin-oidc',
-    component: SsoComponent,
-  },
-  {
-    path: 'gogosso',
-    component: SsoComponent,
   },
 ];
 

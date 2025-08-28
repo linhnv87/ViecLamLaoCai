@@ -1,0 +1,35 @@
+<div class="dashboard-sidebar">
+  <div class="btn-sidebar-trigger">
+    <img src="assets/vieclamlaocai/img/icon/icon-arrow-right-double.svg" alt="">
+  </div>
+
+  <div class="sidebar-wrap">
+    <div class="sidebar-user-wrap">
+      <div class="user-avatar">
+        <img class="img-avatar" src="assets/vieclamlaocai/img/user-avatar.png" alt="">
+        <div class="btn-upload-wrap">
+          <img class="img-upload" src="assets/vieclamlaocai/img/icon/icon-photo.svg" alt="">
+        </div>
+      </div>
+      <div class="user-role">
+        <div class="btn-wrap yellow">{{getUserMainRole()}}</div>
+        <div *ngIf="isBusinessUser" class="verification-status" [ngClass]="verificationStatus">
+          {{getVerificationStatusText()}}
+        </div>
+      </div>
+      <div class="user-name">{{userInfo?.displayName || 'Cty Diaocvang'}}</div>
+    </div>
+
+    <div class="sidebar-menu-wrap">
+      <div 
+        *ngFor="let menuItem of menuItems" 
+        class="menu-item" 
+        [class.active]="isActive(menuItem.path)"
+        (click)="navigateToPage(menuItem.path)" 
+        style="cursor: pointer;">
+        <img class="menu-icon" [src]="menuItem.icon" [alt]="menuItem.text">
+        <div class="menu-title">{{menuItem.text}}</div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,101 @@
+// Login button loading states
+.btn2-wrap {
+  position: relative;
+  transition: all 0.3s ease;
+
+  &.loading {
+    opacity: 0.8;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.login-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  .spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .login-splash-overlay {
+    padding: 20px;
+    
+    .login-splash-content {
+      h2 {
+        font-size: 1.3rem !important;
+      }
+      
+      p {
+        font-size: 0.9rem !important;
+      }
+      
+      .login-spinner,
+      .success-icon {
+        width: 50px !important;
+        height: 50px !important;
+        margin-bottom: 15px !important;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .login-splash-overlay {
+    .login-splash-content {
+      h2 {
+        font-size: 1.1rem !important;
+      }
+      
+      p {
+        font-size: 0.85rem !important;
+      }
+      
+      .login-spinner,
+      .success-icon {
+        width: 40px !important;
+        height: 40px !important;
+        margin-bottom: 12px !important;
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

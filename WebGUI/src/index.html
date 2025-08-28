@@ -1,33 +1,200 @@
 <!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8" />
-  <title>PHẦN MỀM BIỂU QUYẾT, CHO Ý KIẾN CỦA TỈNH UỶ</title>
+  <title>Việc Làm Lào Cai - Tìm việc làm nhanh 24h</title>
   <base href="/" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="icon" type="image/png" href="/assets/img/bg-login-icon.png" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-  <link rel="stylesheet" href="/assets/Content/adminlte/css/adminlte.min.css" />
-  <link rel="stylesheet" href="/assets/Content/Site.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/assets/vieclamlaocai/css/style.min.css" />
+  <script>
+    if (window.location.pathname.includes('/admin')) {
+      document.write('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">');
+      document.write('<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap">');
+      document.write('<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">');
+      document.write('<link rel="stylesheet" href="/assets/Content/adminlte/css/adminlte.min.css">');
+      document.write('<link rel="stylesheet" href="/assets/Content/Site.css">');
+    }
+  </script>
 
-  <!-- jQuery -->
-  <script src="/assets/Scripts/jquery-3.4.1.min.js"></script>
-  <!-- Bootstrap -->
-  <script src="/assets/Scripts/bootstrap.bundle.min.js"></script>
+  <script src="/assets/vieclamlaocai/js/libs/jquery-3.7.1.min.js"></script>
+  
+  <script src="/assets/vieclamlaocai/js/libs/bootstrap.bundle.min.js"></script>
+  <script src="/assets/vieclamlaocai/js/libs/aos.js"></script>
+  <script src="/assets/vieclamlaocai/js/libs/owl.carousel.min.js"></script>
+  <script src="/assets/vieclamlaocai/js/libs/fancybox.umd.js"></script>
+  <script src="/assets/vieclamlaocai/js/libs/dynamicSelect.js"></script>
   <!-- AdminLTE -->
   <script src="/assets/Scripts/adminlte/js/pages/dashboard.js"></script>
   <script src="/assets/Scripts/adminlte/js/adminlte.js"></script>
   <script src="/assets/Scripts/base64.js"></script>
-  <script src="/assets/Scripts/vgcaplugin.js"></script>
+  <script>
+    $(document).ready(function () {
+
+      if (typeof AOS !== 'undefined') {
+        AOS.init();
+      }
+      initDomEvents();
+      waitForAngularComponents();
+    });
+
+    function initDomEvents() {
+      $(document).off('click', '.btn-sidebar-trigger').on('click', '.btn-sidebar-trigger', function (e) {
+        e.preventDefault();
+        $('.dashboard-sidebar').toggleClass('active');
+      });
+
+      $(document).off('click', '.handle-dropdown').on('click', '.handle-dropdown', function (e) {
+        e.preventDefault();
+        $(e.currentTarget).closest('.btn-dropdown-wrap').toggleClass('active');
+      });
+
+      $(document).off('click', '.icon-mobile-menu, .icon-mobile-close-menu').on('click', '.icon-mobile-menu, .icon-mobile-close-menu', function (e) {
+        $('.nav-mobile-wrap').toggleClass('active');
+      });
+
+      $(document).off('click', '.toggle-menu-mobile-1').on('click', '.toggle-menu-mobile-1', function (e) {
+        let $menu = $(e.target).closest('.nav-mobile-1__item').find('.nav-mobile-2');
+        let $icon = $(e.target).closest('.nav-mobile-1__item').find('.toggle-menu-mobile-1 img');
+        $icon.toggleClass('active');
+        $menu.toggleClass('active');
+      });
+
+      $(document).off('click', '.js-goto-top').on('click', '.js-goto-top', function (e) {
+        $("html, body").animate({ scrollTop: 0 }, 600);
+        return false;
+      });
+
+      $(window).off('scroll.gototop').on('scroll.gototop', function () {
+        if ($(this).scrollTop() >= 300) {
+          $('.js-goto-top').addClass('active');
+        } else {
+          $('.js-goto-top').removeClass('active');
+        }
+      });
+    }
+
+    function waitForAngularComponents() {
+      let attempts = 0;
+      const maxAttempts = 20;
+
+      function checkAndInit() {
+        attempts++;
+        const hasCarousels = document.querySelector('.js-company-slide') ||
+          document.querySelector('.js-list-group-slide') ||
+          document.querySelector('.js-list-group2-slide');
+
+        const hasSelects = document.querySelector('[data-dynamic-select]');
+
+        if (hasCarousels || hasSelects) {
+          initializeComponents();
+          return;
+        }
+
+        if (attempts < maxAttempts) {
+          setTimeout(checkAndInit, 500);
+        } else {
+          initializeComponents();
+        }
+      }
+
+      setTimeout(checkAndInit, 500);
+    }
+
+    function initializeComponents() {
+      if (typeof DynamicSelect !== 'undefined') {
+        document.querySelectorAll('[data-dynamic-select]').forEach(select => {
+          if (!select.parentElement?.querySelector('.dynamic-select')) {
+            try {
+              new DynamicSelect(select);
+            } catch (e) {
+            }
+          }
+        });
+      }
+
+      if (typeof $ !== 'undefined' && $.fn.owlCarousel) {
+
+        if ($('.js-company-slide').length && !$('.js-company-slide').hasClass('owl-loaded')) {
+          try {
+            $('.js-company-slide').owlCarousel({
+              items: 2,
+              slideSpeed: 1000,
+              autoplay: true,
+              loop: true,
+              smartSpeed: 1000,
+              margin: 0,
+              fluidSpeed: 500,
+              autoplayTimeout: 5000,
+              dots: true,
+              nav: false,
+              responsive: {
+                576: { items: 2 },
+                992: { items: 3 },
+                1200: { items: 5 }
+              },
+              animateIn: 'fadeIn',
+              animateOut: 'fadeOut'
+            });
+          } catch (e) {
+          }
+        }
+
+        if ($('.js-list-group-slide').length && !$('.js-list-group-slide').hasClass('owl-loaded')) {
+          try {
+            $('.js-list-group-slide').owlCarousel({
+              items: 1,
+              slideSpeed: 1000,
+              autoplay: true,
+              loop: true,
+              smartSpeed: 1000,
+              margin: 12,
+              fluidSpeed: 500,
+              autoplayTimeout: 5000,
+              dots: true,
+              nav: true,
+              animateIn: 'fadeIn',
+              animateOut: 'fadeOut',
+              navText: [
+                '<img class="slide-nav" src="/assets/vieclamlaocai/img/icon/icon-arrow-left-circle.svg" alt="">',
+                '<img class="slide-nav" src="/assets/vieclamlaocai/img/icon/icon-arrow-right-circle.svg" alt="">',
+              ]
+            });
+          } catch (e) {
+          }
+        }
+
+        if ($('.js-list-group2-slide').length && !$('.js-list-group2-slide').hasClass('owl-loaded')) {
+          try {
+            $('.js-list-group2-slide').owlCarousel({
+              items: 1,
+              slideSpeed: 1000,
+              autoplay: true,
+              loop: true,
+              smartSpeed: 1000,
+              margin: 12,
+              fluidSpeed: 500,
+              autoplayTimeout: 5000,
+              dots: true,
+              nav: true,
+              animateIn: 'fadeIn',
+              animateOut: 'fadeOut',
+              navText: [
+                '<img class="slide-nav" src="/assets/vieclamlaocai/img/icon/icon-arrow-left-circle.svg" alt="">',
+                '<img class="slide-nav" src="/assets/vieclamlaocai/img/icon/icon-arrow-right-circle.svg" alt="">',
+              ]
+            });
+          } catch (e) {
+            console.error('Error initializing suggested jobs carousel:', e);
+          }
+        }
+      }
+    }
+  </script>
 </head>
 
-<body class="mat-typography">
+<body>
   <app-root></app-root>
 </body>
 

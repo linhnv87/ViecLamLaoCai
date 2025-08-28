@@ -68,4 +68,43 @@ namespace Services.DTO
         public string Description { get; set; }
         public bool? Deleted { get; set; }
     }
+
+    public class BusinessRegisterDTO
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string ConfirmPassword { get; set; }
+        public string RepresentativeName { get; set; }
+        public string Phone { get; set; }
+        public string CompanyName { get; set; }
+        public string Address { get; set; }
+        public string? Industry { get; set; }
+        public string? CompanySize { get; set; }
+        public string? Website { get; set; }
+        public string? Description { get; set; }
+    }
+
+    public class CandidateRegisterDTO
+    {
+        public string FullName { get; set; }
+        public string Phone { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string ConfirmPassword { get; set; }
+        public DateTime? DateOfBirth { get; set; }
+        public string? Gender { get; set; }
+        public string? Address { get; set; }
+        public int? DistrictId { get; set; }
+        public int? CommuneId { get; set; }
+        public int? EducationLevelId { get; set; }
+        public int? CareerId { get; set; }
+    }
+
+    public class RegistrationResponseDTO
+    {
+        public Guid UserId { get; set; }
+        public string Message { get; set; }
+        public bool RequiresEmailVerification { get; set; } = true;
+        public bool RequiresApproval { get; set; } = false;
+    }
 }

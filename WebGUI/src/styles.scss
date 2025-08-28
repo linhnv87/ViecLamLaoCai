@@ -51,82 +51,115 @@ $my-theme: mat.define-light-theme(
 
 @include mat.all-component-themes($my-theme);
 
-html,
-body {
-  height: 100%;
-  background-color: #f4f6f9;
-}
-body {
-  margin: 0;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
-}
-.nav-sidebar .nav-item .nav-icon {
-  margin-left: 0.05rem;
-  font-size: 1rem;
-  margin-right: 0.2rem;
-  text-align: center;
-  width: 1.6rem;
-}
-.nav-sidebar .nav-item .nav-icon.fa,
-.nav-sidebar > .nav-item .nav-icon.fab,
-.nav-sidebar > .nav-item .nav-icon.fad,
-.nav-sidebar > .nav-item .nav-icon.fal,
-.nav-sidebar > .nav-item .nav-icon.far,
-.nav-sidebar > .nav-item .nav-icon.fas,
-.nav-sidebar > .nav-item .nav-icon.ion,
-.nav-sidebar > .nav-item .nav-icon.svg-inline--fa {
-  font-size: 1.1rem;
-}
-.fw-normal {
-  color: red;
-}
+// html,
+// body {
+//   height: 100%;
+//   background-color: #f4f6f9;
+// }
+// body {
+//   margin: 0;
+//   font-family: Roboto, 'Helvetica Neue', sans-serif;
+// }
+// .nav-sidebar .nav-item .nav-icon {
+//   margin-left: 0.05rem;
+//   font-size: 1rem;
+//   margin-right: 0.2rem;
+//   text-align: center;
+//   width: 1.6rem;
+// }
+// .nav-sidebar .nav-item .nav-icon.fa,
+// .nav-sidebar > .nav-item .nav-icon.fab,
+// .nav-sidebar > .nav-item .nav-icon.fad,
+// .nav-sidebar > .nav-item .nav-icon.fal,
+// .nav-sidebar > .nav-item .nav-icon.far,
+// .nav-sidebar > .nav-item .nav-icon.fas,
+// .nav-sidebar > .nav-item .nav-icon.ion,
+// .nav-sidebar > .nav-item .nav-icon.svg-inline--fa {
+//   font-size: 1.1rem;
+// }
+// .fw-normal {
+//   color: red;
+// }
 
-.text-bg-secondary {
-  color: #fff !important;
-  background-color: gray !important;
-}
-.text-bg-success {
-  color: #fff !important;
-  background-color: green !important;
-}
+// .text-bg-secondary {
+//   color: #fff !important;
+//   background-color: gray !important;
+// }
+// .text-bg-success {
+//   color: #fff !important;
+//   background-color: green !important;
+// }
 
 .modal-backdrop {
   z-index: -1 !important;
 }
 
-/* Desktop-specific styles using a media query */
-@media screen and (min-width: 768px) {
-  /* Styles to apply only on desktop devices */
-  .toast-top {
-    top: 100px;
-    right: 0px;
-    /* Adjust this value as needed for desktop */
+/* Toast styles */
+.toast-top-right {
+  top: 80px;
+  right: 20px;
+  z-index: 9999;
+}
+
+/* Custom toast styling */
+.ngx-toastr {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  
+  &.toast-success {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  &.toast-error {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  &.toast-info {
+    background-color: #17a2b8;
+    color: white;
+  }
+  
+  &.toast-warning {
+    background-color: #ffc107;
+    color: #212529;
   }
 }
 
-/* material ui */
-
-.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,
-.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,
-.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
-  border-color: #ced4da !important;
-  &:focus {
-    border-color: #ced4da !important;
-  }
+.toast-title {
+  font-weight: 600;
+  font-size: 16px;
 }
 
-.mat-mdc-icon-button.mat-mdc-button-base {
-  height: 35px;
-  width: 35px;
-  padding: 0;
+.toast-message {
+  font-size: 14px;
+  line-height: 1.4;
 }
-.mat-mdc-form-field-infix {
-  min-height: 38px;
-}
-.mat-mdc-text-field-wrapper.mdc-text-field--outlined .mat-mdc-form-field-infix {
-  padding-top: 7px;
-  padding-bottom: 7px;
-}
-.cdk-overlay-container {
-  z-index: 99999;
-}
+
+// /* material ui */
+
+// .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,
+// .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,
+// .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
+//   border-color: #ced4da !important;
+//   &:focus {
+//     border-color: #ced4da !important;
+//   }
+// }
+
+// .mat-mdc-icon-button.mat-mdc-button-base {
+//   height: 35px;
+//   width: 35px;
+//   padding: 0;
+// }
+// .mat-mdc-form-field-infix {
+//   min-height: 38px;
+// }
+// .mat-mdc-text-field-wrapper.mdc-text-field--outlined .mat-mdc-form-field-infix {
+//   padding-top: 7px;
+//   padding-bottom: 7px;
+// }
+// .cdk-overlay-container {
+//   z-index: 99999;
+// }

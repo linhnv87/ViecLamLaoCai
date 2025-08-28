@@ -1,0 +1,343 @@
+<!-- Business Verification Modal -->
+<div class="email-verification-modal" *ngIf="isOpen">
+  <div class="modal-overlay" (click)="closeModal()"></div>
+  
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title">Xác thực thông tin doanh nghiệp</h3>
+      <button class="close-btn" (click)="closeModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="verification-steps">
+        <div class="step active">
+          <div class="step-number">1</div>
+          <div class="step-text">Thông tin cơ bản</div>
+        </div>
+        <div class="step" [class.active]="currentStep >= 2">
+          <div class="step-number">2</div>
+          <div class="step-text">Giấy tờ pháp lý</div>
+        </div>
+        <div class="step" [class.active]="currentStep >= 3">
+          <div class="step-number">3</div>
+          <div class="step-text">Xác nhận</div>
+        </div>
+      </div>
+
+      <!-- Step 1: Basic Information -->
+      <div class="step-content" *ngIf="currentStep === 1">
+        <h4>Thông tin doanh nghiệp</h4>
+        <p class="text-muted">
+          <span *ngIf="companyInfo?.companyName">✅ Thông tin có sẵn đã được tải. Bạn có thể cập nhật hoặc bổ sung thêm.</span>
+          <span *ngIf="!companyInfo?.companyName">📝 Vui lòng nhập đầy đủ thông tin doanh nghiệp để xác thực.</span>
+        </p>
+
+        <!-- Loading indicator -->
+        <div *ngIf="isLoadingCompanyInfo" class="loading-indicator">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Đang tải...</span>
+          </div>
+          <span class="ms-2">Đang tải thông tin doanh nghiệp...</span>
+        </div>
+
+        <form [formGroup]="basicInfoForm" class="verification-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label required">Tên doanh nghiệp</label>
+              <input type="text" class="form-control" formControlName="companyName" placeholder="Nhập tên doanh nghiệp">
+              <div class="error-message" *ngIf="basicInfoForm.get('companyName')?.invalid && basicInfoForm.get('companyName')?.touched">
+                Tên doanh nghiệp là bắt buộc
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label required">Mã số thuế</label>
+              <input type="text" class="form-control" formControlName="taxNumber" placeholder="Nhập mã số thuế">
+              <div class="error-message" *ngIf="basicInfoForm.get('taxNumber')?.invalid && basicInfoForm.get('taxNumber')?.touched">
+                Mã số thuế là bắt buộc
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Người đại diện</label>
+              <input type="text" class="form-control" [value]="companyInfo?.representativeName || ''" readonly placeholder="Tên người đại diện sẽ được lấy từ thông tin tài khoản">
+              <small class="form-text text-muted">Thông tin này được lấy từ tài khoản của bạn</small>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label required">Chức vụ</label>
+              <input type="text" class="form-control" formControlName="position" placeholder="Giám đốc, Chủ tịch...">
+              <div class="error-message" *ngIf="basicInfoForm.get('position')?.invalid && basicInfoForm.get('position')?.touched">
+                Chức vụ là bắt buộc
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label required">Số điện thoại</label>
+              <input type="tel" class="form-control" formControlName="phone" placeholder="Số điện thoại liên hệ">
+              <div class="error-message" *ngIf="basicInfoForm.get('phone')?.invalid && basicInfoForm.get('phone')?.touched">
+                Số điện thoại không hợp lệ
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label required">Email</label>
+              <input type="email" class="form-control" formControlName="email" placeholder="Email doanh nghiệp">
+              <div class="error-message" *ngIf="basicInfoForm.get('email')?.invalid && basicInfoForm.get('email')?.touched">
+                Email không hợp lệ
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required">Địa chỉ trụ sở</label>
+            <textarea class="form-control" formControlName="address" rows="3" placeholder="Địa chỉ đầy đủ của trụ sở chính"></textarea>
+            <div class="error-message" *ngIf="basicInfoForm.get('address')?.invalid && basicInfoForm.get('address')?.touched">
+              Địa chỉ là bắt buộc
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Website</label>
+              <input type="url" class="form-control" formControlName="website" placeholder="https://example.com">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Quy mô công ty</label>
+              <select class="form-control" formControlName="companySize">
+                <option value="">Chọn quy mô</option>
+                <option value="1-10">1-10 nhân viên</option>
+                <option value="11-50">11-50 nhân viên</option>
+                <option value="51-200">51-200 nhân viên</option>
+                <option value="201-500">201-500 nhân viên</option>
+                <option value="500+">Trên 500 nhân viên</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Mô tả doanh nghiệp</label>
+            <textarea class="form-control" formControlName="description" rows="4" placeholder="Giới thiệu về doanh nghiệp, lĩnh vực hoạt động..."></textarea>
+          </div>
+        </form>
+      </div>
+
+      <!-- Step 2: Legal Documents -->
+      <div class="step-content" *ngIf="currentStep === 2">
+        <h4>Giấy tờ pháp lý</h4>
+        <p class="text-muted">Vui lòng upload các giấy tờ cần thiết để xác minh doanh nghiệp</p>
+
+        <div class="document-upload-section">
+          <div class="document-item">
+            <div class="document-header">
+              <div class="document-icon">
+                <i class="fas fa-file-contract"></i>
+              </div>
+              <div class="document-info">
+                <h5>Giấy phép kinh doanh</h5>
+                <p>Giấy phép đăng ký kinh doanh hoặc Giấy chứng nhận đăng ký doanh nghiệp</p>
+              </div>
+            </div>
+            <!-- Upload area - only show when no file -->
+            <div class="upload-area" (click)="triggerFileUpload('businessLicense')" *ngIf="!documents.businessLicense">
+              <input type="file" #businessLicenseInput (change)="onFileSelected($event, 'businessLicense')" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+              <div class="upload-content">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Click để chọn file hoặc kéo thả vào đây</p>
+                <span class="file-types">PDF, JPG, PNG (Tối đa 5MB)</span>
+              </div>
+            </div>
+
+            <!-- File preview - only show when file exists -->
+            <div class="file-preview-container" *ngIf="documents.businessLicense">
+              <div class="file-preview">
+                <div class="file-info">
+                  <i class="fas fa-file-pdf"></i>
+                  <span class="file-name">{{documents.businessLicense.name}}</span>
+                  <span class="file-size">({{getFileSize(documents.businessLicense.size)}})</span>
+                </div>
+                <div class="file-actions">
+                  <button class="btn-replace" (click)="triggerFileUpload('businessLicense', $event)" title="Thay thế file">
+                    <i class="fas fa-sync-alt"></i> Thay thế
+                  </button>
+                  <button class="remove-file" (click)="removeFile('businessLicense', $event)" title="Xóa file">
+                    <i class="fas fa-times"></i> Xóa
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="document-item">
+            <div class="document-header">
+              <div class="document-icon">
+                <i class="fas fa-id-card"></i>
+              </div>
+              <div class="document-info">
+                <h5>CMND/CCCD người đại diện</h5>
+                <p>Chứng minh nhân dân hoặc Căn cước công dân của người đại diện</p>
+              </div>
+            </div>
+            <!-- Upload area - only show when no file -->
+            <div class="upload-area" (click)="triggerFileUpload('representativeId')" *ngIf="!documents.representativeId">
+              <input type="file" #representativeIdInput (change)="onFileSelected($event, 'representativeId')" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+              <div class="upload-content">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Click để chọn file hoặc kéo thả vào đây</p>
+                <span class="file-types">PDF, JPG, PNG (Tối đa 5MB)</span>
+              </div>
+            </div>
+
+            <!-- File preview - only show when file exists -->
+            <div class="file-preview-container" *ngIf="documents.representativeId">
+              <div class="file-preview">
+                <div class="file-info">
+                  <i class="fas fa-file-pdf"></i>
+                  <span class="file-name">{{documents.representativeId.name}}</span>
+                  <span class="file-size">({{getFileSize(documents.representativeId.size)}})</span>
+                </div>
+                <div class="file-actions">
+                  <button class="btn-replace" (click)="triggerFileUpload('representativeId', $event)" title="Thay thế file">
+                    <i class="fas fa-sync-alt"></i> Thay thế
+                  </button>
+                  <button class="remove-file" (click)="removeFile('representativeId', $event)" title="Xóa file">
+                    <i class="fas fa-times"></i> Xóa
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="document-item">
+            <div class="document-header">
+              <div class="document-icon">
+                <i class="fas fa-stamp"></i>
+              </div>
+              <div class="document-info">
+                <h5>Con dấu công ty</h5>
+                <p>Ảnh con dấu của công ty (nếu có)</p>
+              </div>
+            </div>
+            <!-- Upload area - only show when no file -->
+            <div class="upload-area" (click)="triggerFileUpload('companyStamp')" *ngIf="!documents.companyStamp">
+              <input type="file" #companyStampInput (change)="onFileSelected($event, 'companyStamp')" accept=".jpg,.jpeg,.png" style="display: none;">
+              <div class="upload-content">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Click để chọn file hoặc kéo thả vào đây</p>
+                <span class="file-types">JPG, PNG (Tối đa 5MB)</span>
+              </div>
+            </div>
+
+            <!-- File preview - only show when file exists -->
+            <div class="file-preview-container" *ngIf="documents.companyStamp">
+              <div class="file-preview">
+                <div class="file-info">
+                  <i class="fas fa-file-image"></i>
+                  <span class="file-name">{{documents.companyStamp.name}}</span>
+                  <span class="file-size">({{getFileSize(documents.companyStamp.size)}})</span>
+                </div>
+                <div class="file-actions">
+                  <button class="btn-replace" (click)="triggerFileUpload('companyStamp', $event)" title="Thay thế file">
+                    <i class="fas fa-sync-alt"></i> Thay thế
+                  </button>
+                  <button class="remove-file" (click)="removeFile('companyStamp', $event)" title="Xóa file">
+                    <i class="fas fa-times"></i> Xóa
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="verification-note">
+          <div class="note-icon">
+            <i class="fas fa-info-circle"></i>
+          </div>
+          <div class="note-content">
+            <h6>Lưu ý quan trọng:</h6>
+            <ul>
+              <li>Tất cả giấy tờ phải rõ ràng, không bị mờ hoặc che khuất</li>
+              <li>File PDF hoặc ảnh có kích thước tối đa 5MB</li>
+              <li>Thông tin trên giấy tờ phải khớp với thông tin đã đăng ký</li>
+              <li>Quá trình xác minh có thể mất 3-5 ngày làm việc</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Confirmation -->
+      <div class="step-content" *ngIf="currentStep === 3">
+        <h4>Xác nhận thông tin</h4>
+        <p class="text-muted">Vui lòng kiểm tra lại thông tin trước khi gửi</p>
+
+        <div class="confirmation-summary">
+          <div class="summary-section">
+            <h5>Thông tin doanh nghiệp</h5>
+            <div class="summary-item">
+              <span class="label">Tên doanh nghiệp:</span>
+              <span class="value">{{basicInfoForm.value.companyName}}</span>
+            </div>
+            <div class="summary-item">
+              <span class="label">Mã số thuế:</span>
+              <span class="value">{{basicInfoForm.value.taxNumber}}</span>
+            </div>
+            <div class="summary-item">
+              <span class="label">Người đại diện:</span>
+              <span class="value">{{companyInfo?.representativeName || 'Chưa có thông tin'}} - {{basicInfoForm.value.position}}</span>
+            </div>
+            <div class="summary-item">
+              <span class="label">Địa chỉ:</span>
+              <span class="value">{{basicInfoForm.value.address}}</span>
+            </div>
+          </div>
+
+          <div class="summary-section">
+            <h5>Giấy tờ đã upload</h5>
+            <div class="summary-item" *ngIf="documents.businessLicense">
+              <span class="label">Giấy phép kinh doanh:</span>
+              <span class="value">{{documents.businessLicense.name}}</span>
+            </div>
+            <div class="summary-item" *ngIf="documents.representativeId">
+              <span class="label">CMND/CCCD:</span>
+              <span class="value">{{documents.representativeId.name}}</span>
+            </div>
+            <div class="summary-item" *ngIf="documents.companyStamp">
+              <span class="label">Con dấu công ty:</span>
+              <span class="value">{{documents.companyStamp.name}}</span>
+            </div>
+          </div>
+        </div>
+
+                 <div class="terms-checkbox">
+           <label class="checkbox-container">
+             <input type="checkbox" [ngModel]="agreeToTerms" (ngModelChange)="agreeToTerms = $event">
+             <span class="checkmark"></span>
+             Tôi cam kết rằng tất cả thông tin và giấy tờ cung cấp là chính xác và hợp pháp
+           </label>
+         </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="previousStep()" *ngIf="currentStep > 1">
+        <i class="fas fa-arrow-left"></i> Quay lại
+      </button>
+      
+      <button class="btn btn-primary" (click)="nextStep()" *ngIf="currentStep < 3" [disabled]="!canProceed()">
+        Tiếp tục <i class="fas fa-arrow-right"></i>
+      </button>
+      
+      <button class="btn btn-success" (click)="submitVerification()" *ngIf="currentStep === 3" [disabled]="!canSubmit()">
+        <i class="fas fa-paper-plane"></i> Gửi xác thực
+      </button>
+    </div>
+  </div>
+</div>
+

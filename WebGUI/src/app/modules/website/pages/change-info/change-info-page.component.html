@@ -1,0 +1,224 @@
+<div class="change-info-page">
+  <div class="container">
+    <!-- Breadcrumb -->
+    <nav class="mb-4" aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a routerLink="/website/dashboard" class="text-decoration-none">
+            <i class="fas fa-home me-1"></i>Dashboard
+          </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          <i class="fas fa-user-edit me-1"></i>Thay đổi thông tin cá nhân
+        </li>
+      </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header text-center mb-5">
+      <div class="header-icon mb-3">
+        <i class="fas fa-user-edit"></i>
+      </div>
+      <h1 class="page-title mb-2">Thay đổi thông tin cá nhân</h1>
+      <p class="page-description text-muted">
+        Cập nhật thông tin cá nhân của bạn
+      </p>
+    </div>
+
+    <!-- Profile Card -->
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="profile-card">
+          <!-- Card Header -->
+          <div class="card-header-custom">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">
+                <i class="fas fa-user-circle me-2"></i>
+                Thông tin cá nhân
+              </h5>
+              <button 
+                *ngIf="!isEditingProfile" 
+                class="btn btn-primary" 
+                (click)="toggleProfileEdit()">
+                <i class="fas fa-edit me-2"></i>
+                Chỉnh sửa
+              </button>
+            </div>
+          </div>
+
+          <!-- Card Body -->
+          <div class="card-body-custom">
+            <!-- View Mode -->
+            <div *ngIf="!isEditingProfile" class="view-mode">
+              <div class="row g-4">
+                <!-- Avatar Section -->
+                <div class="col-md-4 text-center">
+                  <div class="avatar-section">
+                    <div class="avatar-wrapper">
+                      <img [src]="currentUserInfo.avatar || 'assets/vieclamlaocai/img/default-avatar.png'" 
+                           [alt]="currentUserInfo.fullName" 
+                           class="avatar-image">
+                      <div class="avatar-overlay">
+                        <i class="fas fa-camera"></i>
+                      </div>
+                    </div>
+                    <h5 class="user-name mt-3 mb-1">{{ currentUserInfo.fullName }}</h5>
+                    <div class="user-status">
+                      <span class="status-badge">
+                        <i class="fas fa-circle me-1"></i>Hoạt động
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Info Section -->
+                <div class="col-md-8">
+                  <div class="info-section">
+                    <div class="info-item">
+                      <div class="info-icon">
+                        <i class="fas fa-envelope"></i>
+                      </div>
+                      <div class="info-content">
+                        <label class="info-label">Email</label>
+                        <span class="info-value">{{ currentUserInfo.email }}</span>
+                      </div>
+                    </div>
+
+                    <div class="info-item">
+                      <div class="info-icon">
+                        <i class="fas fa-phone"></i>
+                      </div>
+                      <div class="info-content">
+                        <label class="info-label">Số điện thoại</label>
+                        <span class="info-value">{{ currentUserInfo.phone }}</span>
+                      </div>
+                    </div>
+
+                    <div class="info-item">
+                      <div class="info-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                      </div>
+                      <div class="info-content">
+                        <label class="info-label">Địa chỉ</label>
+                        <span class="info-value">{{ currentUserInfo.address }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Edit Mode -->
+            <div *ngIf="isEditingProfile" class="edit-mode">
+              <form (ngSubmit)="saveProfileChanges(formData)">
+                <div class="row g-4">
+                  <!-- Avatar Upload -->
+                  <div class="col-md-4 text-center">
+                    <div class="avatar-upload">
+                      <div class="avatar-wrapper">
+                        <img [src]="formData.avatar || 'assets/vieclamlaocai/img/default-avatar.png'" 
+                             [alt]="formData.fullName" 
+                             class="avatar-image">
+                      </div>
+                      <div class="upload-controls mt-3">
+                        <label for="avatar-upload" class="btn btn-outline-primary">
+                          <i class="fas fa-camera me-2"></i>
+                          Thay đổi ảnh
+                        </label>
+                        <input type="file" 
+                               id="avatar-upload" 
+                               accept="image/*" 
+                               (change)="onFileSelected($event)" 
+                               class="d-none">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Form Fields -->
+                  <div class="col-md-8">
+                    <div class="form-section">
+                      <div class="row g-3">
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label class="form-label">
+                              <i class="fas fa-user me-2"></i>
+                              Họ và tên
+                            </label>
+                            <input type="text" 
+                                   class="form-control custom-input" 
+                                   [(ngModel)]="formData.fullName" 
+                                   name="fullName" 
+                                   required>
+                          </div>
+                        </div>
+
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label class="form-label">
+                              <i class="fas fa-envelope me-2"></i>
+                              Email
+                            </label>
+                            <input type="email" 
+                                   class="form-control custom-input" 
+                                   [(ngModel)]="formData.email" 
+                                   name="email" 
+                                   required>
+                          </div>
+                        </div>
+
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label class="form-label">
+                              <i class="fas fa-phone me-2"></i>
+                              Số điện thoại
+                            </label>
+                            <input type="tel" 
+                                   class="form-control custom-input" 
+                                   [(ngModel)]="formData.phone" 
+                                   name="phone" 
+                                   required>
+                          </div>
+                        </div>
+
+                        <div class="col-12">
+                          <div class="form-group">
+                            <label class="form-label">
+                              <i class="fas fa-map-marker-alt me-2"></i>
+                              Địa chỉ
+                            </label>
+                            <textarea class="form-control custom-textarea" 
+                                      rows="3" 
+                                      [(ngModel)]="formData.address" 
+                                      name="address"
+                                      placeholder="Nhập địa chỉ của bạn..."></textarea>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="form-actions">
+                  <div class="d-flex justify-content-end gap-3">
+                    <button type="button" 
+                            class="btn btn-cancel" 
+                            (click)="cancelProfileEdit()">
+                      <i class="fas fa-times me-2"></i>
+                      Hủy bỏ
+                    </button>
+                    <button type="submit" 
+                            class="btn btn-save">
+                      <i class="fas fa-save me-2"></i>
+                      Lưu thay đổi
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

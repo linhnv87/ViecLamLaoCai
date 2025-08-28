@@ -185,5 +185,35 @@ namespace QuanLyToTrinh.Controllers
                 return Ok(new BaseResponseModel(null, false, StatusCodes.Status500InternalServerError, ex.Message));
             }
         }
+
+        [HttpPost("RegisterBusiness")]
+        public async Task<IActionResult> RegisterBusiness(BusinessRegisterDTO payload)
+        {
+            try
+            {
+                var result = await _userService.RegisterBusiness(payload);
+                return Ok(new BaseResponseModel(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error registering business: {Message}", ex.Message);
+                return Ok(new BaseResponseModel(null, false, StatusCodes.Status500InternalServerError, ex.Message));
+            }
+        }
+
+        [HttpPost("RegisterCandidate")]
+        public async Task<IActionResult> RegisterCandidate(CandidateRegisterDTO payload)
+        {
+            try
+            {
+                var result = await _userService.RegisterCandidate(payload);
+                return Ok(new BaseResponseModel(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error registering candidate: {Message}", ex.Message);
+                return Ok(new BaseResponseModel(null, false, StatusCodes.Status500InternalServerError, ex.Message));
+            }
+        }
     }
 }
