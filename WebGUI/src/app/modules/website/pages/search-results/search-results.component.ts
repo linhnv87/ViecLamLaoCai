@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SplashScreenService } from '../../../../services/splash-screen.service';
 import { HomeService } from '../../../../services/website/home.service';
-import { FeaturedJob } from '../../../../models/home.model';
+import { FeaturedJob, PaginatedResponse } from '../../../../models/home.model';
 
 export interface SearchFilters {
   location: string;
+  category: string;
   salaryRange: string;
   experience: string;
   jobType: string;
@@ -29,17 +30,21 @@ export class SearchResultsComponent implements OnInit {
   // Filters
   filters: SearchFilters = {
     location: '',
+    category: '',
     salaryRange: '',
     experience: '',
     jobType: ''
   };
 
-  // Pagination
+  // Pagination - SERVER-SIDE
   currentPage: number = 1;
-  itemsPerPage: number = 10;
-  paginatedResults: FeaturedJob[] = [];
+  pageSize: number = 10;
+  totalPages: number = 1;
+  hasPreviousPage: boolean = false;
+  hasNextPage: boolean = false;
 
   sortBy: string = 'relevance';
+  sortOrder: string = 'desc';
 
   savedJobIds: Set<number> = new Set();
 
@@ -55,94 +60,107 @@ export class SearchResultsComponent implements OnInit {
       this.searchQuery = params['q'] || '';
       this.currentSearchQuery = this.searchQuery;
       this.filters.location = params['location'] || '';
+      this.filters.category = params['category'] || '';
       this.filters.salaryRange = params['salary'] || '';
       this.filters.experience = params['experience'] || '';
       this.filters.jobType = params['jobType'] || '';
       this.currentPage = parseInt(params['page']) || 1;
+      this.pageSize = parseInt(params['size']) || 10;
       this.sortBy = params['sort'] || 'relevance';
+      this.sortOrder = params['order'] || 'desc';
       
-      if (this.searchQuery) {
+      if (this.searchQuery || Object.values(this.filters).some(f => f)) {
         this.performSearch();
       }
     });
   }
 
   performSearch(): void {
-    if (!this.currentSearchQuery.trim()) {
+    // Reset to empty if no search criteria
+    if (!this.currentSearchQuery.trim() && !Object.values(this.filters).some(f => f)) {
+      this.resetSearchResults();
       return;
     }
 
     this.isLoading = true;
     this.searchQuery = this.currentSearchQuery;
-    const startTime = Date.now();
 
     this.updateUrl();
     const searchParams = {
       keyword: this.searchQuery,
       location: this.filters.location,
+      category: this.filters.category,
       salaryRange: this.filters.salaryRange,
       experience: this.filters.experience,
-      jobType: this.filters.jobType
+      jobType: this.filters.jobType,
+      page: this.currentPage,
+      pageSize: this.pageSize,
+      sortBy: this.sortBy,
+      sortOrder: this.sortOrder
     };
 
-    this.homeService.searchJobsDummy(searchParams).subscribe(res => {
-      this.isLoading = false;
-      this.searchTime = Date.now() - startTime;
-      
-      if (res.isSuccess) {
-        this.searchResults = res.result as FeaturedJob[];
-        this.totalResults = this.searchResults.length;
-        this.sortResults();
-        this.updatePagination();
-      } else {
-        this.searchResults = [];
-        this.totalResults = 0;
-        this.paginatedResults = [];
+    console.log('🔍 Performing search with params:', searchParams);
+
+    this.homeService.searchJobs(searchParams).subscribe({
+      next: (res: any) => {
+        this.isLoading = false;
+        
+        if (res.isSuccess && res.result) {
+          const paginatedResult = res.result as PaginatedResponse<FeaturedJob>;
+          
+          this.searchResults = paginatedResult.data;
+          this.totalResults = paginatedResult.totalItems;
+          this.totalPages = paginatedResult.totalPages;
+          this.currentPage = paginatedResult.currentPage;
+          this.hasPreviousPage = paginatedResult.hasPreviousPage;
+          this.hasNextPage = paginatedResult.hasNextPage;
+          this.searchTime = paginatedResult.searchTime;
+          
+          console.log('✅ Search results:', {
+            items: this.searchResults.length,
+            totalItems: this.totalResults,
+            currentPage: this.currentPage,
+            totalPages: this.totalPages,
+            searchTime: this.searchTime
+          });
+        } else {
+          this.resetSearchResults();
+          console.warn('❌ Search failed:', res.message);
+        }
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.resetSearchResults();
+        console.error('❌ Search error:', error);
       }
     });
   }
 
-  sortResults(): void {
-    switch (this.sortBy) {
-      case 'date':
-        this.searchResults.sort((a, b) => 
-          new Date(b.postedDate || '').getTime() - new Date(a.postedDate || '').getTime()
-        );
-        break;
-      case 'salary':
-        this.searchResults.sort((a, b) => {
-          const salaryA = this.extractMaxSalary(a.salary);
-          const salaryB = this.extractMaxSalary(b.salary);
-          return salaryB - salaryA;
-        });
-        break;
-      case 'company':
-        this.searchResults.sort((a, b) => a.company.localeCompare(b.company));
-        break;
-      default:
-        break;
-    }
-    this.updatePagination();
-    this.updateUrl();
+  private resetSearchResults(): void {
+    this.searchResults = [];
+    this.totalResults = 0;
+    this.totalPages = 1;
+    this.hasPreviousPage = false;
+    this.hasNextPage = false;
+    this.searchTime = 0;
   }
 
-  updatePagination(): void {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    this.paginatedResults = this.searchResults.slice(startIndex, endIndex);
+  onSortChange(): void {
+    // Reset to first page when sorting changes
+    this.currentPage = 1;
+    this.performSearch();
   }
 
   goToPage(page: number): void {
-    if (page >= 1 && page <= this.getTotalPages()) {
+    if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
-      this.updatePagination();
-      this.updateUrl();
+      this.performSearch();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
 
   getTotalPages(): number {
-    return Math.ceil(this.totalResults / this.itemsPerPage);
+    return this.totalPages;
   }
 
   getVisiblePages(): number[] {
@@ -166,11 +184,11 @@ export class SearchResultsComponent implements OnInit {
   }
 
   getStartIndex(): number {
-    return (this.currentPage - 1) * this.itemsPerPage;
+    return (this.currentPage - 1) * this.pageSize;
   }
 
   getEndIndex(): number {
-    return Math.min(this.getStartIndex() + this.itemsPerPage, this.totalResults);
+    return Math.min(this.getStartIndex() + this.pageSize, this.totalResults);
   }
 
   saveJob(job: FeaturedJob): void {
@@ -206,11 +224,14 @@ export class SearchResultsComponent implements OnInit {
     
     if (this.searchQuery) queryParams.q = this.searchQuery;
     if (this.filters.location) queryParams.location = this.filters.location;
+    if (this.filters.category) queryParams.category = this.filters.category;
     if (this.filters.salaryRange) queryParams.salary = this.filters.salaryRange;
     if (this.filters.experience) queryParams.experience = this.filters.experience;
     if (this.filters.jobType) queryParams.jobType = this.filters.jobType;
     if (this.currentPage > 1) queryParams.page = this.currentPage;
+    if (this.pageSize !== 10) queryParams.size = this.pageSize;
     if (this.sortBy !== 'relevance') queryParams.sort = this.sortBy;
+    if (this.sortOrder !== 'desc') queryParams.order = this.sortOrder;
 
     this.router.navigate([], {
       relativeTo: this.route,
@@ -228,17 +249,15 @@ export class SearchResultsComponent implements OnInit {
   clearSearch(): void {
     this.currentSearchQuery = '';
     this.searchQuery = '';
-    this.searchResults = [];
-    this.paginatedResults = [];
-    this.totalResults = 0;
     this.currentPage = 1;
-    
+    this.resetSearchResults();
     this.updateUrl();
   }
 
   clearAllFilters(): void {
     this.filters = {
       location: '',
+      category: '',
       salaryRange: '',
       experience: '',
       jobType: ''
@@ -248,12 +267,14 @@ export class SearchResultsComponent implements OnInit {
     if (this.currentSearchQuery.trim()) {
       this.performSearch();
     } else {
+      this.resetSearchResults();
       this.updateUrl();
     }
   }
 
   hasActiveFilters(): boolean {
     return !!(this.filters.location || 
+              this.filters.category ||
               this.filters.salaryRange || 
               this.filters.experience || 
               this.filters.jobType ||

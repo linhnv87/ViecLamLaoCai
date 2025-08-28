@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { WebsiteRoutingModule } from './website-routing.module';
 import { WebsiteComponent } from './website.component';
 import { SharedModule } from '../../shared/shared.module';
@@ -22,6 +22,7 @@ import { CvBuilderComponent } from './pages/cv-builder/cv-builder.component';
 import { JobDetailComponent } from './pages/job-detail/job-detail.component';
 import { ChangeInfoPageComponent } from './pages/change-info/change-info-page.component';
 import { ChangePasswordPageComponent } from './pages/change-password/change-password-page.component';
+import { EmailVerificationComponent } from './pages/email-verification/email-verification.component';
 
 @NgModule({
   declarations: [
@@ -40,12 +41,14 @@ import { ChangePasswordPageComponent } from './pages/change-password/change-pass
     CvBuilderComponent,
     JobDetailComponent,
     ChangeInfoPageComponent,
-    ChangePasswordPageComponent
+    ChangePasswordPageComponent,
+    EmailVerificationComponent
   ],
   imports: [
     CommonModule,
     RouterModule,
     FormsModule,
+    ReactiveFormsModule,
     SharedModule,
     WebsiteRoutingModule,
   ]

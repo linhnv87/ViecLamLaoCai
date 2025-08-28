@@ -13,6 +13,9 @@
       </div>
       <div class="user-role">
         <div class="btn-wrap yellow">{{getUserMainRole()}}</div>
+        <div *ngIf="isBusinessUser" class="verification-status" [ngClass]="verificationStatus">
+          {{getVerificationStatusText()}}
+        </div>
       </div>
       <div class="user-name">{{userInfo?.displayName || 'Cty Diaocvang'}}</div>
     </div>

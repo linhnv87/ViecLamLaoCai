@@ -3,6 +3,8 @@ import { SplashScreenService } from '../../../../services/splash-screen.service'
 import { GetRoleInfo, GetCurrentUserId } from '../../../../utils/commonFunctions';
 import { DashboardService } from '../../../../services/website/dashboard.service';
 import { BusinessDashboardModel, CandidateDashboardModel, AdminDashboardModel } from '../../../../models/dashboard.model';
+import { EmailVerificationService, BusinessVerificationResponse } from '../../../../services/website/email-verification.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-dashboard',
@@ -144,19 +146,85 @@ export class DashboardComponent implements OnInit {
     }
   ];
 
+  // Email verification modal state
+  showEmailVerificationModal: boolean = false;
+  isEmailVerified: boolean = false;
+  verificationStatus: 'none' | 'pending' | 'approved' | 'rejected' = 'none';
+  verificationMessage: string = '';
+
   constructor(
     private splashScreenService: SplashScreenService,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private emailVerificationService: EmailVerificationService
   ) {}
 
   ngOnInit(): void {
-    console.log('Dashboard component loaded - fresh data loading...');
     this.roleInfo = GetRoleInfo();
     this.showLoadingSplash();
     this.loadDashboardData();
+    this.checkEmailVerificationStatus();
   }
 
-  // Check if user has specific role
+  // Email verification methods
+  openEmailVerification(): void {
+    console.log('🚀 Opening email verification modal from dashboard');
+    this.showEmailVerificationModal = true;
+    console.log('📧 showEmailVerificationModal set to:', this.showEmailVerificationModal);
+  }
+
+  closeEmailVerificationModal(): void {
+    this.showEmailVerificationModal = false;
+  }
+
+  onVerificationSubmitted(verificationResponse: BusinessVerificationResponse): void {
+    console.log('Verification submitted:', verificationResponse);
+    
+    this.verificationStatus = 'pending';
+    this.isEmailVerified = false;
+    this.verificationMessage = 'Yêu cầu xác thực đang chờ phê duyệt';
+
+    Swal.fire({
+      title: 'Thành công!',
+      text: `Yêu cầu xác thực đã được gửi thành công! Mã xác thực: ${verificationResponse.verificationCode}`,
+      icon: 'success',
+      confirmButtonText: 'Đóng',
+      confirmButtonColor: '#3085d6',
+      timer: 5000,
+      timerProgressBar: true
+    });
+
+    this.closeEmailVerificationModal();
+
+    if (this.isDoanhNghiep()) {
+      this.loadDashboardData();
+    }
+  }
+
+  private checkEmailVerificationStatus(): void {
+    if (this.isDoanhNghiep()) {
+      const userId = GetCurrentUserId();
+      console.log('🔍 Checking verification status for user:', userId);
+      
+      this.emailVerificationService.isCompanyVerifiedByUserId(userId.toString()).subscribe({
+        next: (response) => {
+          console.log('📊 Verification status response:', response);
+          if (response.isSuccess) {
+            this.isEmailVerified = response.result;
+            this.verificationStatus = this.isEmailVerified ? 'approved' : 'none';
+            this.verificationMessage = this.isEmailVerified ? 'Doanh nghiệp đã được xác thực' : 'Chưa xác thực doanh nghiệp';
+            console.log('✅ Email verification status:', this.isEmailVerified);
+          }
+        },
+        error: (error) => {
+          console.error('❌ Error checking email verification status:', error);
+          this.isEmailVerified = false;
+          this.verificationStatus = 'none';
+          this.verificationMessage = 'Chưa xác thực doanh nghiệp';
+        }
+      });
+    }
+  }
+
   isDoanhNghiep(): boolean {
     return this.roleInfo?.doanhNghiep || false;
   }
@@ -169,7 +237,6 @@ export class DashboardComponent implements OnInit {
     return this.roleInfo?.coQuanQuanLy || false;
   }
 
-  // Get appropriate statistics based on role
   getStatisticsForRole() {
     if (this.isDoanhNghiep()) {
       return this.doanhNghiepStats;
@@ -178,10 +245,9 @@ export class DashboardComponent implements OnInit {
     } else if (this.isCoQuanQuanLy()) {
       return this.coQuanQuanLyStats;
     }
-    return this.dashboardStats; // Default fallback
+    return this.dashboardStats; 
   }
 
-  // Safe getters for template
   get recentCandidatesData() {
     return this.businessDashboardData?.recentCandidates || [];
   }
@@ -206,7 +272,6 @@ export class DashboardComponent implements OnInit {
     return !!(this.candidateDashboardData?.appliedJobs && this.candidateDashboardData.appliedJobs.length > 0);
   }
 
-  // Get section title based on role
   getSectionTitle(): string {
     if (this.isDoanhNghiep()) {
       return 'Danh sách ứng viên phù hợp';
@@ -232,7 +297,6 @@ export class DashboardComponent implements OnInit {
     
     const userId = GetCurrentUserId();
     
-    // Load data based on user role
     if (this.isDoanhNghiep()) {
       this.loadBusinessDashboard(userId);
     } else if (this.isUngVien()) {
@@ -240,7 +304,6 @@ export class DashboardComponent implements OnInit {
     } else if (this.isCoQuanQuanLy()) {
       this.loadAdminDashboard();
     } else {
-      // Default fallback
       this.loadBusinessDashboard(userId);
     }
   }
@@ -366,13 +429,11 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  // Chart helper methods
   getBarHeight(value: number, total: number): number {
     if (total === 0) return 0;
     return Math.max((value / total) * 100, 10);
   }
 
-  // Date helper methods
   getCurrentDate(): string {
     const today = new Date();
     const options: Intl.DateTimeFormatOptions = { 

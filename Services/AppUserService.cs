@@ -1,6 +1,9 @@
 ﻿using Repositories;
 using Services.DTO;
 using Database.Models;
+using Database.Models.Website;
+using Database.Models;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +39,8 @@ namespace Services
         Task<ResponseTokenDTO> GenerateToken(AppUser user);
         Task<IEnumerable<UserInfoDTO>> GetUsersByRoleAsync(string roleName);
         Task<List<AppUser>> GetUserWithRolesAsync();
+        Task<RegistrationResponseDTO> RegisterBusiness(BusinessRegisterDTO payload);
+        Task<RegistrationResponseDTO> RegisterCandidate(CandidateRegisterDTO payload);
 
     }
     public class AppUserService : IAppUserService
@@ -48,12 +53,15 @@ namespace Services
 
         public readonly IDocumentRepository _documentRepository;
         public readonly IDocumentReviewRepository _reviewRepository;
-        public readonly ICommentRepository _commentRepository;        
+        public readonly ICommentRepository _commentRepository;
+        private readonly QLTTrContext _context;
 
         private string TokenSecret = "77D3624E-1F44-4F7E-A472-D5E449D69F2C-77D3624E-1F44-4F7E-A472-D5E449D69F2C";
         private int TokenExpiryDay = 1;
-        public AppUserService(IMapper mapper,IUserRepository userRepository, IRoleRepository roleRepository, IUserInRoleRepository userInRoleRepository, IFieldRepository fieldRepository
-            ,IDocumentRepository documentRepository, IDocumentReviewRepository reviewRepository, ICommentRepository commentRepository)
+        
+        // Role constants - using Core constants
+        public AppUserService(IMapper mapper, IUserRepository userRepository, IRoleRepository roleRepository, IUserInRoleRepository userInRoleRepository, IFieldRepository fieldRepository,
+            IDocumentRepository documentRepository, IDocumentReviewRepository reviewRepository, ICommentRepository commentRepository, QLTTrContext context)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
@@ -63,6 +71,7 @@ namespace Services
             _documentRepository = documentRepository;
             _reviewRepository = reviewRepository;
             _commentRepository = commentRepository;
+            _context = context;
         }
         public async Task<Guid> UserSignUp(SignUpDTO payload)
         {
@@ -169,7 +178,7 @@ namespace Services
 
         private async Task<string> PasswordHashing(string password, string salt)
         {
-            using (var pbkdf2 = new Rfc2898DeriveBytes(password, Convert.FromBase64String(salt), 10000))
+            using (var pbkdf2 = new Rfc2898DeriveBytes(password, Convert.FromBase64String(salt), 10000, HashAlgorithmName.SHA256))
             {
                 byte[] hash = pbkdf2.GetBytes(20);
                 return Convert.ToBase64String(hash);
@@ -412,6 +421,235 @@ namespace Services
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<RegistrationResponseDTO> RegisterBusiness(BusinessRegisterDTO payload)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                if (string.IsNullOrEmpty(payload.Email) || string.IsNullOrEmpty(payload.Password) || 
+                    string.IsNullOrEmpty(payload.CompanyName) || string.IsNullOrEmpty(payload.RepresentativeName))
+                {
+                    throw new Exception("Vui lòng điền đầy đủ thông tin bắt buộc");
+                }
+
+                if (payload.Password != payload.ConfirmPassword)
+                {
+                    throw new Exception("Mật khẩu nhập lại không khớp");
+                }
+                if (await CheckSignUpExisted(payload.Email, payload.Email, payload.Phone))
+                {
+                    throw new Exception("Email hoặc số điện thoại đã được sử dụng");
+                }
+
+                Guid newUserId = Guid.NewGuid();
+                string salt = await GenerateSalt();
+                
+                var userToCreate = new AppUser()
+                {
+                    UserId = newUserId,
+                    UserName = payload.Email,
+                    UserFullName = payload.RepresentativeName,
+                    Email = payload.Email,
+                    PhoneNumber = payload.Phone,
+                    PasswordSalt = salt,
+                    HashedPassword = await PasswordHashing(payload.Password, salt),
+                    IsApproved = false,
+                    IsLockedout = false
+                };
+
+                var businessRoleId = await GetBusinessRoleId();
+              
+                var userRoles = new List<AppUserInRole> 
+                { 
+                    new AppUserInRole() { Id = 0, UserId = newUserId, RoleId = businessRoleId }
+                };
+
+                await _userRepository.AddAsync(userToCreate);
+                await _userRepository.SaveChanges();
+                await _userInRoleRepository.AddRangeAsync(userRoles);
+                await _userInRoleRepository.SaveChanges();
+
+                // Create Company record
+                await CreateCompanyRecord(newUserId, payload);
+
+                await transaction.CommitAsync();
+
+                return new RegistrationResponseDTO
+                {
+                    UserId = newUserId,
+                    Message = "Đăng ký doanh nghiệp thành công! Tài khoản của bạn đang chờ phê duyệt.",
+                    RequiresEmailVerification = true,
+                    RequiresApproval = true
+                };
+            }
+            catch (Exception ex)
+            {
+                
+                await transaction.RollbackAsync();
+                throw new Exception("Lỗi đăng ký doanh nghiệp: " + ex.Message);
+            }
+        }
+
+        public async Task<RegistrationResponseDTO> RegisterCandidate(CandidateRegisterDTO payload)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                // Validate input
+                if (string.IsNullOrEmpty(payload.FullName) || string.IsNullOrEmpty(payload.Email) || 
+                    string.IsNullOrEmpty(payload.Password) || string.IsNullOrEmpty(payload.Phone))
+                {
+                    throw new Exception("Vui lòng điền đầy đủ thông tin bắt buộc");
+                }
+
+                if (payload.Password != payload.ConfirmPassword)
+                {
+                    throw new Exception("Mật khẩu nhập lại không khớp");
+                }
+
+                // Check if user already exists
+                if (await CheckSignUpExisted(payload.Email, payload.Email, payload.Phone))
+                {
+                    throw new Exception("Email hoặc số điện thoại đã được sử dụng");
+                }
+
+                // Create AppUser account
+                Guid newUserId = Guid.NewGuid();
+                string salt = await GenerateSalt();
+                
+                var userToCreate = new AppUser()
+                {
+                    UserId = newUserId,
+                    UserName = payload.Email,
+                    UserFullName = payload.FullName,
+                    Email = payload.Email,
+                    PhoneNumber = payload.Phone,
+                    PasswordSalt = salt,
+                    HashedPassword = await PasswordHashing(payload.Password, salt),
+                    IsApproved = true,
+                    IsLockedout = false
+                };
+
+                var candidateRoleId = await GetCandidateRoleId();
+                Console.WriteLine($"Candidate role ID: {candidateRoleId} for user: {newUserId}");
+                
+                var userRoles = new List<AppUserInRole> 
+                { 
+                    new AppUserInRole() { Id = 0, UserId = newUserId, RoleId = candidateRoleId }
+                };
+
+                await _userRepository.AddAsync(userToCreate);
+                await _userRepository.SaveChanges();
+                await _userInRoleRepository.AddRangeAsync(userRoles);
+                await _userInRoleRepository.SaveChanges();
+
+                await CreateWorkerRecord(newUserId, payload);
+
+                await transaction.CommitAsync();
+
+                return new RegistrationResponseDTO
+                {
+                    UserId = newUserId,
+                    Message = "Đăng ký ứng viên thành công! Bạn có thể đăng nhập ngay.",
+                    RequiresEmailVerification = true,
+                    RequiresApproval = false
+                };
+            }
+            catch (Exception ex)
+            {
+                
+                await transaction.RollbackAsync();
+                throw new Exception("Lỗi đăng ký ứng viên: " + ex.Message);
+            }
+        }
+
+        private async Task<Guid> GetBusinessRoleId()
+        {
+            var role = await _roleRepository.FirstOrDefaultAsync(x => x.RoleName == Core.AppRoleNames.DOANH_NGHIEP);
+            if (role == null)
+            {
+                throw new Exception($"Role '{Core.AppRoleNames.DOANH_NGHIEP}' không tồn tại trong hệ thống. Vui lòng liên hệ quản trị viên.");
+            }
+            return role.RoleId;
+        }
+
+        private async Task<Guid> GetCandidateRoleId()
+        {
+            
+            var role = await _roleRepository.FirstOrDefaultAsync(x => x.RoleName == Core.AppRoleNames.UNG_VIEN);
+            if (role == null)
+            {
+                throw new Exception($"Role '{Core.AppRoleNames.UNG_VIEN}' không tồn tại trong hệ thống. Vui lòng liên hệ quản trị viên.");
+            }
+            return role.RoleId;
+        }
+
+        private async Task CreateCompanyRecord(Guid userId, BusinessRegisterDTO payload)
+        {
+            try
+            {
+                var company = new Company
+                {
+                    UserId = userId,
+                    CompanyName = payload.CompanyName,
+                    Description = payload.Description ?? "",
+                    Industry = payload.Industry ?? "",
+                    CompanySize = payload.CompanySize ?? "",
+                    Website = payload.Website ?? "",
+                    Address = payload.Address ?? "",
+                    PhoneNumber = payload.Phone,
+                    Email = payload.Email,
+                    IsVerified = false,
+                    ApprovalStatus = "Pending",
+                    IsActive = true,
+                    CreatedDate = DateTime.Now,
+                    UpdatedDate = DateTime.Now
+                };
+
+                _context.Companies.Add(company);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi tạo hồ sơ Company: {ex.Message}");
+            }
+        }
+
+        private async Task CreateWorkerRecord(Guid userId, CandidateRegisterDTO payload)
+        {
+            try
+            {
+                var worker = new Worker
+                {
+                    UserId = userId,
+                    FullName = payload.FullName,
+                    Email = payload.Email,
+                    PhoneNumber = payload.Phone,
+                    DateOfBirth = payload.DateOfBirth,
+                    Gender = payload.Gender ?? "Không xác định",
+                    Address = payload.Address ?? "",
+                    DistrictId = payload.DistrictId,
+                    CommuneId = payload.CommuneId,
+                    EducationLevelId = payload.EducationLevelId,
+                    CareerId = payload.CareerId,
+                    WorkExperience = "Chưa có kinh nghiệm",
+                    CurrentCompany = "Chưa cập nhật",
+                    ExpectedSalary = null,
+                    AvatarUrl = "assets/vieclamlaocai/img/default-avatar.png",
+                    IsActive = true,
+                    CreatedDate = DateTime.Now,
+                    UpdatedDate = DateTime.Now
+                };
+
+                _context.Workers.Add(worker);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi tạo hồ sơ Worker: {ex.Message}");
             }
         }
 

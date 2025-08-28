@@ -7,6 +7,7 @@ export interface WebsiteMenuModel {
   children?: WebsiteMenuModel[];
   permissions?: string[];
   isActive?: boolean;
+  requiresVerification?: boolean;
 }
 
 export const websiteMenuItems: WebsiteMenuModel[] = [
@@ -25,6 +26,7 @@ export const websiteMenuItems: WebsiteMenuModel[] = [
     children: [],
     isActive: true,
     permissions: [ROLES.ADMIN, ROLES.DOANH_NGHIEP],
+    requiresVerification: true,
   },
   {
     path: '/website/applications',
@@ -33,6 +35,7 @@ export const websiteMenuItems: WebsiteMenuModel[] = [
     children: [],
     isActive: true,
     permissions: [ROLES.ADMIN, ROLES.DOANH_NGHIEP],
+    requiresVerification: true,
   },
   {
     path: '/website/business-approval',
@@ -81,6 +84,7 @@ export const websiteMenuItems: WebsiteMenuModel[] = [
     children: [],
     isActive: true,
     permissions: [ROLES.ADMIN, ROLES.DOANH_NGHIEP],
+    requiresVerification: true,
   },
   {
     path: '/website/labor-market-report3',
@@ -89,6 +93,7 @@ export const websiteMenuItems: WebsiteMenuModel[] = [
     children: [],
     isActive: true,
     permissions: [ROLES.ADMIN, ROLES.DOANH_NGHIEP],
+    requiresVerification: true,
   },
   {
     path: '/website/labor-market-report2',

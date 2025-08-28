@@ -3,7 +3,9 @@ import { LOCAL_STORAGE_KEYS } from '../../utils/constants';
 import { WebsiteMenuModel, getActiveMenuItems, getMenuItemsByRole } from '../../config/website-menu';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { GetCurrentUserRoles, GetRoleInfo } from '../../utils/commonFunctions';
+import { GetCurrentUserRoles, GetRoleInfo, GetCurrentUserId } from '../../utils/commonFunctions';
+import { EmailVerificationService } from '../../services/website/email-verification.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-dashboard-sidebar',
@@ -15,8 +17,15 @@ export class DashboardSidebarComponent implements OnInit {
   menuItems: WebsiteMenuModel[] = [];
   currentUrl = '';
   userRoleInfo: any = null;
+  
+  isBusinessUser: boolean = false;
+  isVerified: boolean = false;
+  verificationStatus: 'none' | 'pending' | 'approved' | 'rejected' = 'none';
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private emailVerificationService: EmailVerificationService
+  ) {}
 
   ngOnInit(): void {
     this.loadUserInfo();
@@ -27,6 +36,11 @@ export class DashboardSidebarComponent implements OnInit {
       .subscribe((event: any) => {
         this.currentUrl = event.urlAfterRedirects || event.url || '';
       });
+    
+    this.isBusinessUser = this.userRoleInfo?.doanhNghiep || false;
+    if (this.isBusinessUser) {
+      this.checkVerificationStatus();
+    }
   }
 
   loadUserInfo(): void {
@@ -46,6 +60,26 @@ export class DashboardSidebarComponent implements OnInit {
     }
   }
 
+  private checkVerificationStatus(): void {
+    const userId = GetCurrentUserId();
+    if (userId) {
+      this.emailVerificationService.isCompanyVerifiedByUserId(userId.toString()).subscribe({
+        next: (response) => {
+          if (response.isSuccess) {
+            this.isVerified = response.result;
+            this.verificationStatus = this.isVerified ? 'approved' : 'none';
+            console.log('🔍 Verification status checked:', this.isVerified);
+          }
+        },
+        error: (error) => {
+          console.error('Error checking verification status:', error);
+          this.isVerified = false;
+          this.verificationStatus = 'none';
+        }
+      });
+    }
+  }
+
   isActive(path: string | undefined): boolean {
     if (!path) return false;
     const normalize = (u: string) => (u || '').split('?')[0].split('#')[0];
@@ -56,7 +90,52 @@ export class DashboardSidebarComponent implements OnInit {
 
   navigateToPage(path: string | undefined): void {
     if (path && path !== '#') {
+      if (this.isBusinessUser && !this.isVerified && this.shouldShowWarning(path)) {
+        this.showVerificationWarning();
+        return;
+      }
+      
       window.location.href = path;
+    }
+  }
+
+  private shouldShowWarning(path: string | undefined): boolean {
+    if (!path) return false;
+    
+    const restrictedPaths = [
+      '/website/find-candidates',
+      '/website/applications',
+      '/website/labor-market-report1',
+      '/website/labor-market-report3'
+    ];
+    return restrictedPaths.includes(path);
+  }
+
+  private showVerificationWarning(): void {
+    console.log('⚠️ Showing verification warning');
+    
+    Swal.fire({
+      title: '⚠️ Cần xác thực doanh nghiệp',
+      text: 'Tài khoản của bạn đang chờ xác thực thông tin doanh nghiệp. Vui lòng hoàn tất quá trình xác thực trước khi sử dụng tính năng này!',
+      icon: 'warning',
+      confirmButtonText: 'Đóng',
+      confirmButtonColor: '#3085d6',
+      timer: 8000,
+      timerProgressBar: true,
+      showCloseButton: true
+    });
+  }
+
+  getVerificationStatusText(): string {
+    switch (this.verificationStatus) {
+      case 'approved':
+        return '✅ Đã xác thực';
+      case 'pending':
+        return '⏳ Đang chờ xác thực';
+      case 'rejected':
+        return '❌ Bị từ chối';
+      default:
+        return '⚠️ Chưa xác thực';
     }
   }
 

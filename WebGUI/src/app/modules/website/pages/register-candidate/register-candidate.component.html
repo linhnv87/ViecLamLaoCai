@@ -81,9 +81,12 @@
             Bằng việc Đăng ký, bạn đã đồng ý với <a href="#" class="text-sky-400">Điều khoản sử dụng</a> và <a href="#" class="text-sky-400">Chính sách bảo mật</a> của chúng tôi
           </div>
 
-          <button type="submit" class="btn2-wrap">Đăng ký</button>
+          <button type="submit" class="btn2-wrap" [disabled]="isSubmitting">
+            <span *ngIf="isSubmitting">Đang đăng ký...</span>
+            <span *ngIf="!isSubmitting">Đăng ký</span>
+          </button>
 
-          <button type="button" (click)="googleLogin()" class="btn2-wrap light">
+          <button type="button" (click)="googleLogin()" class="btn2-wrap light" [disabled]="isSubmitting">
             <img src="assets/vieclamlaocai/img/icon/icon-google.svg" alt="">
             Đăng nhập bằng Google
           </button>

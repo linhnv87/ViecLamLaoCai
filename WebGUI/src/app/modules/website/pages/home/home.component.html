@@ -65,7 +65,6 @@
 <div class="container">
   <div class="row">
     <div class="section-wrap">
-
       <div class="section-header">
         <div class="section-title">
           <img src="assets/vieclamlaocai/img/icon/icon-color-flash.svg" alt="">
@@ -81,7 +80,6 @@
         <div class="list-group-slide">
           <div class="js-list-group-slide owl-carousel owl-theme slide-nav-2 slide-dots">
 
-            <!-- Group jobs in sets of 3 -->
             <div class="group-wrap" *ngFor="let group of getJobGroups(featuredJobs, 3); trackBy: trackByIndex">
               
               <div 
@@ -177,7 +175,6 @@
 
               </div>
 
-              <!-- Loading state for suggested jobs -->
               <div class="group3-wrap" *ngIf="suggestedJobs.length === 0">
                 <div class="job2-wrap">
                   <div class="header">
@@ -228,7 +225,7 @@
 
         <div class="group2-wrap">
 
-          <!-- Dynamic latest jobs from service -->
+         
           <div 
             class="job-wrap" 
             *ngFor="let job of latestJobs; let i = index; trackBy: trackByIndex"
@@ -249,7 +246,6 @@
             </div>
           </div>
 
-          <!-- Loading state for latest jobs -->
           <div class="job-wrap" *ngIf="latestJobs.length === 0">
             <a href="#" class="title">Đang tải việc làm mới nhất...</a>
             <div class="company">
@@ -314,6 +310,7 @@
     <div class="row">
       <div class="section-wrap no-body">
 
+       
         <div class="section-header">
           <div class="section-title">
             <img src="assets/vieclamlaocai/img/icon/icon-color-town2.svg" alt="">

@@ -80,5 +80,19 @@ export interface HomePageData {
   featuredJobs: FeaturedJob[];
   suggestedJobs: SuggestedJob[];
   jobCategories: JobCategory[];
-  recentActivities: any[];
+  latestJobs: LatestJob[];
+  featuredCompanies: FeaturedCompany[];
+  recentActivities?: any[];
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  currentPage: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+  searchQuery: string;
+  searchTime: number;
 }

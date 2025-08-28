@@ -10,7 +10,7 @@ export const environment = {
   // apiUrl: 'https://btv-api.blueskytech.vn/api',
   // hostUrl: 'https://btv-api.blueskytech.vn',
   // sso_redirect_uri: 'http://localhost:4200/signin-oidc',
-  apiUrl: 'https://btvapi.yenbai.net.vn/api',
+  apiUrl: 'https://localhost:7210/api',
   hostUrl: 'https://btvapi.yenbai.net.vn',
   vgca_Url: 'https://vgca.vpstech.vn/',
   // apiUrl: 'https://xinykienapi.yenbai.net.vn/api',

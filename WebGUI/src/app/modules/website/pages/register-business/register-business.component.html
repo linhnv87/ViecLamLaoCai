@@ -95,7 +95,10 @@
             Bằng việc Đăng ký, bạn đã đồng ý với <a href="#" class="text-sky-400">Điều khoản sử dụng</a> và <a href="#" class="text-sky-400">Chính sách bảo mật</a> của chúng tôi
           </div>
 
-          <button type="submit" class="btn2-wrap">Đăng ký ngay</button>
+          <button type="submit" class="btn2-wrap" [disabled]="isSubmitting">
+            <span *ngIf="isSubmitting">Đang đăng ký...</span>
+            <span *ngIf="!isSubmitting">Đăng ký ngay</span>
+          </button>
 
           <div class="text-strong text-center">
             Bạn đã có tài khoản? Hãy <a routerLink="/auth" class="text-sky-400">đăng nhập</a>

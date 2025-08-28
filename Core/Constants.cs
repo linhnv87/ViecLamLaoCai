@@ -64,6 +64,10 @@ namespace Core
         public const string CHUYEN_VIEN = "chuyen-vien";
         public const string VAN_THU = "van-thu";
         public const string BAN_THUONG_VU = "ban-thuong-vu";
+        
+        // Website roles
+        public const string DOANH_NGHIEP = "doanh-nghiep";
+        public const string UNG_VIEN = "ung-vien";
     }
 
     public static class AppDocumentStatuses

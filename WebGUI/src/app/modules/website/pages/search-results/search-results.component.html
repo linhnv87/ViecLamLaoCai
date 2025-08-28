@@ -48,6 +48,18 @@
             <option value="Bát Xát">Bát Xát</option>
           </select>
           
+          <select [(ngModel)]="filters.category" (change)="performSearch()" class="filter-select">
+            <option value="">Tất cả ngành nghề</option>
+            <option value="Công nghệ thông tin">Công nghệ thông tin</option>
+            <option value="Kinh doanh">Kinh doanh</option>
+            <option value="Tài chính">Tài chính</option>
+            <option value="Bất động sản">Bất động sản</option>
+            <option value="Hành chính">Hành chính</option>
+            <option value="Xây dựng">Xây dựng</option>
+            <option value="Y tế">Y tế</option>
+            <option value="Giáo dục">Giáo dục</option>
+          </select>
+          
           <select [(ngModel)]="filters.salaryRange" (change)="performSearch()" class="filter-select">
             <option value="">Tất cả mức lương</option>
             <option value="5-10">5-10 triệu</option>
@@ -95,26 +107,33 @@
         <span class="results-count">
           Tìm thấy <strong>{{totalResults}}</strong> việc làm
           <span *ngIf="searchQuery"> cho "<strong>{{searchQuery}}</strong>"</span>
+          <span class="search-time" *ngIf="searchTime > 0"> - trong {{searchTime}}ms</span>
         </span>
-        <!-- <span class="search-time">trong {{searchTime}}ms</span> -->
       </div>
       
       <div class="sort-options">
         <label>Sắp xếp theo:</label>
-        <select [(ngModel)]="sortBy" (change)="sortResults()" class="sort-select">
+        <select [(ngModel)]="sortBy" (change)="onSortChange()" class="sort-select">
           <option value="relevance">Liên quan nhất</option>
           <option value="date">Ngày đăng mới nhất</option>
           <option value="salary">Mức lương cao nhất</option>
           <option value="company">Tên công ty</option>
+        </select>
+        
+        <select [(ngModel)]="pageSize" (change)="currentPage = 1; performSearch()" class="sort-select" style="margin-left: 10px;">
+          <option value="5">5 việc làm</option>
+          <option value="10">10 việc làm</option>
+          <option value="20">20 việc làm</option>
+          <option value="50">50 việc làm</option>
         </select>
       </div>
     </div>
 
     <!-- Job Results List -->
     <div class="job-results-section">
-      <div class="job-list" *ngIf="paginatedResults.length > 0">
+      <div class="job-list" *ngIf="searchResults.length > 0">
         
-        <div class="job-card" *ngFor="let job of paginatedResults">
+        <div class="job-card" *ngFor="let job of searchResults">
           <div class="job-main-info">
             <div class="company-logo">
               <img [src]="job.logo" [alt]="job.company" class="logo-img">
@@ -139,7 +158,7 @@
                   {{job.experience}}
                 </span>
                 <span class="job-type">
-                  <img src="assets/vieclamlaocai/img/icon/icon-briefcase.svg" alt="">
+                  <img src="assets/vieclamlaocai/img/icon/icon-bags.svg" alt="">
                   {{job.jobType}}
                 </span>
               </div>
@@ -168,7 +187,7 @@
                 {{isJobSaved(job.id) ? 'Đã lưu' : 'Lưu'}}
               </button>
               <button class="btn-apply" (click)="applyJob(job)">
-                <img src="assets/vieclamlaocai/img/icon/icon-send.svg" alt="">
+                <img src="assets/vieclamlaocai/img/icon/icon-arrow-right.svg" alt="">
                 Ứng tuyển
               </button>
             </div>
@@ -178,10 +197,7 @@
       </div>
 
       <!-- Empty State -->
-      <div class="empty-state" *ngIf="paginatedResults.length === 0 && !isLoading">
-        <!-- <div class="empty-icon">
-          <img src="assets/vieclamlaocai/img/icon/icon-search-empty.svg" alt="">
-        </div> -->
+      <div class="empty-state" *ngIf="searchResults.length === 0 && !isLoading">
         <h3 class="empty-title">Không tìm thấy việc làm nào</h3>
         <p class="empty-message">
           Hãy thử thay đổi từ khóa tìm kiếm hoặc bộ lọc để tìm thấy nhiều kết quả hơn

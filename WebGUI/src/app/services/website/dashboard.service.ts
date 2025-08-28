@@ -13,9 +13,9 @@ export class DashboardService {
 
   constructor(private http: HttpClient) {}
 
-  // GET /api/Dashboard/GetBusinessDashboard/{businessId}
-  getBusinessDashboard(businessId: number): Observable<BaseResponseModel<BusinessDashboardModel>> {
-    const apiUrl = `${this.baseUrl}/GetBusinessDashboard/${businessId}`;
+  // GET /api/Dashboard/GetBusinessDashboard/{userId}
+  getBusinessDashboard(userId: string): Observable<BaseResponseModel<BusinessDashboardModel>> {
+    const apiUrl = `${this.baseUrl}/GetBusinessDashboard/${userId}`;
     return this.http.get<BaseResponseModel<BusinessDashboardModel>>(apiUrl);
   }
 
@@ -35,6 +35,90 @@ export class DashboardService {
   getRecentActivities(userId: string): Observable<BaseResponseModel<ActivityModel[]>> {
     const apiUrl = `${this.baseUrl}/GetRecentActivities/${userId}`;
     return this.http.get<BaseResponseModel<ActivityModel[]>>(apiUrl);
+  }
+
+  // ===== DETAILED BUSINESS DASHBOARD APIs =====
+
+  // GET /api/Dashboard/GetRecentJobs/{businessId}?companyName={companyName}
+  getRecentJobs(businessId: number, companyName: string): Observable<BaseResponseModel<RecentJobModel[]>> {
+    const apiUrl = `${this.baseUrl}/GetRecentJobs/${businessId}?companyName=${encodeURIComponent(companyName)}`;
+    return this.http.get<BaseResponseModel<RecentJobModel[]>>(apiUrl);
+  }
+
+  // GET /api/Dashboard/GetRecentCandidates/{businessId}
+  getRecentCandidates(businessId: number): Observable<BaseResponseModel<RecentCandidateModel[]>> {
+    const apiUrl = `${this.baseUrl}/GetRecentCandidates/${businessId}`;
+    return this.http.get<BaseResponseModel<RecentCandidateModel[]>>(apiUrl);
+  }
+
+  // ===== DETAILED CANDIDATE DASHBOARD APIs =====
+
+  // GET /api/Dashboard/GetSavedJobs/{candidateId}
+  getSavedJobs(candidateId: number): Observable<BaseResponseModel<SavedJobModel[]>> {
+    const apiUrl = `${this.baseUrl}/GetSavedJobs/${candidateId}`;
+    return this.http.get<BaseResponseModel<SavedJobModel[]>>(apiUrl);
+  }
+
+  // GET /api/Dashboard/GetRecentApplications/{candidateId}
+  getRecentApplications(candidateId: number): Observable<BaseResponseModel<RecentApplicationModel[]>> {
+    const apiUrl = `${this.baseUrl}/GetRecentApplications/${candidateId}`;
+    return this.http.get<BaseResponseModel<RecentApplicationModel[]>>(apiUrl);
+  }
+
+  // GET /api/Dashboard/GetAppliedJobs/{candidateId}
+  getAppliedJobs(candidateId: number): Observable<BaseResponseModel<RecentApplicationModel[]>> {
+    const apiUrl = `${this.baseUrl}/GetAppliedJobs/${candidateId}`;
+    return this.http.get<BaseResponseModel<RecentApplicationModel[]>>(apiUrl);
+  }
+
+  // ===== ADMIN DASHBOARD DETAIL APIs =====
+
+  // GET /api/Dashboard/GetTotalBusinesses
+  getTotalBusinesses(): Observable<BaseResponseModel<number>> {
+    const apiUrl = `${this.baseUrl}/GetTotalBusinesses`;
+    return this.http.get<BaseResponseModel<number>>(apiUrl);
+  }
+
+  // GET /api/Dashboard/GetPendingApprovals
+  getPendingApprovals(): Observable<BaseResponseModel<number>> {
+    const apiUrl = `${this.baseUrl}/GetPendingApprovals`;
+    return this.http.get<BaseResponseModel<number>>(apiUrl);
+  }
+
+  // GET /api/Dashboard/GetApprovedBusinesses
+  getApprovedBusinesses(): Observable<BaseResponseModel<number>> {
+    const apiUrl = `${this.baseUrl}/GetApprovedBusinesses`;
+    return this.http.get<BaseResponseModel<number>>(apiUrl);
+  }
+
+  // GET /api/Dashboard/GetRejectedBusinesses
+  getRejectedBusinesses(): Observable<BaseResponseModel<number>> {
+    const apiUrl = `${this.baseUrl}/GetRejectedBusinesses`;
+    return this.http.get<BaseResponseModel<number>>(apiUrl);
+  }
+
+  // GET /api/Dashboard/GetTotalJobs
+  getTotalJobs(): Observable<BaseResponseModel<number>> {
+    const apiUrl = `${this.baseUrl}/GetTotalJobs`;
+    return this.http.get<BaseResponseModel<number>>(apiUrl);
+  }
+
+  // GET /api/Dashboard/GetTotalCandidates
+  getTotalCandidates(): Observable<BaseResponseModel<number>> {
+    const apiUrl = `${this.baseUrl}/GetTotalCandidates`;
+    return this.http.get<BaseResponseModel<number>>(apiUrl);
+  }
+
+  // GET /api/Dashboard/GetTodayRegistrations
+  getTodayRegistrations(): Observable<BaseResponseModel<number>> {
+    const apiUrl = `${this.baseUrl}/GetTodayRegistrations`;
+    return this.http.get<BaseResponseModel<number>>(apiUrl);
+  }
+
+  // GET /api/Dashboard/GetActiveUsersCount
+  getActiveUsersCount(): Observable<BaseResponseModel<number>> {
+    const apiUrl = `${this.baseUrl}/GetActiveUsersCount`;
+    return this.http.get<BaseResponseModel<number>>(apiUrl);
   }
 
   // ===== DUMMY DATA METHODS (for development) =====

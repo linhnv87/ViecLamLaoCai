@@ -7,7 +7,33 @@
     <app-dashboard-sidebar></app-dashboard-sidebar>
 
     <div class="dashboard-content-wrap">
-
+       <!-- Doanh Nghiep Role - Business verification banner -->
+        <div *ngIf="isDoanhNghiep() && verificationStatus !== 'approved'" class="dashboard-content-wrap">
+          <div class="mail-box" [ngClass]="{
+            'verification-pending': verificationStatus === 'pending',
+            'verification-none': verificationStatus === 'none'
+          }">
+            <div class="banner">
+              <img src="assets/vieclamlaocai/img/Illustrationa.png" alt="">
+            </div>
+            <div class="info">
+              <div class="title">
+                <span *ngIf="verificationStatus === 'none'">Xác thực thông tin doanh nghiệp</span>
+                <span *ngIf="verificationStatus === 'pending'">Đang chờ xác thực</span>
+              </div>
+              <div class="description">
+                <span *ngIf="verificationStatus === 'none'">Hoàn tất hồ sơ và upload giấy tờ để được phê duyệt từ cơ quan quản lý</span>
+                <span *ngIf="verificationStatus === 'pending'">Yêu cầu xác thực của bạn đang được xem xét. Vui lòng chờ phê duyệt từ cơ quan quản lý</span>
+              </div>
+              <div class="btn2-wrap large orange w-100" (click)="openEmailVerification()" *ngIf="verificationStatus === 'none'">
+                Xác thực ngay
+              </div>
+              <div class="btn2-wrap large gray w-100" *ngIf="verificationStatus === 'pending'">
+                <i class="fas fa-clock"></i> Đang xử lý...
+              </div>
+            </div>
+          </div>
+        </div>
       <div class="statistic-list">
 
         <!-- Doanh Nghiep Role - 4 statistics -->
@@ -212,8 +238,10 @@
           </div>
         </div>
 
+       
+
         <!-- Doanh Nghiep Role - No data fallback -->
-        <div *ngIf="isDoanhNghiep() && !hasRecentCandidates" class="text-center py-4">
+        <div *ngIf="isDoanhNghiep() && !hasRecentCandidates && isEmailVerified" class="text-center py-4">
           <div class="text-muted">
             <i class="fas fa-info-circle"></i>
             <p>Chưa có ứng viên phù hợp nào</p>
@@ -461,62 +489,10 @@
 
         <!-- Fallback content if no role or no data -->
         <div *ngIf="!isDoanhNghiep() && !isUngVien() && !isCoQuanQuanLy()">
-          <div class="user-data-wrap">
-            <div class="user-data-user">
-              <img src="assets/vieclamlaocai/img/Ellipse 6.png" alt="" class="avatar">
-              <a href="#" class="name">Võ Mạnh Tuấn</a>
-              <div class="experiment tag-wrap orange">5 năm kinh nghiệm</div>
-              <div class="tag">
-                <span>Kế toán</span>
-                <span class="dot"></span>
-                <span>36 tuổi</span>
-              </div>
-            </div>
-
-            <div class="user-data-info">
-              <div class="info-row">
-                <div class="d-flex gap-3 align-items-center">
-                  <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
-                  <span>Địa điểm</span>
-                </div>
-                <div>TP. Hồ Chí Minh</div>
-              </div>
-
-              <div class="info-row">
-                <div class="d-flex gap-3 align-items-center">
-                  <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
-                  <span>Cấp bậc</span>
-                </div>
-                <div>Nhân viên</div>
-              </div>
-
-              <div class="info-row">
-                <div class="d-flex gap-3 align-items-center">
-                  <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
-                  <span>Ngành nghề</span>
-                </div>
-                <div>Xuất nhập khẩu</div>
-              </div>
-
-              <div class="info-row">
-                <div class="d-flex gap-3 align-items-center">
-                  <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
-                  <span>Kinh nghiệm</span>
-                </div>
-                <div>Công ty CP KD CBTS Và XNK Quốc Việt</div>
-              </div>
-
-              <div class="info-row">
-                <div class="d-flex gap-3 align-items-center">
-                  <img src="assets/vieclamlaocai/img/icon/icon-pin.svg" alt="">
-                  <span>Bằng cấp</span>
-                </div>
-                <div>ĐH Ngoại thương TPHCM</div>
-              </div>
-
-              <div class="d-flex justify-content-end mt-3">
-                <div class="tag-wrap px-5">15 - 50 triệu</div>
-              </div>
+          <div class="text-center py-4">
+            <div class="text-muted">
+              <i class="fas fa-info-circle"></i>
+              <p>Vui lòng đăng nhập để xem dashboard</p>
             </div>
           </div>
         </div>
@@ -526,3 +502,10 @@
     </div>
   </div>
 </div>
+
+<!-- Business Verification Modal -->
+<app-email-verification 
+  [isOpen]="showEmailVerificationModal"
+  (closeModalEvent)="closeEmailVerificationModal()"
+  (verificationSubmitted)="onVerificationSubmitted($event)">
+</app-email-verification>

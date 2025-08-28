@@ -54,7 +54,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
     if (typeof (window as any).$ !== 'undefined' && (window as any).$.fn.owlCarousel) {
       console.log('Initializing carousels...');
       
-      // Initialize company slide carousel
       if ((window as any).$('.js-company-slide').length && !(window as any).$('.js-company-slide').hasClass('owl-loaded')) {
         try {
           (window as any).$('.js-company-slide').owlCarousel({
@@ -104,24 +103,71 @@ export class HomeComponent implements OnInit, AfterViewInit {
       showProgress: true
     });
 
+    this.homeService.getHomePageData().subscribe({
+      next: (response) => {
+        if (response.isSuccess && response.result) {
+          this.featuredJobs = response.result.featuredJobs;
+          this.suggestedJobs = response.result.suggestedJobs;
+          this.jobCategories = response.result.jobCategories;
+          this.latestJobs = response.result.latestJobs;
+          this.featuredCompanies = response.result.featuredCompanies;
+          this.homeStats = response.result.stats;
+          
+          console.log('Home page data loaded successfully');
+        } else {
+          console.warn('Failed to load home page data:', response.message);
+          this.loadDummyData();
+        }
+      },
+      error: (error) => {
+        console.error('Error loading home page data:', error);
+        this.loadDummyData();
+      },
+      complete: () => {
+        setTimeout(() => {
+          this.splashScreenService.hide();
+        }, 800);
+      }
+    });
+  }
+
+  private loadDummyData(): void {
+    console.log('Loading dummy data as fallback...');
+    
     this.loadFeaturedJobs();
     this.loadSuggestedJobs();
     this.loadJobCategories();
     this.loadLatestJobs();
     this.loadFeaturedCompanies();
     this.loadHomeStats();
-
-    setTimeout(() => {
-      this.splashScreenService.hide();
-    }, 800);
   }
 
   loadFeaturedJobs(): void {
     setTimeout(() => {
-      this.homeService.getFeaturedJobsDummy(6).subscribe(res => {
-        if (res.isSuccess) {
-          this.featuredJobs = res.result;
-          console.log('Featured jobs loaded:', this.featuredJobs.length);
+      this.homeService.getFeaturedJobs(6).subscribe({
+        next: (response) => {
+          if (response.isSuccess) {
+            this.featuredJobs = response.result;
+            console.log('Featured jobs loaded:', this.featuredJobs.length);
+          } else {
+            
+            this.homeService.getFeaturedJobsDummy(6).subscribe(res => {
+              if (res.isSuccess) {
+                this.featuredJobs = res.result;
+                console.log('Featured jobs loaded (dummy):', this.featuredJobs.length);
+              }
+            });
+          }
+        },
+        error: (error) => {
+          console.error('Error loading featured jobs:', error);
+          
+          this.homeService.getFeaturedJobsDummy(6).subscribe(res => {
+            if (res.isSuccess) {
+              this.featuredJobs = res.result;
+              console.log('Featured jobs loaded (dummy):', this.featuredJobs.length);
+            }
+          });
         }
       });
     }, 100);
@@ -129,21 +175,86 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   loadSuggestedJobs(): void {
     setTimeout(() => {
-      this.homeService.getSuggestedJobsDummy(undefined, 6).subscribe(res => {
-        if (res.isSuccess) {
-          this.suggestedJobs = res.result;
-          console.log('Suggested jobs loaded:', this.suggestedJobs.length);
+      
+      const userId = this.getCurrentUserId();
+      console.log('Loading suggested jobs for user:', userId);
+      
+      this.homeService.getSuggestedJobs(userId, 6).subscribe({
+        next: (response) => {
+          if (response.isSuccess) {
+            this.suggestedJobs = response.result;
+            console.log('Suggested jobs loaded:', this.suggestedJobs.length);
+          } else {
+           
+            this.homeService.getSuggestedJobsDummy(userId, 6).subscribe(res => {
+              if (res.isSuccess) {
+                this.suggestedJobs = res.result;
+                console.log('Suggested jobs loaded (dummy):', this.suggestedJobs.length);
+              }
+            });
+          }
+        },
+        error: (error) => {
+          console.error('Error loading suggested jobs:', error);
+          
+          this.homeService.getSuggestedJobsDummy(userId, 6).subscribe(res => {
+            if (res.isSuccess) {
+              this.suggestedJobs = res.result;
+              console.log('Suggested jobs loaded (dummy):', this.suggestedJobs.length);
+            }
+          });
         }
       });
     }, 200);
   }
 
+  private getCurrentUserId(): string | undefined {
+    try {
+      
+      const userInfo = localStorage.getItem('userInfo');
+      if (userInfo) {
+        const user = JSON.parse(userInfo);
+        return user.userId || user.id;
+      }
+      const sessionUser = sessionStorage.getItem('currentUser');
+      if (sessionUser) {
+        const user = JSON.parse(sessionUser);
+        return user.userId || user.id;
+      }
+
+      return undefined;
+    } catch (error) {
+      console.warn('Error getting current user ID:', error);
+      return undefined;
+    }
+  }
+
   loadJobCategories(): void {
     setTimeout(() => {
-      this.homeService.getJobCategoriesDummy().subscribe(res => {
-        if (res.isSuccess) {
-          this.jobCategories = res.result;
-          console.log('Job categories loaded:', this.jobCategories.length);
+      this.homeService.getJobCategories().subscribe({
+        next: (response) => {
+          if (response.isSuccess) {
+            this.jobCategories = response.result;
+            console.log('Job categories loaded:', this.jobCategories.length);
+          } else {
+            
+            this.homeService.getJobCategoriesDummy().subscribe(res => {
+              if (res.isSuccess) {
+                this.jobCategories = res.result;
+                console.log('Job categories loaded (dummy):', this.jobCategories.length);
+              }
+            });
+          }
+        },
+        error: (error) => {
+          console.error('Error loading job categories:', error);
+         
+          this.homeService.getJobCategoriesDummy().subscribe(res => {
+            if (res.isSuccess) {
+              this.jobCategories = res.result;
+              console.log('Job categories loaded (dummy):', this.jobCategories.length);
+            }
+          });
         }
       });
     }, 300);
@@ -151,10 +262,29 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   loadLatestJobs(): void {
     setTimeout(() => {
-      this.homeService.getLatestJobsDummy(8).subscribe(res => {
-        if (res.isSuccess) {
-          this.latestJobs = res.result;
-          console.log('Latest jobs loaded:', this.latestJobs.length);
+      this.homeService.getLatestJobs(8).subscribe({
+        next: (response) => {
+          if (response.isSuccess) {
+            this.latestJobs = response.result;
+            console.log('Latest jobs loaded:', this.latestJobs.length);
+          } else {
+            
+            this.homeService.getLatestJobsDummy(8).subscribe(res => {
+              if (res.isSuccess) {
+                this.latestJobs = res.result;
+                console.log('Latest jobs loaded (dummy):', this.latestJobs.length);
+              }
+            });
+          }
+        },
+        error: (error) => {
+          console.error('Error loading latest jobs:', error);
+          this.homeService.getLatestJobsDummy(8).subscribe(res => {
+            if (res.isSuccess) {
+              this.latestJobs = res.result;
+              console.log('Latest jobs loaded (dummy):', this.latestJobs.length);
+            }
+          });
         }
       });
     }, 400);
@@ -162,23 +292,65 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   loadFeaturedCompanies(): void {
     setTimeout(() => {
-      this.homeService.getFeaturedCompaniesDummy(7).subscribe(res => {
-        if (res.isSuccess) {
-          this.featuredCompanies = res.result;
-          console.log('Featured companies loaded:', this.featuredCompanies.length);
-          setTimeout(() => {
-            this.initializeCarousels();
-          }, 100);
+      this.homeService.getFeaturedCompanies(7).subscribe({
+        next: (response) => {
+          if (response.isSuccess) {
+            this.featuredCompanies = response.result;
+            console.log('Featured companies loaded:', this.featuredCompanies.length);
+            setTimeout(() => {
+              this.initializeCarousels();
+            }, 100);
+          } else {
+            this.homeService.getFeaturedCompaniesDummy(7).subscribe(res => {
+              if (res.isSuccess) {
+                this.featuredCompanies = res.result;
+                console.log('Featured companies loaded (dummy):', this.featuredCompanies.length);
+                setTimeout(() => {
+                  this.initializeCarousels();
+                }, 100);
+              }
+            });
+          }
+        },
+        error: (error) => {
+          console.error('Error loading featured companies:', error);
+          this.homeService.getFeaturedCompaniesDummy(7).subscribe(res => {
+            if (res.isSuccess) {
+              this.featuredCompanies = res.result;
+              console.log('Featured companies loaded (dummy):', this.featuredCompanies.length);
+              setTimeout(() => {
+                this.initializeCarousels();
+              }, 100);
+            }
+          });
         }
       });
     }, 500);
   }
 
   loadHomeStats(): void {
-    this.homeService.getHomeStatsDummy().subscribe(res => {
-      if (res.isSuccess) {
-        this.homeStats = res.result;
-        console.log('Home stats loaded:', this.homeStats);
+    this.homeService.getHomeStats().subscribe({
+      next: (response) => {
+        if (response.isSuccess) {
+          this.homeStats = response.result;
+          console.log('Home stats loaded:', this.homeStats);
+        } else {
+          this.homeService.getHomeStatsDummy().subscribe(res => {
+            if (res.isSuccess) {
+              this.homeStats = res.result;
+              console.log('Home stats loaded (dummy):', this.homeStats);
+            }
+          });
+        }
+      },
+      error: (error) => {
+        console.error('Error loading home stats:', error);
+        this.homeService.getHomeStatsDummy().subscribe(res => {
+          if (res.isSuccess) {
+            this.homeStats = res.result;
+            console.log('Home stats loaded (dummy):', this.homeStats);
+          }
+        });
       }
     });
   }
