@@ -5,6 +5,7 @@ import { BaseResponseModel } from '../../models/base-response.model';
 import { environment } from 'src/environments/environments';
 
 export interface BusinessVerificationRequest {
+  userId: string;
   companyName: string;
   taxNumber: string;
   position: string;
@@ -61,6 +62,7 @@ export class EmailVerificationService {
     
     console.log('📤 Submitting verification request:', request);
     
+    formData.append('userId', request.userId);
     formData.append('companyName', request.companyName);
     formData.append('taxNumber', request.taxNumber);
     formData.append('position', request.position);
@@ -134,6 +136,11 @@ export class EmailVerificationService {
   // Get company information by user ID
   getCompanyInfo(userId: string): Observable<BaseResponseModel<CompanyInfo>> {
     return this.http.get<BaseResponseModel<CompanyInfo>>(`${this.baseUrl}/GetCompanyInfo/${userId}`);
+  }
+
+  // Get verification status by user ID (new method)
+  getVerificationStatusByUserId(userId: string): Observable<BaseResponseModel<BusinessVerificationResponse>> {
+    return this.http.get<BaseResponseModel<BusinessVerificationResponse>>(`${this.baseUrl}/GetStatusByUserId/${userId}`);
   }
 }
 

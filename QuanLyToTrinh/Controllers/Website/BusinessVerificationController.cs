@@ -54,6 +54,23 @@ namespace QuanLyToTrinh.Controllers.Website
         }
 
         /// <summary>
+        /// Get verification status by user ID
+        /// </summary>
+        [HttpGet("GetStatusByUserId/{userId}")]
+        public async Task<IActionResult> GetVerificationStatusByUserId(Guid userId)
+        {
+            try
+            {
+                var result = await _businessVerificationService.GetVerificationStatusByUserIdAsync(userId);
+                return Ok(new BaseResponseModel(result));
+            }
+            catch (Exception ex)
+            {
+                return Ok(new BaseResponseModel(null, false, StatusCodes.Status500InternalServerError, ex.Message));
+            }
+        }
+
+        /// <summary>
         /// Get verification history for a company
         /// </summary>
         [HttpGet("GetHistory/{companyId}")]

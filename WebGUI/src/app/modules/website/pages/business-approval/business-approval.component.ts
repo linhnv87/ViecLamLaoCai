@@ -47,6 +47,52 @@ export class BusinessApprovalComponent implements OnInit {
 
   loadBusinessData(): void {
     console.log('Loading business approval data...');
+    const filter = {
+      status: this.statusFilter,
+      businessType: this.businessTypeFilter,
+      searchKeyword: this.searchKeyword,
+      page: this.currentPage,
+      pageSize: this.itemsPerPage,
+      sortBy: 'registrationDate',
+      sortOrder: 'desc'
+    };
+
+    this.businessService.getBusinessApprovals(filter).subscribe(res => {
+      if (res.isSuccess) {
+        this.businesses = res.result.data;
+        this.filteredBusinesses = [...this.businesses];
+        this.totalItems = res.result.totalItems;
+        this.currentPage = res.result.currentPage;
+      } else {
+        console.error('Failed to load business data:', res.message);
+        // Fallback to dummy data if API fails
+        this.loadBusinessDataDummy();
+      }
+    }, error => {
+      console.error('Error loading business data:', error);
+      // Fallback to dummy data if API fails
+      this.loadBusinessDataDummy();
+    });
+  }
+
+  loadStatistics(): void {
+    this.businessService.getApprovalStatistics().subscribe(res => {
+      if (res.isSuccess) {
+        this.approvalStats = res.result;
+      } else {
+        console.error('Failed to load statistics:', res.message);
+        // Fallback to dummy data if API fails
+        this.loadStatisticsDummy();
+      }
+    }, error => {
+      console.error('Error loading statistics:', error);
+      // Fallback to dummy data if API fails
+      this.loadStatisticsDummy();
+    });
+  }
+
+  // Fallback methods for development
+  private loadBusinessDataDummy(): void {
     this.businessService.getAllDummy().subscribe(res => {
       if (res.isSuccess) {
         this.businesses = res.result;
@@ -56,7 +102,7 @@ export class BusinessApprovalComponent implements OnInit {
     });
   }
 
-  loadStatistics(): void {
+  private loadStatisticsDummy(): void {
     this.businessService.getStatisticsDummy().subscribe(res => {
       if (res.isSuccess) {
         this.approvalStats = res.result;
@@ -75,122 +121,102 @@ export class BusinessApprovalComponent implements OnInit {
   }
 
   approveBusiness(business: BusinessApprovalData): void {
-    // For now, simulate the API call since we're using dummy data
-    // In production, uncomment the real API call below
+    const currentUserId = 'current-admin-user'; // TODO: Get from auth service
     
-    // Real API call (for production):
-    // const currentUserId = 'current-user-id'; // Get from auth service
-    // this.businessService.approve(business.id, currentUserId, 'Approved by admin').subscribe(res => {
-    //   if (res.isSuccess) {
-    //     business.status = 'approved';
-    //     this.updateStats();
-    //     this.splashScreenService.showQuickFeedback('success', 'Phê duyệt thành công!', `Doanh nghiệp ${business.businessName} đã được phê duyệt`);
-    //     setTimeout(() => this.closeDetailModal(), 1200);
-    //   } else {
-    //     this.splashScreenService.showQuickFeedback('error', 'Lỗi phê duyệt!', res.message);
-    //   }
-    // });
-
-    // Dummy implementation (for development):
-    business.status = 'approved';
-    this.splashScreenService.showQuickFeedback(
-      'success',
-      'Phê duyệt thành công!',
-      `Doanh nghiệp ${business.businessName} đã được phê duyệt`
-    );
-    setTimeout(() => {
-      this.closeDetailModal();
-    }, 1200);
-    this.updateStats();
+    this.businessService.approveBusinessApproval(business.id, currentUserId, 'Approved by admin').subscribe(res => {
+      if (res.isSuccess) {
+        business.status = 'approved';
+        business.approvedBy = currentUserId;
+        business.approvalDate = new Date().toISOString();
+        this.loadStatistics(); // Refresh statistics
+        this.splashScreenService.showQuickFeedback('success', 'Phê duyệt thành công!', `Doanh nghiệp ${business.businessName} đã được phê duyệt`);
+        setTimeout(() => this.closeDetailModal(), 1200);
+      } else {
+        this.splashScreenService.showQuickFeedback('error', 'Lỗi phê duyệt!', res.message);
+      }
+    }, error => {
+      console.error('Error approving business:', error);
+      this.splashScreenService.showQuickFeedback('error', 'Lỗi phê duyệt!', 'Không thể kết nối đến server');
+    });
   }
 
   rejectBusiness(business: BusinessApprovalData): void {
-    // const currentUserId = 'current-user-id';
-    // const reason = 'Không đủ điều kiện';
-    // this.businessService.reject(business.id, currentUserId, reason).subscribe(res => {
-    //   if (res.isSuccess) {
-    //     business.status = 'rejected';
-    //     this.updateStats();
-    //     this.splashScreenService.showQuickFeedback('error', 'Đã từ chối!', `Doanh nghiệp ${business.businessName} đã bị từ chối`);
-    //     setTimeout(() => this.closeDetailModal(), 1200);
-    //   } else {
-    //     this.splashScreenService.showQuickFeedback('error', 'Lỗi từ chối!', res.message);
-    //   }
-    // });
-
-    // Dummy implementation (for development):
-    business.status = 'rejected';
-    this.splashScreenService.showQuickFeedback(
-      'error',
-      'Đã từ chối!',
-      `Doanh nghiệp ${business.businessName} đã bị từ chối`
-    );
-    setTimeout(() => {
-      this.closeDetailModal();
-    }, 1200);
-    this.updateStats();
+    const currentUserId = 'current-admin-user'; // TODO: Get from auth service
+    const reason = 'Không đủ điều kiện phê duyệt';
+    
+    this.businessService.rejectBusinessApproval(business.id, currentUserId, reason).subscribe(res => {
+      if (res.isSuccess) {
+        business.status = 'rejected';
+        business.approvedBy = currentUserId;
+        business.approvalDate = new Date().toISOString();
+        business.notes = reason;
+        this.loadStatistics(); // Refresh statistics
+        this.splashScreenService.showQuickFeedback('error', 'Đã từ chối!', `Doanh nghiệp ${business.businessName} đã bị từ chối`);
+        setTimeout(() => this.closeDetailModal(), 1200);
+      } else {
+        this.splashScreenService.showQuickFeedback('error', 'Lỗi từ chối!', res.message);
+      }
+    }, error => {
+      console.error('Error rejecting business:', error);
+      this.splashScreenService.showQuickFeedback('error', 'Lỗi từ chối!', 'Không thể kết nối đến server');
+    });
   }
 
   reviewBusiness(business: BusinessApprovalData): void {
-    // const currentUserId = 'current-user-id'; // Get from auth service
-    // this.businessService.setReviewing(business.id, currentUserId).subscribe(res => {
-    //   if (res.isSuccess) {
-    //     business.status = 'reviewing';
-    //     this.updateStats();
-    //     this.splashScreenService.showBriefLoading('Đang xem xét...', `Doanh nghiệp ${business.businessName} đang được xem xét`, 600, 'Đã chuyển trạng thái!', 'Doanh nghiệp đang được xem xét');
-    //     setTimeout(() => this.closeDetailModal(), 1600);
-    //   } else {
-    //     this.splashScreenService.showQuickFeedback('error', 'Lỗi cập nhật!', res.message);
-    //   }
-    // });
-
-    // Dummy implementation (for development):
-    business.status = 'reviewing';
-    this.splashScreenService.showBriefLoading(
-      'Đang xem xét...',
-      `Doanh nghiệp ${business.businessName} đang được xem xét`,
-      600,
-      'Đã chuyển trạng thái!',
-      'Doanh nghiệp đang được xem xét'
-    );
-    setTimeout(() => {
-      this.closeDetailModal();
-    }, 1600);
-    this.updateStats();
+    const currentUserId = 'current-admin-user'; // TODO: Get from auth service
+    
+    this.businessService.setReviewingBusinessApproval(business.id, currentUserId, 'Đang xem xét hồ sơ').subscribe(res => {
+      if (res.isSuccess) {
+        business.status = 'reviewing';
+        business.approvedBy = currentUserId;
+        this.loadStatistics(); // Refresh statistics
+        this.splashScreenService.showBriefLoading('Đang xem xét...', `Doanh nghiệp ${business.businessName} đang được xem xét`, 600, 'Đã chuyển trạng thái!', 'Doanh nghiệp đang được xem xét');
+        setTimeout(() => this.closeDetailModal(), 1600);
+      } else {
+        this.splashScreenService.showQuickFeedback('error', 'Lỗi cập nhật!', res.message);
+      }
+    }, error => {
+      console.error('Error setting business to reviewing:', error);
+      this.splashScreenService.showQuickFeedback('error', 'Lỗi cập nhật!', 'Không thể kết nối đến server');
+    });
   }
 
   viewDocument(document: DocumentInfo): void {
     console.log('Viewing document:', document.name);
+    // Open document in new tab or modal
+    if (document.url) {
+      window.open(document.url, '_blank');
+    } else {
+      // If no direct URL, use download endpoint to view
+      this.downloadDocument(document);
+    }
   }
 
   downloadDocument(document: DocumentInfo): void {
     console.log('Downloading document:', document.name);
-   
+    
+    this.businessService.downloadBusinessDocument(document.id).subscribe(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const link = window.document.createElement('a');
+      link.href = url;
+      link.download = document.name;
+      link.click();
+      window.URL.revokeObjectURL(url);
+    }, error => {
+      console.error('Error downloading document:', error);
+      this.splashScreenService.showQuickFeedback('error', 'Lỗi tải xuống!', 'Không thể tải xuống tài liệu');
+    });
   }
 
   filterBusinesses(): void {
-    this.filteredBusinesses = this.businesses.filter(business => {
-      const statusMatch = this.statusFilter === 'all' || business.status === this.statusFilter;
-      const typeMatch = this.businessTypeFilter === 'all' || business.businessType === this.businessTypeFilter;
-      const keywordMatch = !this.searchKeyword || 
-        business.businessName.toLowerCase().includes(this.searchKeyword.toLowerCase()) ||
-        business.contactPerson.toLowerCase().includes(this.searchKeyword.toLowerCase()) ||
-        business.taxCode.includes(this.searchKeyword);
-      
-      return statusMatch && typeMatch && keywordMatch;
-    });
-    
-    this.totalItems = this.filteredBusinesses.length;
-    this.currentPage = 1;
+    // Instead of client-side filtering, reload data with new filters
+    this.currentPage = 1; // Reset to first page when filtering
+    this.loadBusinessData();
   }
 
   updateStats(): void {
-    this.approvalStats = {
-      pending: this.businesses.filter(b => b.status === 'pending').length,
-      approved: this.businesses.filter(b => b.status === 'approved').length,
-      rejected: this.businesses.filter(b => b.status === 'rejected').length,
-      reviewing: this.businesses.filter(b => b.status === 'reviewing').length
-    };
+    // Reload statistics from server instead of client-side calculation
+    this.loadStatistics();
   }
 
   getStatusText(status: string): string {
@@ -214,9 +240,8 @@ export class BusinessApprovalComponent implements OnInit {
   }
 
   getPaginatedBusinesses(): BusinessApprovalData[] {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    return this.filteredBusinesses.slice(startIndex, endIndex);
+    // Since we're using server-side pagination, just return filtered businesses
+    return this.filteredBusinesses;
   }
 
   getTotalPages(): number {
@@ -226,26 +251,27 @@ export class BusinessApprovalComponent implements OnInit {
   goToPage(page: number): void {
     if (page >= 1 && page <= this.getTotalPages()) {
       this.currentPage = page;
+      this.loadBusinessData(); // Reload data with new page
     }
   }
 
   goToPreviousPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;
+      this.loadBusinessData(); // Reload data with new page
     }
   }
 
   goToNextPage(): void {
     if (this.currentPage < this.getTotalPages()) {
       this.currentPage++;
+      this.loadBusinessData(); // Reload data with new page
     }
   }
 
   getTodaySubmissions(): number {
-    const today = new Date().toDateString();
-    return this.businesses.filter(business => 
-      new Date(business.registrationDate).toDateString() === today
-    ).length;
+    // Use the value from statistics API instead of client-side calculation
+    return this.approvalStats.todaySubmissions || 0;
   }
 
   clearSearch(): void {

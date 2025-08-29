@@ -208,6 +208,7 @@ export class EmailVerificationComponent implements OnInit, OnChanges {
       const userId = GetCurrentUserId();
       
       const verificationRequest: BusinessVerificationRequest = {
+        userId: userId,
         companyName: this.basicInfoForm.value.companyName,
         taxNumber: this.basicInfoForm.value.taxNumber,
         position: this.basicInfoForm.value.position,

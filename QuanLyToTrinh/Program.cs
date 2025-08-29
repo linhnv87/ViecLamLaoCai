@@ -121,6 +121,7 @@ builder.Services.AddScoped<IUnitService, UnitService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IBusinessVerificationService, BusinessVerificationService>();
 builder.Services.AddScoped<IHomeService, HomeService>();
+builder.Services.AddScoped<IBusinessApprovalService, BusinessApprovalService>();
 
 builder.Services.AddHostedService<AutoSMSReminderService>();
 builder.Services.AddHostedService<AutoApprovingService>();

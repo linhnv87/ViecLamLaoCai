@@ -148,7 +148,6 @@ namespace Services
                     }
                     else
                     {
-                        // Fallback: Lấy job mới nhất nếu không có thông tin career
                         query = _context.JobPostings
                             .Include(j => j.Company)
                             .Where(j => j.IsActive)
@@ -157,7 +156,6 @@ namespace Services
                 }
                 else
                 {
-                    // Guest user: Lấy job mới nhất và đa dạng
                     query = _context.JobPostings
                         .Include(j => j.Company)
                         .Where(j => j.IsActive)
@@ -175,7 +173,7 @@ namespace Services
                     Company = job.Company?.CompanyName ?? "Unknown Company",
                     Logo = job.Company?.LogoUrl ?? "assets/vieclamlaocai/img/image 23.png",
                     Salary = FormatSalary(job.MinSalary, job.MaxSalary, job.SalaryType),
-                    Experience = "2-3 năm kinh nghiệm", // Default value
+                    Experience = "2-3 năm kinh nghiệm",
                     Location = job.WorkLocation ?? "Lào Cai",
                     JobType = job.EmploymentType ?? "Full-time",
                     PostedDate = job.CreatedDate.ToString("yyyy-MM-dd"),
@@ -199,8 +197,6 @@ namespace Services
             try
             {
                 _logger.LogInformation("Getting job categories from Fields table");
-
-                // Lấy data thực từ Fields table và đếm số job
                 var fieldsWithJobCount = await _context.Fields
                     .Where(f => f.IsActive)
                     .Select(f => new
@@ -208,12 +204,11 @@ namespace Services
                         Field = f,
                         JobCount = f.JobPostings.Count(j => j.IsActive)
                     })
-                    .Where(x => x.JobCount > 0) // Chỉ lấy field có job
+                    .Where(x => x.JobCount > 0)
                     .OrderByDescending(x => x.JobCount)
-                    .Take(6) // Top 6 ngành nghề nổi bật
+                    .Take(6)
                     .ToListAsync();
 
-                // Map với icon tương ứng
                 var iconMapping = new Dictionary<string, string>
                 {
                     {"Công nghệ thông tin", "icon-color-ai.svg"},
@@ -230,14 +225,14 @@ namespace Services
                 {
                     Icon = iconMapping.ContainsKey(item.Field.FieldName) 
                            ? iconMapping[item.Field.FieldName] 
-                           : "icon-bags.svg", // Default icon
+                           : "icon-bags.svg",
                     Title = item.Field.FieldName,
                     Count = item.JobCount,
-                    GrowthRate = 12.5, // Có thể tính toán growth rate thực nếu cần
-                    AverageSalary = "10-25 triệu" // Có thể tính average salary thực nếu cần
+                    GrowthRate = 12.5, 
+                    AverageSalary = "10-25 triệu"
                 }).ToList();
 
-                // Nếu không có data thực, fallback sang mock data
+                
                 if (!categories.Any())
                 {
                     categories = new List<JobCategoryDTO>
@@ -304,8 +299,8 @@ namespace Services
                     .Include(j => j.Company)
                     .Include(j => j.Field)
                     .Include(j => j.Career)
-                    .Where(j => j.IsActive) // Chỉ lấy job đang active
-                    .OrderByDescending(j => j.CreatedDate); // Sắp xếp theo mới nhất
+                    .Where(j => j.IsActive)
+                    .OrderByDescending(j => j.CreatedDate);
 
                 var jobs = count.HasValue 
                     ? await query.Take(count.Value).ToListAsync()
@@ -323,7 +318,7 @@ namespace Services
                     DaysLeft = CalculateDaysLeft(job.CreatedDate),
                     PostedDate = job.CreatedDate.ToString("yyyy-MM-dd"),
                     JobType = job.EmploymentType ?? "Full-time",
-                    Experience = "2-3 năm" // Default value
+                    Experience = "2-3 năm"
                 }).ToList();
             }
             catch (Exception ex)
@@ -342,20 +337,18 @@ namespace Services
             try
             {
                 _logger.LogInformation("Getting top featured companies by job count and verified status, count: {Count}", count);
-
-                // Lấy companies với job count thực và ưu tiên verified companies
                 var companiesWithJobCount = await _context.Companies
                     .Where(c => c.IsActive)
                     .Select(c => new
                     {
                         Company = c,
-                        ActiveJobCount = c.JobPostings.Count(j => j.IsActive), // Đếm job đang active
-                        TotalJobCount = c.JobPostings.Count() // Tổng số job đã đăng
+                        ActiveJobCount = c.JobPostings.Count(j => j.IsActive),
+                        TotalJobCount = c.JobPostings.Count()
                     })
-                    .Where(x => x.ActiveJobCount > 0 || x.Company.IsVerified) // Có job hoặc đã verified
-                    .OrderByDescending(x => x.Company.IsVerified) // Ưu tiên verified companies
-                    .ThenByDescending(x => x.ActiveJobCount) // Sau đó sắp xếp theo số job
-                    .ThenByDescending(x => x.TotalJobCount) // Cuối cùng theo tổng job
+                    .Where(x => x.ActiveJobCount > 0 || x.Company.IsVerified)
+                    .OrderByDescending(x => x.Company.IsVerified)
+                    .ThenByDescending(x => x.ActiveJobCount) 
+                    .ThenByDescending(x => x.TotalJobCount)
                     .ToListAsync();
 
                 if (count.HasValue)

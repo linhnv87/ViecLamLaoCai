@@ -605,6 +605,8 @@ namespace Services
                     IsVerified = false,
                     ApprovalStatus = "Pending",
                     IsActive = true,
+                    CommuneId = 1,
+                    DistrictId = 1,
                     CreatedDate = DateTime.Now,
                     UpdatedDate = DateTime.Now
                 };
