@@ -18,19 +18,19 @@ namespace Database.Models.Website
         public string CompanyName { get; set; }
 
         [StringLength(1000)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [StringLength(100)]
-        public string Industry { get; set; }
+        public string? Industry { get; set; }
 
         [StringLength(50)]
-        public string CompanySize { get; set; }
+        public string? CompanySize { get; set; }
 
         [StringLength(200)]
         public string Website { get; set; }
 
         [StringLength(500)]
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
         [Required]
         [StringLength(15)]
@@ -44,10 +44,10 @@ namespace Database.Models.Website
         public string? LogoUrl { get; set; }
 
         [StringLength(20)]
-        public string TaxNumber { get; set; }
+        public string? TaxNumber { get; set; }
 
         [StringLength(100)]
-        public string Position { get; set; }
+        public string? Position { get; set; }
 
         public bool IsVerified { get; set; } = false;
 

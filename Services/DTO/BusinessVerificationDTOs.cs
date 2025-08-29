@@ -6,6 +6,8 @@ namespace Services.DTO
 {
     public class BusinessVerificationRequestDTO
     {
+        public Guid UserId { get; set; }
+        public int CompanyId { get; set; }
         public string CompanyName { get; set; }
         public string TaxNumber { get; set; }
         public string Position { get; set; }

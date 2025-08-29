@@ -182,6 +182,8 @@ export class DashboardComponent implements OnInit {
     this.verificationStatus = 'pending';
     this.isEmailVerified = false;
     this.verificationMessage = 'Yêu cầu xác thực đang chờ phê duyệt';
+    
+    console.log('🔄 Dashboard verification status updated to:', this.verificationStatus);
 
     Swal.fire({
       title: 'Thành công!',
@@ -196,8 +198,26 @@ export class DashboardComponent implements OnInit {
     this.closeEmailVerificationModal();
 
     if (this.isDoanhNghiep()) {
-      this.loadDashboardData();
+      console.log('🔄 Reloading dashboard data after verification submission...');
+      
+      this.forceUIRefresh();
+      
+      setTimeout(() => {
+        this.loadDashboardData();
+      }, 500);
     }
+  }
+
+  private forceUIRefresh(): void {
+    console.log('🔄 Forcing UI refresh...');
+    
+    const currentStatus = this.verificationStatus;
+    this.verificationStatus = 'none';
+    
+    setTimeout(() => {
+      this.verificationStatus = currentStatus;
+      console.log('✅ UI refresh completed, verification status:', this.verificationStatus);
+    }, 50);
   }
 
   private checkEmailVerificationStatus(): void {
@@ -205,24 +225,84 @@ export class DashboardComponent implements OnInit {
       const userId = GetCurrentUserId();
       console.log('🔍 Checking verification status for user:', userId);
       
-      this.emailVerificationService.isCompanyVerifiedByUserId(userId.toString()).subscribe({
-        next: (response) => {
-          console.log('📊 Verification status response:', response);
-          if (response.isSuccess) {
-            this.isEmailVerified = response.result;
-            this.verificationStatus = this.isEmailVerified ? 'approved' : 'none';
-            this.verificationMessage = this.isEmailVerified ? 'Doanh nghiệp đã được xác thực' : 'Chưa xác thực doanh nghiệp';
-            console.log('✅ Email verification status:', this.isEmailVerified);
+      this.emailVerificationService.getVerificationStatusByUserId(userId.toString()).subscribe({
+        next: (response: any) => {
+          console.log('📊 Full verification status response:', response);
+          if (response.isSuccess && response.result) {
+            const verificationData = response.result;
+            const status = verificationData.status;
+            const wasVerified = this.isEmailVerified;
+            
+            switch (status?.toLowerCase()) {
+              case 'pending':
+                this.verificationStatus = 'pending';
+                this.isEmailVerified = false;
+                this.verificationMessage = 'Đang chờ xác thực doanh nghiệp';
+                break;
+              case 'approved':
+                this.verificationStatus = 'approved';
+                this.isEmailVerified = true;
+                this.verificationMessage = 'Doanh nghiệp đã được xác thực';
+                break;
+              case 'rejected':
+                this.verificationStatus = 'rejected';
+                this.isEmailVerified = false;
+                this.verificationMessage = 'Doanh nghiệp bị từ chối xác thực';
+                break;
+              case 'not_verified':
+              default:
+                this.verificationStatus = 'none';
+                this.isEmailVerified = false;
+                this.verificationMessage = 'Chưa xác thực doanh nghiệp';
+                break;
+            }
+            
+            console.log('✅ Full verification status:', status, 'mapped to:', this.verificationStatus);
+            
+            if (wasVerified !== this.isEmailVerified) {
+              console.log('🔄 Verification status changed, reloading dashboard data...');
+    
+              this.loadDashboardData();
+            } else if (this.verificationStatus === 'pending' || this.verificationStatus === 'rejected' || this.verificationStatus === 'none') {
+              console.log('🔄 Verification status is', this.verificationStatus, '- resetting dashboard data...');
+              this.businessDashboardData = null;
+              this.resetDoanhNghiepStats();
+            }
+          } else {
+            this.fallbackToSimpleVerificationCheck(userId);
           }
         },
-        error: (error) => {
-          console.error('❌ Error checking email verification status:', error);
-          this.isEmailVerified = false;
-          this.verificationStatus = 'none';
-          this.verificationMessage = 'Chưa xác thực doanh nghiệp';
+        error: (error: any) => {
+          console.error('❌ Error checking full verification status:', error);
+          this.fallbackToSimpleVerificationCheck(userId);
         }
       });
     }
+  }
+
+  private fallbackToSimpleVerificationCheck(userId: number): void {
+    this.emailVerificationService.isCompanyVerifiedByUserId(userId.toString()).subscribe({
+      next: (response: any) => {
+        if (response.isSuccess) {
+          const wasVerified = this.isEmailVerified;
+          this.isEmailVerified = response.result;
+          this.verificationStatus = this.isEmailVerified ? 'approved' : 'none';
+          this.verificationMessage = this.isEmailVerified ? 'Doanh nghiệp đã được xác thực' : 'Chưa xác thực doanh nghiệp';
+          console.log('✅ Fallback verification status:', this.isEmailVerified);
+
+          if (wasVerified !== this.isEmailVerified) {
+            console.log('🔄 Verification status changed, reloading dashboard data...');
+            this.loadDashboardData();
+          }
+        }
+      },
+      error: (error: any) => {
+        console.error('❌ Error in fallback verification check:', error);
+        this.isEmailVerified = false;
+        this.verificationStatus = 'none';
+        this.verificationMessage = 'Chưa xác thực doanh nghiệp';
+      }
+    });
   }
 
   isDoanhNghiep(): boolean {
@@ -309,48 +389,98 @@ export class DashboardComponent implements OnInit {
   }
 
   private loadBusinessDashboard(businessId: number): void {
-    this.dashboardService.getBusinessDashboardDummy().subscribe({
-      next: (response) => {
-        if (response.isSuccess && response.result) {
-          this.businessDashboardData = response.result;
-          this.updateDoanhNghiepStats();
+    console.log('🔄 Loading business dashboard for ID:', businessId, 'verificationStatus:', this.verificationStatus);
+    
+    if (this.verificationStatus === 'approved') {
+      console.log('✅ User is verified, loading real business dashboard data...');
+      this.dashboardService.getBusinessDashboard(businessId.toString()).subscribe({
+        next: (response) => {
+          console.log('📊 Business dashboard response:', response);
+          if (response.isSuccess && response.result) {
+            this.businessDashboardData = response.result;
+            this.updateDoanhNghiepStats();
+            console.log('✅ Business dashboard data updated successfully');
+            this.showSuccessSplash();
+          } else {
+            console.warn('⚠️ Business dashboard response not successful:', response);
+            this.showSuccessSplash();
+          }
+        },
+        error: (error) => {
+          console.error('❌ Error loading business dashboard:', error);
+          console.log('❌ Real API failed for verified user, not using dummy data');
           this.showSuccessSplash();
         }
-      },
-      error: (error) => {
-        console.error('Error loading business dashboard:', error);
-        this.showSuccessSplash();
-      }
-    });
+      });
+    } else {
+      console.log('⚠️ User verification status:', this.verificationStatus, '- not loading dashboard data');
+      this.businessDashboardData = null;
+      this.resetDoanhNghiepStats();
+      this.showSuccessSplash();
+    }
   }
 
   private loadCandidateDashboard(candidateId: number): void {
-    this.dashboardService.getCandidateDashboardDummy().subscribe({
+    console.log('🔄 Loading candidate dashboard for ID:', candidateId);
+    
+    const dashboardCall = candidateId > 0 
+      ? this.dashboardService.getCandidateDashboard(candidateId)
+      : this.dashboardService.getCandidateDashboardDummy();
+    
+    dashboardCall.subscribe({
       next: (response) => {
+        console.log('📊 Candidate dashboard response:', response);
         if (response.isSuccess && response.result) {
           this.candidateDashboardData = response.result;
           this.updateUngVienStats();
+          console.log('✅ Candidate dashboard data updated successfully');
+          this.showSuccessSplash();
+        } else {
+          console.warn('⚠️ Candidate dashboard response not successful:', response);
           this.showSuccessSplash();
         }
       },
       error: (error) => {
-        console.error('Error loading candidate dashboard:', error);
-        this.showSuccessSplash();
+        console.error('❌ Error loading candidate dashboard:', error);
+        
+        if (candidateId <= 0) {
+          console.log('🔄 Using dummy data for invalid candidateId...');
+          this.dashboardService.getCandidateDashboardDummy().subscribe({
+            next: (fallbackResponse) => {
+              if (fallbackResponse.isSuccess && fallbackResponse.result) {
+                this.candidateDashboardData = fallbackResponse.result;
+                this.updateUngVienStats();
+              }
+              this.showSuccessSplash();
+            },
+            error: () => this.showSuccessSplash()
+          });
+        } else {
+          console.log('❌ Real API failed for valid candidateId, not using dummy data');
+          this.showSuccessSplash();
+        }
       }
     });
   }
 
   private loadAdminDashboard(): void {
-    this.dashboardService.getAdminDashboardDummy().subscribe({
+    console.log('🔄 Loading admin dashboard...');
+    this.dashboardService.getAdminDashboard().subscribe({
       next: (response) => {
+        console.log('📊 Admin dashboard response:', response);
         if (response.isSuccess && response.result) {
           this.adminDashboardData = response.result;
           this.updateCoQuanQuanLyStats();
+          console.log('✅ Admin dashboard data updated successfully');
+          this.showSuccessSplash();
+        } else {
+          console.warn('⚠️ Admin dashboard response not successful:', response);
           this.showSuccessSplash();
         }
       },
       error: (error) => {
-        console.error('Error loading admin dashboard:', error);
+        console.error('❌ Error loading admin dashboard:', error);
+        console.log('❌ Admin API failed, not using dummy data');
         this.showSuccessSplash();
       }
     });
@@ -359,33 +489,46 @@ export class DashboardComponent implements OnInit {
   private updateDoanhNghiepStats(): void {
     if (this.businessDashboardData) {
       this.doanhNghiepStats = {
-        totalProfileViews: this.businessDashboardData.totalViews || 245,
-        totalJobs: this.businessDashboardData.totalJobs || 3,
-        totalApplications: this.businessDashboardData.totalApplications || 55,
-        todayApplications: this.businessDashboardData.todayApplications || 23
+        totalProfileViews: this.businessDashboardData.totalViews ?? 0,
+        totalJobs: this.businessDashboardData.totalJobs ?? 0,
+        totalApplications: this.businessDashboardData.totalApplications ?? 0,
+        todayApplications: this.businessDashboardData.todayApplications ?? 0
       };
+      console.log('📊 Updated stats with real data:', this.doanhNghiepStats);
     }
+  }
+
+  private resetDoanhNghiepStats(): void {
+    this.doanhNghiepStats = {
+      totalProfileViews: 0,
+      totalJobs: 0,
+      totalApplications: 0,
+      todayApplications: 0
+    };
+    console.log('🔄 Reset business stats to 0 for unverified user');
   }
 
   private updateUngVienStats(): void {
     if (this.candidateDashboardData) {
       this.ungVienStats = {
-        suitableJobs: this.candidateDashboardData.suitableJobs || 74,
-        profileViews: this.candidateDashboardData.profileViews || 0,
-        employerEmails: this.candidateDashboardData.employerEmails || 0,
-        totalCVs: this.candidateDashboardData.totalCVs || 0
+        suitableJobs: this.candidateDashboardData.suitableJobs ?? 0,
+        profileViews: this.candidateDashboardData.profileViews ?? 0,
+        employerEmails: this.candidateDashboardData.employerEmails ?? 0,
+        totalCVs: this.candidateDashboardData.totalCVs ?? 0
       };
+      console.log('📊 Updated candidate stats with real data:', this.ungVienStats);
     }
   }
 
   private updateCoQuanQuanLyStats(): void {
     if (this.adminDashboardData) {
       this.coQuanQuanLyStats = {
-        pendingApprovals: this.adminDashboardData.pendingApprovals || 12,
-        approvedBusinesses: this.adminDashboardData.approvedBusinesses || 45,
-        rejectedBusinesses: this.adminDashboardData.rejectedBusinesses || 3,
-        totalBusinesses: this.adminDashboardData.totalBusinesses || 60
+        pendingApprovals: this.adminDashboardData.pendingApprovals ?? 0,
+        approvedBusinesses: this.adminDashboardData.approvedBusinesses ?? 0,
+        rejectedBusinesses: this.adminDashboardData.rejectedBusinesses ?? 0,
+        totalBusinesses: this.adminDashboardData.totalBusinesses ?? 0
       };
+      console.log('📊 Updated admin stats with real data:', this.coQuanQuanLyStats);
     }
   }
 

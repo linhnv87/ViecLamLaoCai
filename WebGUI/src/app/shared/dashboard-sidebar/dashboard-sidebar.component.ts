@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { LOCAL_STORAGE_KEYS } from '../../utils/constants';
 import { WebsiteMenuModel, getActiveMenuItems, getMenuItemsByRole } from '../../config/website-menu';
 import { Router, NavigationEnd } from '@angular/router';
@@ -12,7 +12,9 @@ import Swal from 'sweetalert2';
   templateUrl: './dashboard-sidebar.component.html',
   styleUrls: ['./dashboard-sidebar.component.scss']
 })
-export class DashboardSidebarComponent implements OnInit {
+export class DashboardSidebarComponent implements OnInit, OnChanges {
+  @Input() dashboardVerificationStatus: 'none' | 'pending' | 'approved' | 'rejected' = 'none';
+  
   userInfo: any = null;
   menuItems: WebsiteMenuModel[] = [];
   currentUrl = '';
@@ -43,6 +45,30 @@ export class DashboardSidebarComponent implements OnInit {
     }
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['dashboardVerificationStatus'] && this.dashboardVerificationStatus) {
+      console.log('🔄 Sidebar received verification status update:', this.dashboardVerificationStatus);
+      this.verificationStatus = this.dashboardVerificationStatus;
+
+      switch (this.dashboardVerificationStatus) {
+        case 'pending':
+          this.isVerified = false;
+          break;
+        case 'rejected':
+          this.isVerified = false;
+          break;
+        case 'approved':
+          this.isVerified = true;
+          break;
+        default:
+          this.isVerified = false;
+          break;
+      }
+      
+      console.log('✅ Sidebar verification status updated:', this.verificationStatus, 'isVerified:', this.isVerified);
+    }
+  }
+
   loadUserInfo(): void {
     const userInfoString = localStorage.getItem(LOCAL_STORAGE_KEYS.USER_INFO);
     if (userInfoString) {
@@ -63,21 +89,60 @@ export class DashboardSidebarComponent implements OnInit {
   private checkVerificationStatus(): void {
     const userId = GetCurrentUserId();
     if (userId) {
-      this.emailVerificationService.isCompanyVerifiedByUserId(userId.toString()).subscribe({
-        next: (response) => {
-          if (response.isSuccess) {
-            this.isVerified = response.result;
-            this.verificationStatus = this.isVerified ? 'approved' : 'none';
-            console.log('🔍 Verification status checked:', this.isVerified);
+      this.emailVerificationService.getVerificationStatusByUserId(userId.toString()).subscribe({
+        next: (response: any) => {
+          if (response.isSuccess && response.result) {
+            const verificationData = response.result;
+            const status = verificationData.status;
+            
+            switch (status?.toLowerCase()) {
+              case 'pending':
+                this.verificationStatus = 'pending';
+                this.isVerified = false;
+                break;
+              case 'approved':
+                this.verificationStatus = 'approved';
+                this.isVerified = true;
+                break;
+              case 'rejected':
+                this.verificationStatus = 'rejected';
+                this.isVerified = false;
+                break;
+              case 'not_verified':
+              default:
+                this.verificationStatus = 'none';
+                this.isVerified = false;
+                break;
+            }
+            
+            console.log('🔍 Full verification status from API:', status, 'mapped to:', this.verificationStatus);
+          } else {
+            this.fallbackToSimpleVerificationCheck(userId);
           }
         },
-        error: (error) => {
-          console.error('Error checking verification status:', error);
-          this.isVerified = false;
-          this.verificationStatus = 'none';
+        error: (error: any) => {
+          console.error('Error checking full verification status:', error);
+          this.fallbackToSimpleVerificationCheck(userId);
         }
       });
     }
+  }
+
+  private fallbackToSimpleVerificationCheck(userId: number): void {
+    this.emailVerificationService.isCompanyVerifiedByUserId(userId.toString()).subscribe({
+      next: (verifiedResponse: any) => {
+        if (verifiedResponse.isSuccess) {
+          this.isVerified = verifiedResponse.result;
+          this.verificationStatus = this.isVerified ? 'approved' : 'none';
+          console.log('🔍 Fallback verification check result:', this.isVerified);
+        }
+      },
+      error: (error: any) => {
+        console.error('Error in fallback verification check:', error);
+        this.isVerified = false;
+        this.verificationStatus = 'none';
+      }
+    });
   }
 
   isActive(path: string | undefined): boolean {

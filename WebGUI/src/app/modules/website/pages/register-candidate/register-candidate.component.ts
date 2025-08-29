@@ -26,6 +26,8 @@ export class RegisterCandidateComponent {
   };
 
   isSubmitting = false;
+  showPassword = false;
+  showConfirmPassword = false;
 
   constructor(
     private router: Router,
@@ -65,6 +67,14 @@ export class RegisterCandidateComponent {
     // TODO: Implement Google OAuth login
     console.log('Google login clicked');
     this.toastr.info('Tính năng đăng nhập Google đang được phát triển');
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPasswordVisibility() {
+    this.showConfirmPassword = !this.showConfirmPassword;
   }
 
   private validateInput(): boolean {

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { BaseResponseModel } from '../../models/baseResponse.model';
-import { BusinessApprovalData, BusinessApprovalStats, BusinessRegistrationModel, DocumentInfo } from '../../models/business.model';
+import { BusinessApprovalData, BusinessApprovalStats, BusinessRegistrationModel, DocumentInfo, BusinessApprovalFilter, PaginatedBusinessApprovalResponse, ApproveBusinessRequest, RejectBusinessRequest, SetReviewingRequest, BulkApproveRequest, BulkRejectRequest, ExportBusinessApprovalsRequest } from '../../models/business.model';
 import { environment } from '../../../environments/environments';
 
 @Injectable({
@@ -10,6 +10,7 @@ import { environment } from '../../../environments/environments';
 })
 export class BusinessService {
   private baseUrl = `${environment.apiUrl}/Business`;
+  private approvalBaseUrl = `${environment.apiUrl}/BusinessApproval`;
 
   constructor(private http: HttpClient) {}
 
@@ -105,6 +106,92 @@ export class BusinessService {
   verifyDocument(documentId: number): Observable<BaseResponseModel<boolean>> {
     const apiUrl = `${this.baseUrl}/VerifyDocument/${documentId}`;
     return this.http.put<BaseResponseModel<boolean>>(apiUrl, {});
+  }
+
+  // ===== BUSINESS APPROVAL API METHODS =====
+  
+  // GET /api/BusinessApproval/GetStatistics
+  getApprovalStatistics(): Observable<BaseResponseModel<BusinessApprovalStats>> {
+    const apiUrl = `${this.approvalBaseUrl}/GetStatistics`;
+    return this.http.get<BaseResponseModel<BusinessApprovalStats>>(apiUrl);
+  }
+
+  // POST /api/BusinessApproval/GetBusinessApprovals
+  getBusinessApprovals(filter: BusinessApprovalFilter): Observable<BaseResponseModel<PaginatedBusinessApprovalResponse>> {
+    const apiUrl = `${this.approvalBaseUrl}/GetBusinessApprovals`;
+    return this.http.post<BaseResponseModel<PaginatedBusinessApprovalResponse>>(apiUrl, filter);
+  }
+
+  // GET /api/BusinessApproval/GetById/{businessId}
+  getBusinessApprovalById(businessId: number): Observable<BaseResponseModel<BusinessApprovalData>> {
+    const apiUrl = `${this.approvalBaseUrl}/GetById/${businessId}`;
+    return this.http.get<BaseResponseModel<BusinessApprovalData>>(apiUrl);
+  }
+
+  // PUT /api/BusinessApproval/Approve
+  approveBusinessApproval(businessId: number, approvedBy: string, notes?: string): Observable<BaseResponseModel<boolean>> {
+    const apiUrl = `${this.approvalBaseUrl}/Approve`;
+    return this.http.put<BaseResponseModel<boolean>>(apiUrl, { businessId, approvedBy, notes });
+  }
+
+  // PUT /api/BusinessApproval/Reject
+  rejectBusinessApproval(businessId: number, rejectedBy: string, reason: string): Observable<BaseResponseModel<boolean>> {
+    const apiUrl = `${this.approvalBaseUrl}/Reject`;
+    return this.http.put<BaseResponseModel<boolean>>(apiUrl, { businessId, rejectedBy, reason });
+  }
+
+  // PUT /api/BusinessApproval/SetReviewing
+  setReviewingBusinessApproval(businessId: number, reviewedBy: string, notes?: string): Observable<BaseResponseModel<boolean>> {
+    const apiUrl = `${this.approvalBaseUrl}/SetReviewing`;
+    return this.http.put<BaseResponseModel<boolean>>(apiUrl, { businessId, reviewedBy, notes });
+  }
+
+  // GET /api/BusinessApproval/GetDocuments/{businessId}
+  getBusinessDocuments(businessId: number): Observable<BaseResponseModel<DocumentInfo[]>> {
+    const apiUrl = `${this.approvalBaseUrl}/GetDocuments/${businessId}`;
+    return this.http.get<BaseResponseModel<DocumentInfo[]>>(apiUrl);
+  }
+
+  // GET /api/BusinessApproval/DownloadDocument/{documentId}
+  downloadBusinessDocument(documentId: number): Observable<Blob> {
+    const apiUrl = `${this.approvalBaseUrl}/DownloadDocument/${documentId}`;
+    return this.http.get(apiUrl, { responseType: 'blob' });
+  }
+
+  // GET /api/BusinessApproval/GetByStatus/{status}
+  getBusinessesByStatus(status: string): Observable<BaseResponseModel<BusinessApprovalData[]>> {
+    const apiUrl = `${this.approvalBaseUrl}/GetByStatus/${status}`;
+    return this.http.get<BaseResponseModel<BusinessApprovalData[]>>(apiUrl);
+  }
+
+  // GET /api/BusinessApproval/Search
+  searchBusinessApprovals(keyword: string): Observable<BaseResponseModel<BusinessApprovalData[]>> {
+    const apiUrl = `${this.approvalBaseUrl}/Search?keyword=${encodeURIComponent(keyword)}`;
+    return this.http.get<BaseResponseModel<BusinessApprovalData[]>>(apiUrl);
+  }
+
+  // GET /api/BusinessApproval/GetTodaySubmissions
+  getTodaySubmissions(): Observable<BaseResponseModel<number>> {
+    const apiUrl = `${this.approvalBaseUrl}/GetTodaySubmissions`;
+    return this.http.get<BaseResponseModel<number>>(apiUrl);
+  }
+
+  // PUT /api/BusinessApproval/BulkApprove
+  bulkApproveBusinesses(businessIds: number[], approvedBy: string): Observable<BaseResponseModel<boolean>> {
+    const apiUrl = `${this.approvalBaseUrl}/BulkApprove`;
+    return this.http.put<BaseResponseModel<boolean>>(apiUrl, { businessIds, approvedBy });
+  }
+
+  // PUT /api/BusinessApproval/BulkReject
+  bulkRejectBusinesses(businessIds: number[], rejectedBy: string, reason: string): Observable<BaseResponseModel<boolean>> {
+    const apiUrl = `${this.approvalBaseUrl}/BulkReject`;
+    return this.http.put<BaseResponseModel<boolean>>(apiUrl, { businessIds, rejectedBy, reason });
+  }
+
+  // POST /api/BusinessApproval/Export
+  exportBusinessApprovals(filter: BusinessApprovalFilter, format: string = 'excel'): Observable<Blob> {
+    const apiUrl = `${this.approvalBaseUrl}/Export`;
+    return this.http.post(apiUrl, { filter, format }, { responseType: 'blob' });
   }
 
   // ===== DUMMY DATA METHODS (for development) =====

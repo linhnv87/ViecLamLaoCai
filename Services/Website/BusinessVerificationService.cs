@@ -20,6 +20,7 @@ namespace Services
     {
         Task<BusinessVerificationResponseDTO> SubmitVerificationAsync(BusinessVerificationRequestDTO request);
         Task<BusinessVerificationResponseDTO> GetVerificationStatusAsync(int companyId);
+        Task<BusinessVerificationResponseDTO> GetVerificationStatusByUserIdAsync(Guid userId);
         Task<List<BusinessVerificationResponseDTO>> GetVerificationHistoryAsync(int companyId);
         Task<bool> IsCompanyVerifiedAsync(int companyId);
         Task<bool> IsCompanyVerifiedByUserIdAsync(Guid userId);
@@ -64,7 +65,17 @@ namespace Services
                     throw new Exception("File upload failed: " + string.Join(", ", fileValidationResult.Errors));
                 }
 
-                var companyId = GetCurrentCompanyId();
+                var company = await _context.Companies
+                    .Where(c => c.UserId == request.UserId)
+                    .FirstOrDefaultAsync();
+                
+                if (company == null)
+                {
+                    throw new Exception("Không tìm thấy thông tin doanh nghiệp cho user này");
+                }
+                
+                var companyId = company.CompanyId;
+                request.CompanyId = companyId;
                 await UpdateCompanyInfoAsync(companyId, request);
 
                 var verificationCode = GenerateVerificationCode();
@@ -136,6 +147,69 @@ namespace Services
             {
                 _logger.LogError(ex, "Error getting verification status for company: {CompanyId}", companyId);
                 throw new Exception("Lỗi xảy ra khi lấy trạng thái xác thực: " + ex.Message);
+            }
+        }
+
+        public async Task<BusinessVerificationResponseDTO> GetVerificationStatusByUserIdAsync(Guid userId)
+        {
+            try
+            {
+                _logger.LogInformation("Getting verification status for user: {UserId}", userId);
+
+                var company = await _context.Companies
+                    .Where(c => c.UserId == userId)
+                    .FirstOrDefaultAsync();
+
+                if (company == null)
+                {
+                    _logger.LogWarning("No company found for user: {UserId}, returning empty verification status", userId);
+                    return new BusinessVerificationResponseDTO
+                    {
+                        Id = 0,
+                        CompanyId = 0,
+                        Status = "not_verified",
+                        SubmittedDate = DateTime.MinValue,
+                        ReviewedDate = DateTime.MinValue,
+                        ReviewerNotes = "",
+                        VerificationCode = ""
+                    };
+                }
+
+                var approval = await _context.BusinessApprovals
+                    .Where(a => a.CompanyId == company.CompanyId)
+                    .OrderByDescending(a => a.SubmittedDate)
+                    .FirstOrDefaultAsync();
+
+                if (approval == null)
+                {
+                    _logger.LogWarning("No verification request found for company: {CompanyId}", company.CompanyId);
+                    return new BusinessVerificationResponseDTO
+                    {
+                        Id = 0,
+                        CompanyId = company.CompanyId,
+                        Status = "not_verified",
+                        SubmittedDate = DateTime.MinValue,
+                        ReviewedDate = DateTime.MinValue,
+                        ReviewerNotes = "",
+                        VerificationCode = ""
+                    };
+                }
+
+                return new BusinessVerificationResponseDTO
+                {
+                    Id = approval.ApprovalId,
+                    CompanyId = approval.CompanyId,
+                    Status = approval.ApprovalStatus,
+                    SubmittedDate = approval.SubmittedDate,
+                    ReviewedDate = approval.ApprovalDate,
+                    ReviewerNotes = approval.Notes,
+                    VerificationCode = approval.VerificationCode
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting verification status for user: {UserId}", userId);
+                throw new Exception("Lỗi xảy ra khi lấy trạng thái xác thực cho user: " + ex.Message);
             }
         }
 
@@ -417,6 +491,9 @@ namespace Services
         {
             var errors = new List<string>();
 
+            if (request.UserId == Guid.Empty)
+                errors.Add("UserId không hợp lệ");
+
             if (string.IsNullOrWhiteSpace(request.CompanyName))
                 errors.Add("Company name is required");
             else if (request.CompanyName.Length < 2)
@@ -555,11 +632,9 @@ namespace Services
             return new Random().Next(1000, 9999);
         }
 
-        private int GetCurrentCompanyId()
-        {
-            // TODO: Get from authenticated user context
-            return 1; 
-        }
+
+
+
 
         private bool IsValidEmail(string email)
         {

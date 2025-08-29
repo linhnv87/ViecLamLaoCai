@@ -17,14 +17,14 @@ namespace Database.Models.Website
         public string ApprovalStatus { get; set; } = "pending"; // pending, approved, rejected, cancelled
 
         [StringLength(100)]
-        public string ApprovedBy { get; set; }
+        public string? ApprovedBy { get; set; }
 
         public DateTime SubmittedDate { get; set; } = DateTime.UtcNow;
 
         public DateTime? ApprovalDate { get; set; }
 
         [StringLength(1000)]
-        public string Notes { get; set; }
+        public string? Notes { get; set; }
 
         [Required]
         [StringLength(50)]

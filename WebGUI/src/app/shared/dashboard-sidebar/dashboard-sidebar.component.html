@@ -14,7 +14,10 @@
       <div class="user-role">
         <div class="btn-wrap yellow">{{getUserMainRole()}}</div>
         <div *ngIf="isBusinessUser" class="verification-status" [ngClass]="verificationStatus">
-          {{getVerificationStatusText()}}
+          <span *ngIf="verificationStatus === 'approved'">✅ Đã xác thực</span>
+          <span *ngIf="verificationStatus === 'pending'">⏳ Đang chờ xác thực</span>
+          <span *ngIf="verificationStatus === 'rejected'">❌ Bị từ chối</span>
+          <span *ngIf="verificationStatus === 'none'">⚠️ Chưa xác thực</span>
         </div>
       </div>
       <div class="user-name">{{userInfo?.displayName || 'Cty Diaocvang'}}</div>

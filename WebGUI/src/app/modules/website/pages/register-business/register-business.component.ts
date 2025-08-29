@@ -25,6 +25,8 @@ export class RegisterBusinessComponent {
   };
 
   isSubmitting = false;
+  showPassword = false;
+  showConfirmPassword = false;
 
   constructor(
     private router: Router,
@@ -44,9 +46,9 @@ export class RegisterBusinessComponent {
         this.isSubmitting = false;
         if (response.isSuccess) {
           this.toastr.success(response.result.message);
-          if (response.result.requiresApproval) {
-            this.toastr.info('Tài khoản của bạn đang chờ phê duyệt. Chúng tôi sẽ thông báo qua email khi tài khoản được kích hoạt.');
-          }
+          // if (response.result.requiresApproval) {
+          //   this.toastr.info('Tài khoản của bạn đang chờ phê duyệt. Chúng tôi sẽ thông báo qua email khi tài khoản được kích hoạt.');
+          // }
           this.router.navigate(['/auth']);
         } else {
           this.toastr.error(response.message || 'Đăng ký không thành công');
@@ -94,5 +96,13 @@ export class RegisterBusinessComponent {
     }
 
     return true;
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPasswordVisibility() {
+    this.showConfirmPassword = !this.showConfirmPassword;
   }
 }

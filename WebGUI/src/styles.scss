@@ -163,3 +163,76 @@ $my-theme: mat.define-light-theme(
 // .cdk-overlay-container {
 //   z-index: 99999;
 // }
+
+/* Password toggle styles */
+.icon-show-password {
+  position: relative;
+  
+  &:after {
+    display: none !important;
+  }
+  
+  .password-toggle {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #6b7280;
+    transition: color 0.2s ease;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background: transparent;
+    border: none;
+    outline: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    font-size: 0;
+    text-decoration: none;
+    vertical-align: middle;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: center;
+    
+    &:hover {
+      color: #374151;
+    }
+    
+    &:active {
+      transform: translateY(-50%) scale(0.95);
+    }
+    
+    svg {
+      width: 18px;
+      height: 18px;
+      pointer-events: none;
+      fill: currentColor;
+      display: block;
+      margin: 0;
+      padding: 0;
+      line-height: 1;
+      font-size: 18px;
+      text-decoration: none;
+      vertical-align: middle;
+      overflow: visible;
+      white-space: nowrap;
+      text-align: center;
+    }
+  }
+  
+  input[type="password"],
+  input[type="text"] {
+    padding-right: 36px;
+    box-sizing: border-box;
+  }
+}
