@@ -13,6 +13,40 @@ using System.Threading.Tasks;
 
 namespace Services
 {
+    public interface IBusinessApprovalService
+    {
+    
+        Task<PaginatedBusinessApprovalResponseDTO> GetBusinessApprovalsAsync(BusinessApprovalFilterDTO filter);
+
+        Task<BusinessApprovalStatsDTO> GetApprovalStatisticsAsync();
+
+        Task<BusinessApprovalDetailResponseDTO> GetBusinessApprovalByIdAsync(int businessId);
+
+        Task<bool> ApproveBusinessAsync(ApproveBusinessRequestDTO request);
+
+        Task<bool> RejectBusinessAsync(RejectBusinessRequestDTO request);
+
+      
+        Task<bool> SetReviewingBusinessAsync(SetReviewingRequestDTO request);
+
+        Task<List<BusinessDocumentDTO>> GetBusinessDocumentsAsync(int businessId);
+
+        Task<(byte[] fileContent, string fileName, string contentType)> DownloadDocumentAsync(int documentId);
+
+        Task<bool> VerifyDocumentAsync(int documentId, string verifiedBy);
+
+        Task<List<BusinessApprovalHistoryDTO>> GetApprovalHistoryAsync(int businessId);
+        Task<List<BusinessApprovalListResponseDTO>> GetBusinessesByStatusAsync(string status);
+        Task<List<BusinessApprovalListResponseDTO>> SearchBusinessesAsync(string keyword);
+
+        Task<int> GetTodaySubmissionsCountAsync();
+
+        Task<bool> BulkApproveBusinessesAsync(List<int> businessIds, string approvedBy);
+
+        Task<bool> BulkRejectBusinessesAsync(List<int> businessIds, string rejectedBy, string reason);
+
+        Task<(byte[] fileContent, string fileName, string contentType)> ExportBusinessApprovalsAsync(BusinessApprovalFilterDTO filter, string format = "excel");
+    }
     public class BusinessApprovalService : IBusinessApprovalService
     {
         private readonly ILogger<BusinessApprovalService> _logger;
